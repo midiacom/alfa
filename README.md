@@ -6,5 +6,5 @@ This is the mains project to the Alfa-DVMS. Alfa-DVMS is a tool for create a inf
 
 * API
 * Web Interface
-* Plugins
+* Plugins: here are some basic plugins that can be used as as template to your own plugins
 * FIWARE Integration
