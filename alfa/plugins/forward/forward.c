@@ -15,16 +15,27 @@ Parameters:
 
 #include <gst/gst.h>
 
+// gst-launch-1.0 videotestsrc ! videobalance saturation=0 ! x264enc ! video/x-h264, stream-format=byte-stream ! rtph264pay ! udpsink host=35.153.160.117 port=5000
+
 int main (int argc, char *argv[]) {
-    GstElement *pipeline;
+    GstElement *pipeline, *src, *x264enc, *rtph264pay, *udpsink;
     GstBus *bus;
     GstMessage *msg;
 
     gst_init(&argc, &argv);
 
-    pipeline = gst_parse_launch("playbin uri=https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm", NULL);
+    pipeline = gst_element_factory_make("pipeline","pipeline");
+    src = gst_element_factory_make("filesrc","src");
+    x264enc = gst_element_factory_make ("x264enc", "x264enc");
+    rtph264pay = gst_element_factory_make ("rtph264pay", "rtph264pay");
+    udpsink = gst_element_factory_make ("udpsink", "udpsink");
 
-    gst_element_set_state(pipeline, GST_STATE_PLAYING);
+    gst_bin_add_many (GST_BIN (pipeline), src, x264enc, rtph264pay, udpsink, NULL);
+    gst_element_link_many (src, x264enc, rtph264pay, udpsink, NULL);
+    g_object_set (G_OBJECT (src), "location", "../../../sample.mp4", NULL);
+
+    gst_element_set_state (pipeline, GST_STATE_PLAYING);
+// host=35.153.160.117 port=5000
 
     bus = gst_element_get_bus(pipeline);
 
@@ -35,6 +46,11 @@ int main (int argc, char *argv[]) {
 
     gst_object_unref(bus);
     gst_element_set_state (pipeline, GST_STATE_NULL);
+    gst_object_unref (udpsink);
+    gst_object_unref (rtph264pay);
+    gst_object_unref (x264enc);
     gst_object_unref (pipeline);
+    gst_object_unref (src);
+
     return 0;
 }
