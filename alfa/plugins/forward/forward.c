@@ -11,46 +11,118 @@ Parameters:
     - APP_PARAMS: none
     - SRC: ?????????
     - DVMS_PARAMS: ??????????
+
+Sample pipeline
+
+gst-launch-1.0 -v filesrc location=../../../samples/musica.ogg ! oggdemux ! vorbisdec ! audioconvert ! rtpL24pay ! udpsink host=localhost auto-multicast=true port=5000    
 */
 
 #include <gst/gst.h>
+#include <glib.h>
 
-// gst-launch-1.0 videotestsrc ! videobalance saturation=0 ! x264enc ! video/x-h264, stream-format=byte-stream ! rtph264pay ! udpsink host=35.153.160.117 port=5000
+static gboolean bus_call (GstBus *bus, GstMessage *msg, gpointer data){
+  if (bus) {}
+  GMainLoop *loop = (GMainLoop *) data;
+  switch (GST_MESSAGE_TYPE (msg)) {
+    case GST_MESSAGE_EOS:
+      g_print ("End of stream\n");
+      g_main_loop_quit (loop);
+      break;
+    case GST_MESSAGE_ERROR: {
+      gchar  *debug;
+      GError *error;
+      gst_message_parse_error (msg, &error, &debug);
+      g_free (debug);
+      g_printerr ("Error: %s\n", error->message);
+      g_error_free (error);
+      g_main_loop_quit (loop);
+      break;
+    }
+    default:
+      break;
+  }
+  return TRUE;
+}
 
-int main (int argc, char *argv[]) {
-    GstElement *pipeline, *src, *x264enc, *rtph264pay, *udpsink;
-    GstBus *bus;
-    GstMessage *msg;
+static void on_pad_added (GstElement *element, GstPad *pad, gpointer data) {
+  if (element) {}
+  GstPad *sinkpad;
+  GstElement *decoder = (GstElement *) data;
+  /* We can now link this pad with the vorbis-decoder sink pad */
+  g_print ("Dynamic pad created, linking demuxer/decoder\n");
+  sinkpad = gst_element_get_static_pad (decoder, "sink");
+  gst_pad_link (pad, sinkpad);
+  gst_object_unref (sinkpad);
+}
 
-    gst_init(&argc, &argv);
+int main (int argc, char *argv[]){
+  GMainLoop *loop;
+  GstElement *pipeline, *source, *demuxer, *decoder, *conv, *sink;
+  GstElement *rtpL24pay;
+  GstBus *bus;
+  guint bus_watch_id;
 
-    pipeline = gst_element_factory_make("pipeline","pipeline");
-    src = gst_element_factory_make("filesrc","src");
-    x264enc = gst_element_factory_make ("x264enc", "x264enc");
-    rtph264pay = gst_element_factory_make ("rtph264pay", "rtph264pay");
-    udpsink = gst_element_factory_make ("udpsink", "udpsink");
+  /* Initialisation */
+  gst_init (&argc, &argv);
 
-    gst_bin_add_many (GST_BIN (pipeline), src, x264enc, rtph264pay, udpsink, NULL);
-    gst_element_link_many (src, x264enc, rtph264pay, udpsink, NULL);
-    g_object_set (G_OBJECT (src), "location", "../../../sample.mp4", NULL);
+  loop = g_main_loop_new (NULL, FALSE);
 
-    gst_element_set_state (pipeline, GST_STATE_PLAYING);
-// host=35.153.160.117 port=5000
+  /* Check input arguments */
+  if (argc != 2) {
+    g_printerr ("Usage: %s <Ogg/Vorbis filename>\n", argv[0]);
+    return -1;
+  }
 
-    bus = gst_element_get_bus(pipeline);
+  /* Create gstreamer elements */
+  pipeline = gst_pipeline_new ("audio-player");
+  source   = gst_element_factory_make ("filesrc",       "file-source");
+  demuxer  = gst_element_factory_make ("oggdemux",      "ogg-demuxer");
+  decoder  = gst_element_factory_make ("vorbisdec",     "vorbis-decoder");
+  conv     = gst_element_factory_make ("audioconvert",  "converter");
+  rtpL24pay     = gst_element_factory_make ("rtpL24pay",  "rtpL24pay");
+  sink     = gst_element_factory_make ("udpsink", "udpsink");
+  g_object_set (G_OBJECT (sink), "host", "localhost", NULL);
+  g_object_set (G_OBJECT (sink), "port", 5000, NULL);
+  g_object_set (G_OBJECT (sink), "auto-multicast", 1, NULL);
 
-    msg = gst_bus_timed_pop_filtered(bus,GST_CLOCK_TIME_NONE, GST_MESSAGE_ERROR | GST_MESSAGE_EOS);
+  if (!pipeline || !source || !demuxer || !decoder || !conv || !rtpL24pay || !sink) {
+    g_printerr ("One element could not be created. Exiting.\n");
+    return -1;
+  }
 
-    if (msg != NULL)
-        gst_message_unref(msg);
+  /* Set up the pipeline */
+  /* we set the input filename to the source element */
+  g_object_set (G_OBJECT (source), "location", argv[1], NULL);
 
-    gst_object_unref(bus);
-    gst_element_set_state (pipeline, GST_STATE_NULL);
-    gst_object_unref (udpsink);
-    gst_object_unref (rtph264pay);
-    gst_object_unref (x264enc);
-    gst_object_unref (pipeline);
-    gst_object_unref (src);
+  /* we add a message handler */
+  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
+  bus_watch_id = gst_bus_add_watch (bus, bus_call, loop);
+  gst_object_unref (bus);
+  
+  gst_bin_add_many (GST_BIN (pipeline), source, demuxer, decoder, conv, rtpL24pay, sink, NULL);
 
-    return 0;
+  /* we link the elements together */
+  /* file-source -> ogg-demuxer ~> vorbis-decoder -> converter -> rtpL24pay -> udpsink */
+  gst_element_link (source, demuxer);
+  gst_element_link_many (decoder, conv, rtpL24pay, sink, NULL);
+  g_signal_connect (demuxer, "pad-added", G_CALLBACK (on_pad_added), decoder);
+
+  /* Set the pipeline to "playing" state*/
+  g_print ("Now playing: %s\n", argv[1]);
+  gst_element_set_state (pipeline, GST_STATE_PLAYING);
+
+  /* Iterate */
+  g_print ("Running...\n");
+  g_main_loop_run (loop);
+
+  /* Out of the main loop, clean up nicely */
+  g_print ("Returned, stopping playback\n");
+  gst_element_set_state (pipeline, GST_STATE_NULL);
+
+  g_print ("Deleting pipeline\n");
+  gst_object_unref (GST_OBJECT (pipeline));
+  g_source_remove (bus_watch_id);
+  g_main_loop_unref (loop);
+
+  return 0;
 }
