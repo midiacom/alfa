@@ -16,7 +16,7 @@ Sample pipeline
 
 gst-launch-1.0 -v filesrc location=../../../samples/musica.ogg ! oggdemux ! vorbisdec ! audioconvert ! rtpL24pay ! udpsink host=localhost auto-multicast=true port=5000    
 */
-
+#include <stdlib.h>
 #include <gst/gst.h>
 #include <glib.h>
 
@@ -68,21 +68,21 @@ int main (int argc, char *argv[]){
   loop = g_main_loop_new (NULL, FALSE);
 
   /* Check input arguments */
-  if (argc != 2) {
-    g_printerr ("Usage: %s <Ogg/Vorbis filename>\n", argv[0]);
+  if (argc != 3) {
+    g_printerr ("Usage: IP PORT\n");
     return -1;
   }
 
   /* Create gstreamer elements */
-  pipeline = gst_pipeline_new ("audio-player");
-  source   = gst_element_factory_make ("filesrc",       "file-source");
-  demuxer  = gst_element_factory_make ("oggdemux",      "ogg-demuxer");
-  decoder  = gst_element_factory_make ("vorbisdec",     "vorbis-decoder");
-  conv     = gst_element_factory_make ("audioconvert",  "converter");
-  rtpL24pay     = gst_element_factory_make ("rtpL24pay",  "rtpL24pay");
-  sink     = gst_element_factory_make ("udpsink", "udpsink");
-  g_object_set (G_OBJECT (sink), "host", "localhost", NULL);
-  g_object_set (G_OBJECT (sink), "port", 5000, NULL);
+  pipeline  = gst_pipeline_new ("audio-player");
+  source    = gst_element_factory_make ("filesrc",       "file-source");
+  demuxer   = gst_element_factory_make ("oggdemux",      "ogg-demuxer");
+  decoder   = gst_element_factory_make ("vorbisdec",     "vorbis-decoder");
+  conv      = gst_element_factory_make ("audioconvert",  "converter");
+  rtpL24pay = gst_element_factory_make ("rtpL24pay",  "rtpL24pay");
+  sink      = gst_element_factory_make ("udpsink", "udpsink");
+  g_object_set (G_OBJECT (sink), "host", argv[1], NULL);
+  g_object_set (G_OBJECT (sink), "port", atoi(argv[2]), NULL);
   g_object_set (G_OBJECT (sink), "auto-multicast", 1, NULL);
 
   if (!pipeline || !source || !demuxer || !decoder || !conv || !rtpL24pay || !sink) {
@@ -92,7 +92,7 @@ int main (int argc, char *argv[]){
 
   /* Set up the pipeline */
   /* we set the input filename to the source element */
-  g_object_set (G_OBJECT (source), "location", argv[1], NULL);
+  g_object_set (G_OBJECT (source), "location", "/home/battisti/versionado/alfa/samples/musica.ogg", NULL);
 
   /* we add a message handler */
   bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
