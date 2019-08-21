@@ -1,18 +1,33 @@
 FROM alpine:3.10.0
 
-ENV LANG=C.UTF-8
-
-COPY ./audio_sample ./audio_sample
-COPY ./musica.ogg ./musica.ogg
-
-RUN chmod +x ./audio_sample
-
 RUN apk add --update --no-cache \
-    gstreamer gstreamer-dev \
-    gst-plugins-base gst-plugins-base-dev 
+    bash \
+    build-base \
+    gstreamer gstreamer-dev  \
+    gst-plugins-base \
+    gst-plugins-good
 
-CMD ["./audio_sample", "localhost", "5000"]
 
+COPY ./audio_sample.c ./audio_sample.c
+COPY ./musica.ogg ./musica.ogg
+COPY ./Makefile ./Makefile
+COPY ./start.sh ./start.sh
+ENTRYPOINT ["./start.sh"]
+
+# CMD ["./audio_sample", "localhost", "5000"]
+# COPY ./main.c ./main.c
+# COPY ./start.sh ./start.sh
+# ENTRYPOINT ["./start.sh"]
+# ENTRYPOINT ["./start.sh"]
+
+
+# CMD ["./start.sh"]
+# CMD ["ping", "terra.com.br"]
+# ENTRYPOINT ["./main"]
+# ENTRYPOINT ["./usr/app/main"]
+
+
+# CMD [%path/audio_sample]
 # FROM docker/whalesay:latest
 # LABEL Name=alfa Version=0.0.1
 # RUN apt-get -y update && apt-get install -y fortunes

@@ -17,7 +17,15 @@ gst-launch-1.0 -v filesrc location=../../../samples/musica.ogg ! oggdemux ! vorb
 
 To listen the audio
 gst-launch-1.0 -v udpsrc uri=udp://localhost:5000 caps="application/x-rtp,channels=(int)2,format=(string)S16LE,media=(string)audio,payload=(int)96,clock-rate=(int)44100,encoding-name=(string)L24" ! rtpL24depay ! audioconvert ! autoaudiosink sync=false
+
+Open Docker
+sudo docker exec -it 869d0e923352 sh
+
+Restart Docker
+sudo systemctl restart docker
+
 */
+
 #include <stdlib.h>
 #include <gst/gst.h>
 #include <glib.h>
@@ -87,11 +95,40 @@ int main (int argc, char *argv[]){
   g_object_set (G_OBJECT (sink), "port", atoi(argv[2]), NULL);
   g_object_set (G_OBJECT (sink), "auto-multicast", 1, NULL);
 
-  if (!pipeline || !source || !demuxer || !decoder || !conv || !rtpL24pay || !sink) {
-    g_printerr ("One element could not be created. Exiting.\n");
+  if (!pipeline) {
+    g_printerr ("Pipeline.\n");
     return -1;
   }
 
+  if (!source) {
+    g_printerr ("Souce.\n");
+    return -1;
+  }
+
+  if (!demuxer) {
+    g_printerr ("Demux.\n");
+    return -1;
+  }
+
+  if (!decoder) {
+    g_printerr ("Decoder.\n");
+    return -1;
+  }
+
+  if (!conv) {
+    g_printerr ("conv.\n");
+    return -1;
+  }
+
+  if (!rtpL24pay) {
+    g_printerr ("rtpL24pay.\n");
+    return -1;
+  }
+
+  if (!sink) {
+    g_printerr ("sink.\n");
+    return -1;
+  }
   /* Set up the pipeline */
   /* we set the input filename to the source element */
   g_object_set (G_OBJECT (source), "location", "musica.ogg", NULL);
@@ -128,3 +165,24 @@ int main (int argc, char *argv[]){
 
   return 0;
 }
+
+/* 
+RUN apk add --update --no-cache \
+    bash \
+    build-base \
+    gstreamer gstreamer-dev \
+    gst-plugins-base gst-plugins-base-dev \
+    libgstreamer1.0-0 \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-libav \
+    gstreamer1.0-tools \
+    gstreamer1.0-x \
+    gstreamer1.0-alsa \
+    gstreamer1.0-gl \
+    gstreamer1.0-gtk3 \
+    gstreamer1.0-qt5 \
+    gstreamer1.0-pulseaudio
+*/
