@@ -94,7 +94,7 @@ int main (int argc, char *argv[]){
 
   /* Set up the pipeline */
   /* we set the input filename to the source element */
-  g_object_set (G_OBJECT (source), "location", "/home/battisti/versionado/alfa/samples/musica.ogg", NULL);
+  g_object_set (G_OBJECT (source), "location", "musica.ogg", NULL);
 
   /* we add a message handler */
   bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
