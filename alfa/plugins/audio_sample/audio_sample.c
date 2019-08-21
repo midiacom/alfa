@@ -24,6 +24,11 @@ sudo docker exec -it 869d0e923352 sh
 Restart Docker
 sudo systemctl restart docker
 
+Create image
+sudo docker build . -t alfa/plugin/audio_sample
+
+Run imagem
+sudo docker run alfa/plugin/audio_sample
 */
 
 #include <stdlib.h>
@@ -165,24 +170,3 @@ int main (int argc, char *argv[]){
 
   return 0;
 }
-
-/* 
-RUN apk add --update --no-cache \
-    bash \
-    build-base \
-    gstreamer gstreamer-dev \
-    gst-plugins-base gst-plugins-base-dev \
-    libgstreamer1.0-0 \
-    gstreamer1.0-plugins-base \
-    gstreamer1.0-plugins-good \
-    gstreamer1.0-plugins-bad \
-    gstreamer1.0-plugins-ugly \
-    gstreamer1.0-libav \
-    gstreamer1.0-tools \
-    gstreamer1.0-x \
-    gstreamer1.0-alsa \
-    gstreamer1.0-gl \
-    gstreamer1.0-gtk3 \
-    gstreamer1.0-qt5 \
-    gstreamer1.0-pulseaudio
-*/
