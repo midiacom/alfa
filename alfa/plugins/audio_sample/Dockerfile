@@ -13,7 +13,8 @@ RUN apk add --update --no-cache \
 COPY ./audio_sample.c ./audio_sample.c
 COPY ./musica.ogg ./musica.ogg
 COPY ./Makefile ./Makefile
-COPY ./start.sh ./start.sh
 
 # this script compile the source code and run the program
+COPY ./start.sh ./start.sh
+
 ENTRYPOINT ["./start.sh"]

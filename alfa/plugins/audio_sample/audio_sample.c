@@ -25,10 +25,10 @@ Restart Docker
 sudo systemctl restart docker
 
 Create image
-sudo docker build . -t alfa/plugin/audio_sample
+sudo docker build . -t alfa/plugin/audio_sample 
 
 Run imagem
-sudo docker run alfa/plugin/audio_sample
+sudo docker run -it alfa/plugin/audio_sample 172.17.0.1 5000
 */
 
 #include <stdlib.h>
