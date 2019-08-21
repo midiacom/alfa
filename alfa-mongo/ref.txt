@@ -1,0 +1,7 @@
+The database is a mongodb 
+
+docker pull mongo
+
+docker run --name alfa_mongo -d mongo:latest
+
+docker inspect alfa_mongo | egrep IPAddress

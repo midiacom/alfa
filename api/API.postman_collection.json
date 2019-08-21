@@ -1,0 +1,269 @@
+{
+	"info": {
+		"_postman_id": "212e0314-e7c3-4728-86f1-4be67e918b45",
+		"name": "API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Places",
+			"item": [
+				{
+					"name": "Places",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/places",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"places"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Place",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/places/5d35fbf752e3562d49d2e7aa",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"places",
+								"5d35fbf752e3562d49d2e7aa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Place",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Sala 2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Sala de reuniões bloco A",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api_url}}/places",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"places"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Place",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/places/5d361058c72dbb2e5c3667c8",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"places",
+								"5d361058c72dbb2e5c3667c8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Devices",
+			"item": [
+				{
+					"name": "Devices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/devices",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Microfone 2",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Microfone de segurança instalada no dia 10",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "microfone",
+									"type": "text"
+								},
+								{
+									"key": "flow_type_video",
+									"value": "H.264 (High Profile)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "flow_type_audio",
+									"value": "MPEG-4 AAC",
+									"type": "text"
+								},
+								{
+									"key": "src_ip",
+									"value": "192.168.0.1",
+									"type": "text"
+								},
+								{
+									"key": "src_door",
+									"value": "5001",
+									"type": "text"
+								},
+								{
+									"key": "place",
+									"value": "5d3632011a023334cd69dd31",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api_url}}/devices/",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"devices",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Device",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/devices/5d362815057a093172f98e29",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"devices",
+								"5d362815057a093172f98e29"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "List of all devices that can be used in the organization. Those are cameras and microphones"
+		},
+		{
+			"name": "ALFA",
+			"item": [
+				{
+					"name": "status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/alfa/status",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"alfa",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ALFA-SRC",
+			"item": [
+				{
+					"name": "status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Thie is the service that provede the bing beteween the devices and the above modules of the system"
+		}
+	]
+}
