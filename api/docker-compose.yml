@@ -5,6 +5,19 @@ services:
     build: .
     command: npm start
     ports:
-      - "3000:3000"
+      - "8080:8080"
     volumes:
       - .:/usr/app
+    networks:
+      - express-mongo-network
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./MongoDB:/data/db
+    networks:
+      - express-mongo-network
+networks: 
+    express-mongo-network:
+      driver: bridge      

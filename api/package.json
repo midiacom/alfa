@@ -8,5 +8,10 @@
     "start": "nodemon app.js"
   },
   "author": "Anselmo Battisti",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.6.10",
+    "nodemon": "^1.19.1"
+  }
 }

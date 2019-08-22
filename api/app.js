@@ -1,21 +1,15 @@
 const express = require("express")
-const Docker = require('dockerode');
+const db = require('./db/connect');
+const Location = require('./models/location');
 
-var docker = new Docker({socketPath: '/var/run/docker.sock'});
-
-const PORT = 3000;
+const PORT = 8080;
 const HOST = '0.0.0.0';
 
 const app = express();
 
 app.get("/", (req, res) => {
-    docker.listContainers(function (err, containers) {
-        console.log(err);
-        containers.forEach(function (containerInfo) {
-          docker.getContainer(containerInfo.Id).stop(cb);
-        });
-      });
-    //res.send("Hello Worlds");
+    let l = new Location({name:'Sala 1'})    
+    res.send(l.save());
 })
 
 app.listen(PORT,HOST);
