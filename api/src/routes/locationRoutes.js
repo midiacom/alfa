@@ -12,6 +12,6 @@ router.post('/', locationConstroller.post);
 
 router.put('/:id', locationConstroller.put);
 
-router.delete('/:id', locationConstroller.put);
+router.delete('/:id', locationConstroller.delete);
 
 module.exports = router;

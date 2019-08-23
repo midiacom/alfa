@@ -43,7 +43,7 @@ const locationRoutes = {
     put: (req, res, next) => {
         var id = req.params.id;
         locationModel.findById(id)
-        .populate('construction')
+        .populate('locations')
         .exec()
         .then((location) => {
             if (!location) {
@@ -67,7 +67,15 @@ const locationRoutes = {
     
     delete: (req, res, next) => {
         let id = req.params.id;
-        res.status(200).send(`Requisição recebida com sucesso! ${id}`);
+        locationModel.remove({_id: id},function(err, location){
+            if (err) {
+                res.status(500).json({
+                    message: 'Error when deleting location.',
+                    error: err
+                });
+            }
+            res.json(location);
+        })
     }
 }    
 module.exports = locationRoutes
