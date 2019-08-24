@@ -15,3 +15,13 @@
         });
       });
     */
+
+
+    "test": "env-cmd -f ./config/test.env jest --watchAll --colors --coverage", 
+
+    https://medium.com/@programadriano/criando-uma-api-node-em-10-passos-com-express-js-52b2d612a8a9
+
+
+// mongoose.Promise = global.Promise
+//mongoose.connect('mongodb://root:MongoDB2019!@mongo:27017/alfa',{ useNewUrlParser: true })
+// mongoose.connect('mongodb://mongo:27017/alfa',{ useNewUrlParser: true })

@@ -5,10 +5,11 @@ const locationRoutes = {
         locationModel.find() 
             .select('name')
             .then(locations => {
-                res.status(201).json(locations);
+                return res.status(201).json(locations);
             })
             .catch(err => {
-                res.status(422).send(err.errors);
+                /* istanbul ignore next */ 
+                return res.status(422).send(err.errors);
             });        
     },
         
@@ -16,10 +17,11 @@ const locationRoutes = {
         let id = req.params.id;
         locationModel.findById(id)
             .then(location => {
-                res.status(201).json(location);
+                return res.status(201).json(location);
             })
             .catch(err => {
-                res.status(422).send(err.errors);
+                /* istanbul ignore next */ 
+                return res.status(422).send(err.errors);
             });                    
     },
     
@@ -30,13 +32,14 @@ const locationRoutes = {
         })                
         
         location.save((err,location) => {
+            /* istanbul ignore next */ 
             if (err) {
-                res.status(500).json({
+                return res.status(500).json({
                     message: 'Error when creating location',
                     error: err
                 });
             }
-            res.status(201).json(location);
+            return res.status(201).json(location);
         })
     },
     
@@ -47,20 +50,21 @@ const locationRoutes = {
         .exec()
         .then((location) => {
             if (!location) {
-                res.status(404).send()
+                return res.status(404).send()
             }
 
             location.name = req.body.name
             location.description = req.body.description
 
             location.save(function (err, location) {
+                /* istanbul ignore next */ 
                 if (err) {
-                    res.status(500).json({
+                    return res.status(500).json({
                         message: 'Error when updating location.',
                         error: err
                     });
                 }
-                res.json(location);
+                return res.status(201).json(location);
             })
         })
     },
@@ -68,13 +72,14 @@ const locationRoutes = {
     delete: (req, res, next) => {
         let id = req.params.id;
         locationModel.remove({_id: id},function(err, location){
+            /* istanbul ignore next */ 
             if (err) {
-                res.status(500).json({
+                return res.status(500).json({
                     message: 'Error when deleting location.',
                     error: err
                 });
             }
-            res.json(location);
+            return res.status(201).json(location);
         })
     }
 }    

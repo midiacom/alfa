@@ -1,6 +1,30 @@
 version: "3"
 
 services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./MongoDB:/data/db
+    networks:
+      - express-mongo-network
+    logging:
+      driver: none      
+  app:
+    build: .
+    command: npm run dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/usr/app
+    networks:
+      - express-mongo-network
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://mongo:27017"]
+        interval: 30s
+        timeout: 10s
+        retries: 5 
   app:
     build: .
     command: npm run test
@@ -14,17 +38,7 @@ services:
         test: ["CMD", "curl", "-f", "http://mongo:27017"]
         interval: 30s
         timeout: 10s
-        retries: 5      
-  mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./MongoDB:/data/db
-    networks:
-      - express-mongo-network
-    logging:
-      driver: none      
+        retries: 5            
 networks: 
     express-mongo-network:
       driver: bridge      
