@@ -23,6 +23,8 @@ services:
       - ./MongoDB:/data/db
     networks:
       - express-mongo-network
+    logging:
+      driver: none      
 networks: 
     express-mongo-network:
       driver: bridge      
