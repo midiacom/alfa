@@ -1,5 +1,4 @@
 const app = require('./src/app');
-const db = require('./db/connect');
 
 const port = normalizaPort(process.env.PORT || '8080');
 

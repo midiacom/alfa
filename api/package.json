@@ -4,15 +4,23 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "test": "env-cmd -f ./config/test.env jest --watchAll",
+    "dev":  "env-cmd -f ./config/dev.env nodemon server.js"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "author": "Anselmo Battisti",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "env-cmd": "^9.0.3",
     "express": "^4.17.1",
     "mongoose": "^5.6.10",
     "nodemon": "^1.19.1"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "supertest": "^4.0.2"
   }
 }
