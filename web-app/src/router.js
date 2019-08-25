@@ -11,11 +11,7 @@ export default new Router({
       name: 'home',
       component: Home
     },
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-    },
+    // LOCATION ROUTES    
     {
       path: '/location',
       name: 'locationIndex',
@@ -36,5 +32,22 @@ export default new Router({
       name: 'locationDevices',
       component: () => import(/* webpackChunkName: "locationDevices" */ './views/location/Devices.vue')
     },
+
+    // DEVICES ROUTES
+    {
+      path: '/device',
+      name: 'deviceIndex',
+      component: () => import(/* webpackChunkName: "deviceIndex" */ './views/device/Index.vue')
+    },
+    {
+      path: '/device/new',
+      name: 'deviceNew',
+      component: () => import(/* webpackChunkName: "deviceNew" */ './views/device/New.vue')
+    },        
+    {
+      path: '/device/:id/edit',
+      name: 'deviceEdit',
+      component: () => import(/* webpackChunkName: "deviceEdit" */ './views/device/Edit.vue')
+    },    
   ]
 })

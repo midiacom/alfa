@@ -20,7 +20,7 @@
             </li>
             <li>
               <v-icon name="cast"></v-icon>
-              <router-link to="/devices">Devices</router-link>
+              <router-link to="/device">Devices</router-link>
             </li>
           </ul>
         </b-col>

@@ -54,6 +54,27 @@ export const apiLocation = {
         })
     })
   },
+  /**
+   * This will be used for the combobox that demands a diferente return format
+   */
+  getLocationsForSelect () {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/location/`)
+        .then(resp => {
+            let ret = []
+            resp.data.forEach(element => {
+              ret.push({
+                value: element._id,
+                text: element.name
+              })
+            });
+            resolve(ret)
+        })
+        .catch(e => {
+            reject(e)
+        })
+    })
+  },
   getLocation (locationId) {
     return new Promise((resolve, reject) => {
       config.api.get(`/location/${locationId}`)
