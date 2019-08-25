@@ -1,18 +1,27 @@
 <template>
-  <div id="app">
-    <b-container fluid>
+  <div id="app" class="h-100">
+    <b-container fluid class="h-100">
       <b-row>
         <h1>Virtual Multimidia Sensor Manager</h1>
       </b-row>
-      <b-row>
-        <b-col cols="1" id="menu">
+      <b-row>        
+        <b-col cols="2" id="menu">
           <ul>
-            <li><router-link to="/">Home</router-link></li>
-            <li><router-link to="/location">Location</router-link></li>
-            <li><router-link to="/devices">Devices</router-link></li>
+            <li>
+              <v-icon name="home"></v-icon>
+              <router-link to="/">Home</router-link>
+            </li>
+            <li>
+              <v-icon name="map-pin"></v-icon>
+              <router-link to="/location">Locations</router-link>
+            </li>
+            <li>
+              <v-icon name="cast"></v-icon>
+              <router-link to="/devices">Devices</router-link>
+            </li>
           </ul>
         </b-col>
-        <b-col>
+        <b-col class="h-100">
           <router-view/>
         </b-col>
       </b-row>
@@ -21,6 +30,10 @@
 </template>
 
 <style>
+html,body {
+  height: 100%;
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -31,7 +44,9 @@
 }
 
 #menu {
-  background-color: #2c3e50
+  background-color: #e5e5e5;
+  min-height: 600px;
+  height: 100%;  
 }
 
 #app #menu ul {
@@ -40,6 +55,33 @@
   text-align: left;
   margin: 0px;
   padding: 0px;
+}
+
+#app #menu li {
+  width: 100%;
+  padding: 5px;
+}
+
+#app #menu li a {
+  padding:0px
+}
+
+#app #menu li a:hover {
+  text-decoration: none;
+  font-weight: bolder;
+}
+
+#app #menu li:hover {
+  background-color: #e9e9e9;
+}
+
+#app #menu svg {
+  margin-right: 10px;
+}
+
+.v-icon,
+.custom-icon {
+    width: 20px;
 }
 
 </style>

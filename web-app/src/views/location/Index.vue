@@ -1,7 +1,16 @@
 <template>
   <div>
-    <h2>Locations list</h2>
-    <router-link to="/location/new">New</router-link>
+    
+    <b-row>
+        <b-col>
+            <h2>Locations list</h2>
+        </b-col>
+        <b-col class="text-right">
+            <b-button variant="success" @click="newLocation" size="sm" class="mr-2">
+                New
+            </b-button>    
+        </b-col>
+    </b-row>
     <b-table :items="items" :fields="fields" striped responsive="sm">
       <template slot="[actions]" slot-scope="row">
         <b-button variant="primary" size="sm" @click="editLocation(row.item)" class="mr-2">
@@ -27,8 +36,11 @@ export default {
         }
     },
     methods: {
-        editLocation(location) {
-            console.log(location)
+        newLocation() {
+            this.$router.push(`/location/new/`)
+        },
+        editLocation (location) {
+            this.$router.push(`/location/edit/${location._id}`)
         },
         removeLocation(location) {
             apiLocation.removeLocation(location._id)

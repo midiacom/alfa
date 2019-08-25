@@ -9,7 +9,10 @@ You need the docker and docker-compose instaled in your machine.
 `
 cd api
 docker-compose up
-`
+
+#web app
+
+We are using this icons lib https://qinshenxue.github.io/vue-icon/
 
 # Roadmap
 

@@ -24,7 +24,12 @@ export default new Router({
     {
       path: '/location/new',
       name: 'locationNew',
-      component: () => import(/* webpackChunkName: "locationIndex" */ './views/location/New.vue')
+      component: () => import(/* webpackChunkName: "locationNew" */ './views/location/New.vue')
+    },
+    {
+      path: '/location/edit/:id',
+      name: 'locationEdit',
+      component: () => import(/* webpackChunkName: "locationEditndex" */ './views/location/Edit.vue')
     },
   ]
 })

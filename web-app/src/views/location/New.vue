@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h2>New Location</h2>
         <b-form @submit="onSubmit">
         <b-form-group id="input-group-1" label="Name:" label-for="name">
             <b-form-input id="name" v-model="form.name" type="text" required/>
