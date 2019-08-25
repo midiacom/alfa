@@ -54,10 +54,20 @@ export const apiLocation = {
         })
     })
   },
-
   getLocation (locationId) {
     return new Promise((resolve, reject) => {
       config.api.get(`/location/${locationId}`)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch(e => {
+          reject(e)
+        })
+    })
+  },
+  getDevices (locationId) {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/location/${locationId}/devices`)
         .then(resp => {
           resolve(resp.data)
         })

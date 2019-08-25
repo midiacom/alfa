@@ -24,7 +24,7 @@
             </li>
           </ul>
         </b-col>
-        <b-col class="h-100">
+        <b-col class="h-100" id="content">
           <router-view/>
         </b-col>
       </b-row>

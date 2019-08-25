@@ -9,21 +9,40 @@
             </h2>
         </b-col>
         <b-col class="text-right">
-            <b-button variant="success" @click="newLocation" size="sm" class="mr-2">
-                New
-            </b-button>    
+            <b-button to="/location/new" variant="success" size="sm" class="mr-2">New</b-button>    
         </b-col>
     </b-row>
-    <b-table :items="items" :fields="fields" striped responsive="sm">
+    <b-table
+        :busy="isBusy"
+        :items="items" 
+        :fields="fields" 
+        striped 
+        responsive="sm">
       <template slot="[actions]" slot-scope="row">
         <b-button variant="primary" size="sm" @click="editLocation(row.item)" class="mr-2">
             Edit
         </b-button>
+
+        <b-button variant="warning" size="sm" @click="devicesLocation(row.item)" class="mr-2">
+            Devices
+        </b-button>
+
         <b-button variant="danger" size="sm" @click="removeLocation(row.item)" class="mr-2">
             Remove
         </b-button>
       </template>        
+
+        <div slot="table-busy" class="text-center text-danger my-2">
+            <b-spinner class="align-middle"></b-spinner>
+            <strong>Loading...</strong>
+        </div>      
     </b-table>
+    <b-alert 
+        variant="secondary" 
+        class="text-center" 
+        :show=!items.length>
+        There are no locations yet!
+    </b-alert>
   </div>
 </template>
 
@@ -34,24 +53,24 @@ export default {
     name: 'locationIndex',
     data() {
         return {
+            isBusy: true,
             fields: [{
                 key: 'name',
             },{
                 key:'actions',
-                class: 'actions'
+                class: 'locationIndexActions'
             }],
             items: []
         }
     },
     methods: {
-        newLocation() {
-            this.$router.push(`/location/new/`)
-        },
         editLocation (location) {
-            this.$router.push(`/location/edit/${location._id}`)
+            this.$router.push(`/location/${location._id}/edit`)
+        },
+        devicesLocation (location) {
+            this.$router.push(`/location/${location._id}/devices`)
         },
         removeLocation(location) {
-            //this.$swal('Hello Vue world!!!')
             this.$swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -71,12 +90,15 @@ export default {
             })
         },
         refresh() {
+            this.isBusy = true
             apiLocation.getLocations()
                 .then((data) => {
                     this.items = data
+                    this.isBusy = false
                 })
                 .catch(e => {
                     console.log(e)
+                    this.isBusy = false
                 })
         }
     },
@@ -86,10 +108,9 @@ export default {
 }
 </script>
 
-<style scoped>
-    .actions {
-        max-width: 100px !important;
-        color: red;
+<style>
+    .locationIndexActions {
+        width: 250px;
         text-align: center;
     }
 </style>
