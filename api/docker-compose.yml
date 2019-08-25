@@ -1,7 +1,5 @@
 version: "3"
 
-
-
 services:
   mongo:
     image: mongo
@@ -15,9 +13,9 @@ services:
       driver: none      
   app:
     build: .
-    command: npm run test
+    command: npm run dev
     ports:
-      - "8080:8080"
+      - "3000:3000"
     volumes:
       - .:/usr/app
     networks:

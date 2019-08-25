@@ -1,8 +1,6 @@
-api/node_modules
-api/MongoDB
-api/coverage
-api/npm-debug.log
-web-app/node_modules
+.DS_Store
+node_modules
+/dist
 
 # local env files
 .env.local

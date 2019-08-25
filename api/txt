@@ -25,3 +25,12 @@
 // mongoose.Promise = global.Promise
 //mongoose.connect('mongodb://root:MongoDB2019!@mongo:27017/alfa',{ useNewUrlParser: true })
 // mongoose.connect('mongodb://mongo:27017/alfa',{ useNewUrlParser: true })
+
+
+The database is a mongodb 
+
+docker pull mongo
+
+docker run --name alfa_mongo -d mongo:latest
+
+docker inspect alfa_mongo | egrep IPAddress
