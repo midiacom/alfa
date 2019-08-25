@@ -1,3 +1,4 @@
 api/node_modules
 api/MongoDB
 api/coverage
+api/npm-debug.log
