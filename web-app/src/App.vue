@@ -1,16 +1,23 @@
 <template>
-  <b-row id="app">
-    <b-col id="nav">      
-      <ul>
-        <li><router-link to="/">Home</router-link></li>
-        <li><router-link to="/location">Location</router-link></li>
-        <li><router-link to="/devices">Devices</router-link></li>
-      </ul>      
-    </b-col>
-    <b-col>
-      <router-view/>
-    </b-col>
-  </b-row>
+  <div id="app">
+    <b-container fluid>
+      <b-row>
+        <h1>Virtual Multimidia Sensor Manager</h1>
+      </b-row>
+      <b-row>
+        <b-col cols="1" id="menu">
+          <ul>
+            <li><router-link to="/">Home</router-link></li>
+            <li><router-link to="/location">Location</router-link></li>
+            <li><router-link to="/devices">Devices</router-link></li>
+          </ul>
+        </b-col>
+        <b-col>
+          <router-view/>
+        </b-col>
+      </b-row>
+    </b-container>
+  </div>
 </template>
 
 <style>
@@ -18,19 +25,21 @@
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-}
-#nav {
-  padding: 30px;
+  width: 100%;
+  min-height: 100%;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+#menu {
+  background-color: #2c3e50
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+#app #menu ul {
+  width: 100%;
+  list-style-type: none;
+  text-align: left;
+  margin: 0px;
+  padding: 0px;
 }
+
 </style>
