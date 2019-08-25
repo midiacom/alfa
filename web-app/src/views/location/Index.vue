@@ -2,8 +2,11 @@
   <div>
     
     <b-row>
-        <b-col>
-            <h2>Locations list</h2>
+        <b-col>            
+            <h2>
+                <v-icon name="map-pin"></v-icon>
+                Locations
+            </h2>
         </b-col>
         <b-col class="text-right">
             <b-button variant="success" @click="newLocation" size="sm" class="mr-2">
@@ -31,7 +34,12 @@ export default {
     name: 'locationIndex',
     data() {
         return {
-            fields: ['name','actions'],
+            fields: [{
+                key: 'name',
+            },{
+                key:'actions',
+                class: 'actions'
+            }],
             items: []
         }
     },
@@ -43,13 +51,24 @@ export default {
             this.$router.push(`/location/edit/${location._id}`)
         },
         removeLocation(location) {
-            apiLocation.removeLocation(location._id)
-                .then((data) => {
-                    this.refresh()
-                })
-                .catch(e => {
-                    console.log(e)
-                })       
+            //this.$swal('Hello Vue world!!!')
+            this.$swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.value) {
+                    apiLocation.removeLocation(location._id)
+                        .then(() => {
+                            this.refresh()
+                        })
+                        .catch(e => {
+                            console.log(e)
+                        })
+                }
+            })
         },
         refresh() {
             apiLocation.getLocations()
@@ -66,3 +85,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .actions {
+        max-width: 100px !important;
+        color: red;
+        text-align: center;
+    }
+</style>

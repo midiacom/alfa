@@ -1,8 +1,11 @@
 <template>
   <div id="app" class="h-100">
     <b-container fluid class="h-100">
-      <b-row>
-        <h1>Virtual Multimidia Sensor Manager</h1>
+      <b-row id="head">        
+        <h1>
+          <v-icon name="airplay"></v-icon>
+          Virtual Multimidia Sensor Manager
+        </h1>
       </b-row>
       <b-row>        
         <b-col cols="2" id="menu">
@@ -32,6 +35,12 @@
 <style>
 html,body {
   height: 100%;
+}
+
+#head {
+  border-bottom: 1px solid #e2e2e2;
+  margin-bottom: 5px;
+  padding-left: 10px;
 }
 
 #app {
