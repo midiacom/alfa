@@ -10,6 +10,7 @@ let id_locationTwo = null;
 
 afterEach(async () => {
     await locationModel.deleteMany()
+    await deviceModel.deleteMany()
 })
 
 beforeEach(async () => {
