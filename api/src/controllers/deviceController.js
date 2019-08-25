@@ -1,11 +1,14 @@
+const deviceModel = require("../models/deviceModel")
 const locationModel = require("../models/locationModel")
 
-const locationRoutes = {
+const deviceRoutes = {
     list: (req, res, next) => {
-        locationModel.find() 
-            .select('name')
-            .then(locations => {
-                return res.status(201).json(locations);
+        deviceModel.find() 
+            .select('name, location')
+            .populate('location')
+            .exec()
+            .then(devices => {
+                return res.status(201).json(devices);
             })
             .catch(err => {
                 /* istanbul ignore next */ 
@@ -15,9 +18,9 @@ const locationRoutes = {
         
     get: (req, res, next) => {
         let id = req.params.id;
-        locationModel.findById(id)
-            .then(location => {
-                return res.status(201).json(location);
+        deviceModel.findById(id)
+            .then(device => {
+                return res.status(201).json(device);
             })
             .catch(err => {
                 /* istanbul ignore next */ 
@@ -26,61 +29,63 @@ const locationRoutes = {
     },
     
     post: (req, res, next) => {
-        const location = new locationModel({
+        const device = new deviceModel({
             name: req.body.name,
-            description: req.body.description
-        })                
+            description: req.body.description,
+            location: req.body.location
+        })
         
-        location.save((err,location) => {
+        device.save((err,device) => {
             /* istanbul ignore next */ 
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when creating location',
+                    message: 'Error when creating device',
                     error: err
                 });
             }
-            return res.status(201).json(location);
+            return res.status(201).json(device);
         })
     },
     
     put: (req, res, next) => {
         var id = req.params.id;
-        locationModel.findById(id)
-        .populate('locations')
+        deviceModel.findById(id)
+        .populate('devices')
         .exec()
-        .then((location) => {
-            if (!location) {
+        .then((device) => {
+            if (!device) {
                 return res.status(404).send()
             }
 
-            location.name = req.body.name
-            location.description = req.body.description
+            device.name = req.body.name
+            device.description = req.body.description
+            device.location = req.body.location
 
-            location.save(function (err, location) {
+            device.save(function (err, device) {
                 /* istanbul ignore next */ 
                 if (err) {
                     return res.status(500).json({
-                        message: 'Error when updating location.',
+                        message: 'Error when updating device.',
                         error: err
                     });
                 }
-                return res.status(201).json(location);
+                return res.status(201).json(device);
             })
         })
     },
     
     delete: (req, res, next) => {
         let id = req.params.id;
-        locationModel.remove({_id: id},function(err, location){
+        deviceModel.deleteOne({_id: id},function(err, device){
             /* istanbul ignore next */ 
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when deleting location.',
+                    message: 'Error when deleting device.',
                     error: err
                 });
             }
-            return res.status(201).json(location);
+            return res.status(201).json(device);
         })
     }
 }    
-module.exports = locationRoutes
+module.exports = deviceRoutes
