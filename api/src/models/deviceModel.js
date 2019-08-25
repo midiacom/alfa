@@ -8,7 +8,8 @@ var devicesSchema = new Schema({
     'description' : String,
     'location': {
         type: Schema.Types.ObjectId,
-        ref: 'location'        
+        ref: 'location',
+        required: true        
     }
 },{
   timestamps: true
