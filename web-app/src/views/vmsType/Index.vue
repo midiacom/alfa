@@ -23,7 +23,8 @@
         </template>
         <template slot="[actions]" slot-scope="row">
             <b-button variant="success" size="sm" @click="editVmsType(row.item)" class="mr-2">
-                New VMS
+                <v-icon name="play-circle"></v-icon>
+                Start New VMS
             </b-button>
 
             <b-button variant="primary" size="sm" @click="editVmsType(row.item)" class="mr-2">
@@ -119,7 +120,7 @@ export default {
 
 <style>
     .vmsTypeIndexActions {
-        width: 250px;
+        width: 300px;
         text-align: center;
     }
 </style>
