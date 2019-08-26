@@ -7,8 +7,9 @@ const db = require('./db/connect');
 //Rotas
 const index = require('./routes/index');
 const locationRoutes = require('./routes/locationRoutes');
-const deviceRoutes = require('./routes/deviceRoutes');
-const vmsTypeRoutes = require('./routes/vmsTypeRoutes');
+const deviceRoutes   = require('./routes/deviceRoutes');
+const vmsTypeRoutes  = require('./routes/vmsTypeRoutes');
+const vmsRoutes      = require('./routes/vmsRoutes');
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
@@ -21,6 +22,7 @@ var corsOptions = {
   origin: '*',
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
 }
+
 app.use(cors(corsOptions));
 
 app.use('/location', locationRoutes);
@@ -28,6 +30,8 @@ app.use('/location', locationRoutes);
 app.use('/device', deviceRoutes);
 
 app.use('/vmsType', vmsTypeRoutes);
+
+app.use('/vms', vmsRoutes);
 
 app.use('/', index);
 

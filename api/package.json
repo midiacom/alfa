@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "env-cmd -f ./config/test.env jest --watchAll --colors --coverage --runInBand",
+    "test_vms": "env-cmd -f ./config/test.env jest --watchAll --colors --runInBand -- vms.test.js",
     "dev": "env-cmd -f ./config/dev.env nodemon server.js"
   },
   "jest": {
@@ -15,6 +16,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "dockerode": "^2.5.8",
     "env-cmd": "^9.0.3",
     "express": "^4.17.1",
     "mongoose": "^5.6.10",
