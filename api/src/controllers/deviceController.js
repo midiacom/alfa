@@ -1,7 +1,7 @@
 const deviceModel = require("../models/deviceModel")
 const locationModel = require("../models/locationModel")
 
-const deviceRoutes = {
+const deviceController = {
     list: (req, res, next) => {
         deviceModel.find() 
             .select('name type location')
@@ -92,4 +92,4 @@ const deviceRoutes = {
         })
     }
 }    
-module.exports = deviceRoutes
+module.exports = deviceController

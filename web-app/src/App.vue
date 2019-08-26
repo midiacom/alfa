@@ -22,6 +22,10 @@
               <v-icon name="cast"></v-icon>
               <router-link to="/device">Devices</router-link>
             </li>
+            <li>
+              <v-icon name="type"></v-icon>
+              <router-link to="/vmsType">VMS Types</router-link>
+            </li>
           </ul>
         </b-col>
         <b-col class="h-100" id="content">

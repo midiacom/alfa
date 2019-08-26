@@ -3,12 +3,12 @@
     <b-row>
         <b-col>            
             <h2>
-                <v-icon name="map-pin"></v-icon>
-                Locations
+                <v-icon name="type"></v-icon>
+                VMS Types
             </h2>
         </b-col>
         <b-col class="text-right">
-            <b-button to="/location/new" variant="success" size="sm" class="mr-2">New</b-button>    
+            <b-button to="/vmsType/new" variant="success" size="sm" class="mr-2">New</b-button>    
         </b-col>
     </b-row>
     <b-table
@@ -18,15 +18,11 @@
         striped 
         responsive="sm">
       <template slot="[actions]" slot-scope="row">
-        <b-button variant="primary" size="sm" @click="editLocation(row.item)" class="mr-2">
+        <b-button variant="primary" size="sm" @click="editVmsType(row.item)" class="mr-2">
             Edit
         </b-button>
 
-        <b-button variant="warning" size="sm" @click="devicesLocation(row.item)" class="mr-2">
-            Devices
-        </b-button>
-
-        <b-button variant="danger" size="sm" @click="removeLocation(row.item)" class="mr-2">
+        <b-button variant="danger" size="sm" @click="removeVmsType(row.item)" class="mr-2">
             Remove
         </b-button>
       </template>        
@@ -40,7 +36,7 @@
         variant="secondary" 
         class="text-center" 
         :show=!items.length>
-        There are no locations yet!
+        There are no VMS Types yet!
     </b-alert>
 
     <b-row>
@@ -53,10 +49,10 @@
 </template>
 
 <script>
-import {apiLocation} from './api'
+import {apiVmsType} from './api'
 
 export default {
-    name: 'locationIndex',
+    name: 'vmsTypeIndex',
     data() {
         return {
             isBusy: true,
@@ -64,19 +60,16 @@ export default {
                 key: 'name',
             },{
                 key:'actions',
-                class: 'locationIndexActions'
+                class: 'vmsTypeIndexActions'
             }],
             items: []
         }
     },
     methods: {
-        editLocation (location) {
-            this.$router.push(`/location/${location._id}/edit`)
+        editVmsType (vmsType) {
+            this.$router.push(`/vmsType/${vmsType._id}/edit`)
         },
-        devicesLocation (location) {
-            this.$router.push(`/location/${location._id}/devices`)
-        },
-        removeLocation(location) {
+        removeVmsType(vmsType) {
             this.$swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -85,7 +78,7 @@ export default {
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.value) {
-                    apiLocation.removeLocation(location._id)
+                    apiVmsType.removeVmsType(vmsType._id)
                         .then(() => {
                             this.refresh()
                         })
@@ -97,7 +90,7 @@ export default {
         },
         refresh() {
             this.isBusy = true
-            apiLocation.getLocations()
+            apiVmsType.getVmsTypes()
                 .then((data) => {
                     this.items = data
                     this.isBusy = false
@@ -115,7 +108,7 @@ export default {
 </script>
 
 <style>
-    .locationIndexActions {
+    .vmsTypeIndexActions {
         width: 250px;
         text-align: center;
     }

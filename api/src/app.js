@@ -8,6 +8,7 @@ const db = require('./db/connect');
 const index = require('./routes/index');
 const locationRoutes = require('./routes/locationRoutes');
 const deviceRoutes = require('./routes/deviceRoutes');
+const vmsTypeRoutes = require('./routes/vmsTypeRoutes');
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
@@ -25,6 +26,8 @@ app.use(cors(corsOptions));
 app.use('/location', locationRoutes);
 
 app.use('/device', deviceRoutes);
+
+app.use('/vmsType', vmsTypeRoutes);
 
 app.use('/', index);
 

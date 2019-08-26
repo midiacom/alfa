@@ -49,5 +49,22 @@ export default new Router({
       name: 'deviceEdit',
       component: () => import(/* webpackChunkName: "deviceEdit" */ './views/device/Edit.vue')
     },    
+
+    // VMSTYPES ROUTES
+    {
+      path: '/vmsType',
+      name: 'vmsTypeIndex',
+      component: () => import(/* webpackChunkName: "vmsTypeIndex" */ './views/vmsType/Index.vue')
+    },
+    {
+      path: '/vmsType/new',
+      name: 'vmsTypeNew',
+      component: () => import(/* webpackChunkName: "vmsTypeNew" */ './views/vmsType/New.vue')
+    },        
+    {
+      path: '/vmsType/:id/edit',
+      name: 'vmsTypeEdit',
+      component: () => import(/* webpackChunkName: "vmsTypeEdit" */ './views/vmsType/Edit.vue')
+    },    
   ]
 })

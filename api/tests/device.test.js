@@ -4,7 +4,6 @@ const deviceModel = require("../src/models/deviceModel")
 const locationModel = require("../src/models/locationModel")
 const mongoose = require('mongoose');
 
-
 let id_locationOne = null;
 let id_locationTwo = null;
 
