@@ -36,6 +36,7 @@
             <strong>Loading...</strong>
         </div>      
     </b-table>
+
     <b-alert 
         variant="secondary" 
         class="text-center" 
@@ -43,9 +44,11 @@
         There are no devices yet!
     </b-alert>
 
-    testadamente
-
-    <strong>Total: {{ items.length }}</strong>
+    <b-row>
+        <b-col class="text-right">
+            <strong>Total: {{ items.length }}</strong>
+        </b-col>
+    </b-row>
   </div>
 </template>
 

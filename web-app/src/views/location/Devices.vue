@@ -30,6 +30,13 @@
         class="text-center" 
         :show=!items.length
         >There are no devices in this location yet!</b-alert>
+
+    <b-row>
+        <b-col class="text-right">
+            <strong>Total: {{ items.length }}</strong>
+        </b-col>
+    </b-row>
+
     </div>
 </template>
 

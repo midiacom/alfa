@@ -43,6 +43,13 @@
         :show=!items.length>
         There are no locations yet!
     </b-alert>
+
+    <b-row>
+        <b-col class="text-right">
+            <strong>Total: {{ items.length }}</strong>
+        </b-col>
+    </b-row>
+
   </div>
 </template>
 
