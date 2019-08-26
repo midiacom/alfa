@@ -17,14 +17,18 @@
         :fields="fields" 
         striped 
         responsive="sm">
-      <template slot="[actions]" slot-scope="row">
-        <b-button variant="primary" size="sm" @click="editVmsType(row.item)" class="mr-2">
-            Edit
-        </b-button>
 
-        <b-button variant="danger" size="sm" @click="removeVmsType(row.item)" class="mr-2">
-            Remove
-        </b-button>
+        <template slot="[dockerImage]" slot-scope="row">
+            {{ row.item.dockerImage }}
+        </template>
+        <template slot="[actions]" slot-scope="row">
+            <b-button variant="primary" size="sm" @click="editVmsType(row.item)" class="mr-2">
+                Edit
+            </b-button>
+
+            <b-button variant="danger" size="sm" @click="removeVmsType(row.item)" class="mr-2">
+                Remove
+            </b-button>
       </template>        
 
         <div slot="table-busy" class="text-center text-danger my-2">
@@ -58,6 +62,8 @@ export default {
             isBusy: true,
             fields: [{
                 key: 'name',
+            },{
+                key: 'dockerImage'
             },{
                 key:'actions',
                 class: 'vmsTypeIndexActions'
@@ -109,7 +115,7 @@ export default {
 
 <style>
     .vmsTypeIndexActions {
-        width: 250px;
+        width: 160px;
         text-align: center;
     }
 </style>

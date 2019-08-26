@@ -3,7 +3,7 @@ const vmsTypeModel = require("../models/vmsTypeModel")
 const vmsTypeController = {
     list: (req, res, next) => {
         vmsTypeModel.find() 
-            .select('name')
+            .select('name dockerImage')
             .then(vmsTypes => {
                 return res.status(201).json(vmsTypes);
             })
