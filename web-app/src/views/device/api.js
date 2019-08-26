@@ -1,6 +1,18 @@
 import { config } from '../../config'
 
 export const apiDevice = {
+  getConnectionTypes() {
+    return new Promise((resolve) => {
+      let conectionTypes = [{
+        value: 'oggFile',
+        text: 'OGGFile'
+      },{
+        value: "rtsp",
+        text: 'RTSP'
+      }]
+      resolve(conectionTypes);
+    })
+  },
   newDevice (device) {
     if (!device) {
       return Promise.reject(new Error('Data not informed'))

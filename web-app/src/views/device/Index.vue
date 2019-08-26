@@ -42,6 +42,10 @@
         :show=!items.length>
         There are no devices yet!
     </b-alert>
+
+    testadamente
+
+    <strong>Total: {{ items.length }}</strong>
   </div>
 </template>
 

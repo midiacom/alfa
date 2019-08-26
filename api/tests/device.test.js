@@ -37,6 +37,8 @@ beforeEach(async () => {
     // set the first device
     const deviceOne = await new deviceModel({
         "name": "Camera 1",
+        "connectionType": "oggFile",
+        "connectionParameters": "/home/...",        
         "description": "Color Camera ",
         "location": id_locationOne
     }).save()    
@@ -45,6 +47,8 @@ beforeEach(async () => {
     // set the second device
     const deviceTwo = await new deviceModel({
         "name": "Camera 2",
+        "connectionType": "oggFile",
+        "connectionParameters": "/home/...",        
         "description": "Grayscale Camera ",
         "location": id_locationTwo
     }).save()    
@@ -54,6 +58,8 @@ beforeEach(async () => {
 test('Create device', async () => {
     let cam = {
         "name": 'Camera 3',
+        "connectionType": "oggFile",
+        "connectionParameters": "/home/...",        
         "description": 'Camera from lobby',
         'location': id_locationOne
     }
@@ -69,6 +75,8 @@ test('Update a especific device', async () => {
     let cam = {
         "name": 'Cam 4',
         "description": 'Metting room camera',
+        "connectionType": "oggFile",
+        "connectionParameters": "/home/...",        
         "location": id_locationTwo
     }    
     const response = await request(app)
@@ -83,6 +91,8 @@ test('Update a especific device with an error id', async () => {
     let error_id = mongoose.Types.ObjectId()
     let device = {
         "name": 'Mic 1',
+        "connectionType": "oggFile",
+        "connectionParameters": "/home/...",        
         "description": 'Mic at living room',
         "location": mongoose.Types.ObjectId()
     }    

@@ -4,7 +4,7 @@ const locationModel = require("../models/locationModel")
 const deviceRoutes = {
     list: (req, res, next) => {
         deviceModel.find() 
-            .select('name location')
+            .select('name type location')
             .populate('location')
             .exec()
             .then(devices => {
@@ -31,6 +31,8 @@ const deviceRoutes = {
     post: (req, res, next) => {
         const device = new deviceModel({
             name: req.body.name,
+            connectionType: req.body.connectionType,
+            connectionParameters: req.body.connectionParameters,
             description: req.body.description,
             location: req.body.location
         })
@@ -58,6 +60,8 @@ const deviceRoutes = {
             }
 
             device.name = req.body.name
+            device.connectionType = req.body.connectionType
+            device.connectionParameters = req.body.connectionParameters
             device.description = req.body.description
             device.location = req.body.location
 

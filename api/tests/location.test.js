@@ -101,6 +101,8 @@ test('Remove a specific location', async () => {
 test('Get all devices from a location', async () => {
     await deviceModel({
         'name': 'Camera A',
+        "connectionType": "oggFile",
+        "connectionParameters": "/home/...",        
         'description': 'Boss camera',
         'location': id_locationOne
     }).save()
