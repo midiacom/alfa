@@ -16,6 +16,7 @@ beforeEach(async () => {
     const vmsType = await new vmsTypeModel({
         "name": "Audio Sample",
         "dockerImage": "alfa/plugin/audio_sample",
+        "startupParameters": "{dest:'192.168.0.1:5000'}",
         "description": "A simple audio sample"
     }).save()
 
@@ -26,6 +27,7 @@ test('Create vmsType', async () => {
     let typeSimpleVideo = {
         "name": "Video Sample",
         "dockerImage": "alfa/plugin/video_sample",
+        "startupParameters": "{dest:'192.168.0.1:5000'}",
         "description": "A simple video sample"
     }
 
@@ -41,6 +43,7 @@ test('Update a especific vmsType', async () => {
     let typeSimpleAudio = {
         "name": "Audio Sample",
         "dockerImage": "alfa/plugin/audio_sample",
+        "startupParameters": "{dest:'192.168.0.1:5000'}",
         "description": "A simple audio sample ogg"
     }
 
@@ -57,6 +60,7 @@ test('Update a especific vmsType with an error id', async () => {
     let typeSimpleAudio = {
         "name": "Audio Sample",
         "dockerImage": "alfa/plugin/audio_sample",
+        "startupParameters": "{dest:'192.168.0.1:5000'}",
         "description": "A simple audio sample ogg"
     } 
     await request(app)

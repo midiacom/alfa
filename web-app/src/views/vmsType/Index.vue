@@ -22,6 +22,10 @@
             {{ row.item.dockerImage }}
         </template>
         <template slot="[actions]" slot-scope="row">
+            <b-button variant="success" size="sm" @click="editVmsType(row.item)" class="mr-2">
+                New VMS
+            </b-button>
+
             <b-button variant="primary" size="sm" @click="editVmsType(row.item)" class="mr-2">
                 Edit
             </b-button>
@@ -115,7 +119,7 @@ export default {
 
 <style>
     .vmsTypeIndexActions {
-        width: 160px;
+        width: 250px;
         text-align: center;
     }
 </style>

@@ -29,6 +29,7 @@ const vmsTypeController = {
         const vmsType = new vmsTypeModel({
             name: req.body.name,
             dockerImage: req.body.dockerImage,
+            startupParameters: req.body.startupParameters,
             description: req.body.description
         })                
         
@@ -56,6 +57,7 @@ const vmsTypeController = {
 
             vmsType.name = req.body.name
             vmsType.dockerImage = req.body.dockerImage
+            vmsType.startupParameters = req.body.startupParameters
             vmsType.description = req.body.description
 
             vmsType.save(function (err, vmsType) {

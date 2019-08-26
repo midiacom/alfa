@@ -15,7 +15,11 @@
             <b-form-input id="dockerImage" v-model="form.dockerImage" type="text"/>
         </b-form-group>
 
-        <b-form-group id="input-group-3" label="Description:" label-for="description">
+        <b-form-group id="input-group-3" label="Startup Parameters:" label-for="startupParameters">
+            <b-form-input id="startupParameters" v-model="form.startupParameters" type="text"/>
+        </b-form-group>
+
+        <b-form-group id="input-group-4" label="Description:" label-for="description">
             <b-form-input id="description" v-model="form.description" type="text"/>
         </b-form-group>
 
@@ -24,7 +28,7 @@
                 <b-button type="submit" variant="primary">Save</b-button>
             </b-col>
             <b-col class="text-right">
-                <b-button to="/location" variant="secondary">Back</b-button>        
+                <b-button to="/vmsType" variant="secondary">Back</b-button>        
             </b-col>
         </b-row>
     </b-form>
@@ -35,13 +39,14 @@
 import {apiVmsType} from './api'
 
 export default {
-    name: 'locationEdit',
+    name: 'vmsTypeEdit',
     data() {
         return {
             form: {
                 id: '',
                 name: '',
                 dockerImage: '',
+                startupParameters: '',
                 description: ''
             },
             msg: {
@@ -65,11 +70,13 @@ export default {
         },
         refresh() {
             apiVmsType.getVmsType(this.$route.params.id)
-                .then((location) => {
-                    this.form.id = location._id
-                    this.form.name = location.name
-                    this.form.dockerImage = location.dockerImage
-                    this.form.description = location.description
+                .then((vmsType) => {
+                    console.log(vmsType)
+                    this.form.id = vmsType._id
+                    this.form.name = vmsType.name
+                    this.form.dockerImage = vmsType.dockerImage
+                    this.form.startupParameters = vmsType.startupParameters
+                    this.form.description = vmsType.description
                 })
         }
     },
