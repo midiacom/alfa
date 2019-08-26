@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const config = {
-    API_MAPS: 'AIzaSyBT7xRKGK-SdZkZZJw_rn2Bjffa-dtc8Fo',
+    API_MAPS: '',
     URL_API: 'http://localhost:3000',
     URL_APP: 'http://localhost:8080',
     COLOR_DANGER: 'red',
