@@ -8,7 +8,7 @@
             </h2>
         </b-col>
         <b-col class="text-right">
-            <b-button to="/vmsType/new" variant="success" size="sm" class="mr-2">New</b-button>    
+            <b-button to="/vmsType" variant="success" size="sm" class="mr-2">New</b-button>    
         </b-col>
     </b-row>
     <b-table
@@ -79,16 +79,16 @@ export default {
         detailsVms (vms) {
             this.$router.push(`/vms/${vms.containerId}/details`)
         },
-        removeVms(vmsType) {
+        removeVms(vms) {
             this.$swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
                 type: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, stop it!'
             }).then((result) => {
                 if (result.value) {
-                    apiVms.removeVms(vmsType._id)
+                    apiVms.removeVms(vms._id)
                         .then(() => {
                             this.refresh()
                         })

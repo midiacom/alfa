@@ -31,12 +31,12 @@ export const apiVms = {
     })
   },  
    */  
-  removeVms (vmsTypeId) {
-    if (!vmsTypeId) {
+  removeVms (vmsId) {
+    if (!vmsId) {
       return Promise.reject(new Error('Data not informed'))
     }
     return new Promise((resolve, reject) => {
-      config.api.delete(`/vms/${vmsTypeId}`)
+      config.api.delete(`/vms/${vmsId}`)
         .then(resp => {
           resolve(resp.data)
         })

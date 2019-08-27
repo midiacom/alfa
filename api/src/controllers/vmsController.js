@@ -11,7 +11,6 @@ const vmsController = {
         .then((api) => {
           let vmsType = req.body.vmsType;
           let startupParameters = req.body.startupParameters;
-
           vmsTypeModel.findById(vmsType)
             .then((result) => {
               api.createContainer({
@@ -58,9 +57,6 @@ const vmsController = {
         .then((api) => {
           api.listContainers(async function (err, containers) {
             const promises = containers.map(async function (containerInfo) {
-              // console.log(containerInfo.Id)
-              // verify if this container is a VMS
-              // "dockerId": containerInfo.Id
                 await vmsModel.findOne({
                   'dockerId': containerInfo.Id
                 })
@@ -69,6 +65,7 @@ const vmsController = {
                 .then((res) => {
                   if (res) {
                     let vmsInfo = {
+                      '_id': res.id,
                       'containerId': res.dockerId,
                       'startupParameters': res.startupParameters,
                       'containerInfo': containerInfo,
@@ -96,6 +93,31 @@ const vmsController = {
           });
         })
     },
+    delete: (req, res, next) => {
+      let id = req.params.id;
+      vmsModel.findById(id)
+        .then((vms) => {
+          if (!vms) {
+            return res.status(422).send(`VMS with id ${id} not found!`);
+          }
+          vmsModel.deleteOne({_id: id},function(err){
+              /* istanbul ignore next */ 
+              if (err) {
+                  return res.status(500).json({
+                      message: 'Error when deleting vmsType.',
+                      error: err
+                  });
+              }
+
+              docker.api()
+                .then((api) => {
+                  api.getContainer(vms.dockerId).stop();
+                })
+
+              return res.status(201).json(vms);
+          })
+        })
+  },    
 }
 
 module.exports = vmsController
