@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "env-cmd -f ./config/test.env jest --watchAll --colors --coverage --runInBand",
-    "test_vms": "env-cmd -f ./config/test.env jest --watchAll --colors --runInBand -- vms.test.js",
+    "testVms": "env-cmd -f ./config/test.env jest --watchAll --colors --runInBand -- vms.test.js",
     "dev": "env-cmd -f ./config/dev.env nodemon server.js"
   },
   "jest": {

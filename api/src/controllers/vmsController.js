@@ -2,13 +2,42 @@
 // var getDockerHost = require('get-docker-host');
 // const locationModel = require("../models/locationModel")
 
-const deviceModel = require("../models/deviceModel")
+const vmsTypeModel = require("../models/vmsTypeModel")
 const docker = require("../util/dockerApi")
 
 const vmsController = {
     post: (req, res, next) => {
       docker.api()
         .then((api) => {
+          let vmsType = req.body.vmsType;
+          let startupParameters = req.body.startupParameters;
+
+          vmsTypeModel.findById(vmsType)
+            .then((result) => {
+              api.createContainer({
+                Image: result.dockerImage,
+                Cmd: [startupParameters],
+              }).then(function(container) {
+                container.start()
+                .then((data) => {
+                  console.log(data)
+                  return res.status(201).json(data);
+                }).catch(function(err) {
+                  /* istanbul ignore next */ 
+                  return res.status(422).send(err);
+                });
+              }).catch(function(err) {
+                /* istanbul ignore next */ 
+                return res.status(422).send(err);
+              });
+
+            })
+            .catch(err => {
+              /* istanbul ignore next */ 
+              return res.status(422).send(err.errors);
+            });
+
+          /*
           let cont = []
           api.listContainers(function (err, containers) {
             containers.forEach(function (containerInfo) {
@@ -17,8 +46,8 @@ const vmsController = {
               cont.push(containerInfo)
             });   
             return res.status(201).json(cont);
-          });
-        })
+          })*/
+        });
     },
     list: (req, res, next) => {
       docker.api()
@@ -39,8 +68,7 @@ const vmsController = {
           let id = req.params.id;
           var opts = {
             "filters": `{"id": ["${id}"]}`
-          }          
-          console.log(opts)
+          }
           api.listContainers(opts, function (err, container) {
             console.log(container)
             return res.status(201).json(container);

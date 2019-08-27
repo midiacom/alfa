@@ -74,6 +74,11 @@ export default new Router({
       component: () => import(/* webpackChunkName: "vmsIndex" */ './views/vms/Index.vue')
     },
     {
+      path: '/vms/new/:id',
+      name: 'vmsNew',
+      component: () => import(/* webpackChunkName: "vmsNew" */ './views/vms/New.vue')
+    },        
+    {
       path: '/vms/:id/details',
       name: 'vmsDetails',
       component: () => import(/* webpackChunkName: "vmsTypeEdit" */ './views/vms/Details.vue')

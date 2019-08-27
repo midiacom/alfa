@@ -25,14 +25,16 @@ beforeEach(async () => {
 
 test('Create VMS', async () => {
     let vms = {
-        "dockerImage": "alfa/plugin/video_sample",
-        "startupParameters": "192.168.0.1:5000",
+        "vmsType": id_vmsTypeOne,
+        "startupParameters": "172.17.0.1 5000",
     }
 
     response = await request(app)
         .post('/vms')
         .send(vms)
         .expect(201)
+
+    console.log(response.body)
 
     // expect(response.body.name).toBe(typeSimpleVideo.name);
 })

@@ -22,7 +22,7 @@
             {{ row.item.dockerImage }}
         </template>
         <template slot="[actions]" slot-scope="row">
-            <b-button variant="success" size="sm" @click="editVmsType(row.item)" class="mr-2">
+            <b-button variant="success" size="sm" @click="newVms(row.item)" class="mr-2">
                 <v-icon name="play-circle"></v-icon>
                 Start New VMS
             </b-button>
@@ -79,6 +79,9 @@ export default {
     methods: {
         editVmsType (vmsType) {
             this.$router.push(`/vmsType/${vmsType._id}/edit`)
+        },
+        newVms (vmsType) {
+            this.$router.push(`/vms/new/${vmsType._id}/`)
         },
         removeVmsType(vmsType) {
             this.$swal.fire({
