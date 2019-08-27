@@ -1,21 +1,21 @@
 import { config } from '../../config'
 
 export const apiVms = {
-  /*
-  newVmsType (vmsType) {
-    if (!vmsType) {
+  newVms (vms) {
+    if (!vms) {
       return Promise.reject(new Error('Data not informed'))
     }
     return new Promise((resolve, reject) => {
-      config.api.post(`/vmsType/`,vmsType)
+      config.api.post(`/vms/`,vms)
         .then(resp => {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem creating a new vmsType ${e}`))
+          reject(new Error(`Error whem creating a new VMS ${e}`))
         })
-    })
+      })
   },  
+  /*
   updateVmsType (vmsType) {
     if (!vmsType) {
       return Promise.reject(new Error('Data not informed'))

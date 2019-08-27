@@ -18,9 +18,11 @@
         striped 
         responsive="sm">
 
-        <template slot="[dockerImage]" slot-scope="row">
-            {{ row.item.dockerImage }}
+        <template slot="[Status]" slot-scope="row">
+            {{ row.item.containerInfo.State }}
+            {{ row.item.containerInfo.Status }}
         </template>
+
         <template slot="[actions]" slot-scope="row">
             <b-button variant="success" size="sm" @click="detailsVms(row.item)" class="mr-2">
                 Details
@@ -61,9 +63,9 @@ export default {
         return {
             isBusy: true,
             fields: [{
-                key: 'Names',
+                key: 'vmsType',
             },{
-                key: 'Id'
+                key: 'startupParameters'
             },{
                 key: 'Status'
             },{
@@ -100,6 +102,7 @@ export default {
             this.isBusy = true
             apiVms.getAllVms()
                 .then((data) => {
+                    console.log(data)
                     this.items = data
                     this.isBusy = false
                 })

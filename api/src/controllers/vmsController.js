@@ -1,7 +1,7 @@
 // var Docker = require('dockerode');
 // var getDockerHost = require('get-docker-host');
-// const locationModel = require("../models/locationModel")
 
+const vmsModel = require("../models/vmsModel")
 const vmsTypeModel = require("../models/vmsTypeModel")
 const docker = require("../util/dockerApi")
 
@@ -20,8 +20,23 @@ const vmsController = {
               }).then(function(container) {
                 container.start()
                 .then((data) => {
-                  console.log(data)
-                  return res.status(201).json(data);
+                  const vms = new vmsModel({
+                    dockerId: data.id,
+                    startupParameters: startupParameters,
+                    vmsType: vmsType
+                  })                
+                  
+                  vms.save((err,vms) => {
+                      /* istanbul ignore next */ 
+                      if (err) {
+                          return res.status(500).json({
+                              message: 'Error when creating vmsType',
+                              error: err
+                          });
+                      }
+                      return res.status(201).json(vms)
+                  })                  
+                  // return res.status(201).json(data);
                 }).catch(function(err) {
                   /* istanbul ignore next */ 
                   return res.status(422).send(err);
@@ -30,36 +45,43 @@ const vmsController = {
                 /* istanbul ignore next */ 
                 return res.status(422).send(err);
               });
-
             })
             .catch(err => {
               /* istanbul ignore next */ 
               return res.status(422).send(err.errors);
             });
-
-          /*
-          let cont = []
-          api.listContainers(function (err, containers) {
-            containers.forEach(function (containerInfo) {
-              //docker.getContainer(containerInfo.Id).stop(cb);
-              //console.log(containerInfo)
-              cont.push(containerInfo)
-            });   
-            return res.status(201).json(cont);
-          })*/
         });
     },
-    list: (req, res, next) => {
+    async list (req, res, next) {
+      let cont = []
       docker.api()
         .then((api) => {
-          let cont = []
-          api.listContainers(function (err, containers) {
-            containers.forEach(function (containerInfo) {
-              cont.push(containerInfo)
-            });   
-            return res.status(201).json(cont);
-          });
-        })
+          api.listContainers(async function (err, containers) {
+            const promises = containers.map(async function (containerInfo) {
+              // console.log(containerInfo.Id)
+              // verify if this container is a VMS
+              // "dockerId": containerInfo.Id
+                await vmsModel.findOne({
+                  'dockerId': containerInfo.Id
+                })
+                .populate('vmsType')
+                .exec()
+                .then((res) => {
+                  if (res) {
+                    let vmsInfo = {
+                      'containerId': res.dockerId,
+                      'startupParameters': res.startupParameters,
+                      'containerInfo': containerInfo,
+                      'vmsType': res.vmsType.name
+                    }
+                    cont.push(vmsInfo)
+                  }
+                })
+              });              
+              await Promise.all(promises);
+              return res.status(201).json(cont);
+        });
+      })        
     },
     get: (req, res, next) => {
       let id = req.params.id;
@@ -70,15 +92,8 @@ const vmsController = {
             "filters": `{"id": ["${id}"]}`
           }
           api.listContainers(opts, function (err, container) {
-            console.log(container)
             return res.status(201).json(container);
-          });          
-          /*
-          var containerDetail = api.getContainer(id);          
-          console.log(containerDetail)
-          containerDetail.inspect(function (err, data) {            
-            return res.status(201).json(data);
-          });*/
+          });
         })
     },
 }
