@@ -71,7 +71,6 @@ export default {
         refresh() {
             apiVmsType.getVmsType(this.$route.params.id)
                 .then((vmsType) => {
-                    console.log(vmsType)
                     this.form.id = vmsType._id
                     this.form.name = vmsType.name
                     this.form.dockerImage = vmsType.dockerImage

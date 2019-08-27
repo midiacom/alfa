@@ -77,7 +77,7 @@ export default {
     },
     methods: {
         detailsVms (vms) {
-            this.$router.push(`/vms/${vms.Id}/details`)
+            this.$router.push(`/vms/${vms.containerId}/details`)
         },
         removeVms(vmsType) {
             this.$swal.fire({
