@@ -32,6 +32,27 @@ const vmsController = {
           });
         })
     },
+    get: (req, res, next) => {
+      let id = req.params.id;
+      docker.api()
+        .then((api) => {
+          let id = req.params.id;
+          var opts = {
+            "filters": `{"id": ["${id}"]}`
+          }          
+          console.log(opts)
+          api.listContainers(opts, function (err, container) {
+            console.log(container)
+            return res.status(201).json(container);
+          });          
+          /*
+          var containerDetail = api.getContainer(id);          
+          console.log(containerDetail)
+          containerDetail.inspect(function (err, data) {            
+            return res.status(201).json(data);
+          });*/
+        })
+    },
 }
 
 module.exports = vmsController

@@ -13,7 +13,7 @@ services:
       driver: none      
   app:
     build: .
-    command: npm run test_vms
+    command: npm run dev
     ports:
       - "3000:3000"
     volumes:

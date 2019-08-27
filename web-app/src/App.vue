@@ -15,8 +15,8 @@
               <router-link to="/">Home</router-link>
             </li>
             <li>
-              <v-icon name="play-circle"></v-icon>
-              <router-link to="/">VMS</router-link>
+              <v-icon name="layers"></v-icon>
+              <router-link to="/vms">VMS</router-link>
             </li>
             <li>
               <v-icon name="map-pin"></v-icon>
