@@ -6,9 +6,18 @@ This is the mains project to the Alfa-DVMS. Alfa-DVMS is a tool for create a inf
 
 You need the docker and docker-compose instaled in your machine.
 
-`
-cd api
 docker-compose up
+
+To API access the Docker API is necessary that it started with this feature
+
+Edit the file sudo vi /lib/systemd/system/docker.service
+
+Modify the line that starts with ExecStart to look like this:
+ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:4243
+
+systemctl daemon-reload
+sudo service docker restart
+curl http://localhost:4243/version
 
 #web app
 

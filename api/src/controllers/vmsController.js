@@ -1,25 +1,37 @@
-var Docker = require('dockerode');
+// var Docker = require('dockerode');
+// var getDockerHost = require('get-docker-host');
+// const locationModel = require("../models/locationModel")
 
 const deviceModel = require("../models/deviceModel")
-// const locationModel = require("../models/locationModel")
+const docker = require("../util/dockerApi")
 
 const vmsController = {
     post: (req, res, next) => {
-
-        var dockerApi = new Docker({host: 'http://172.17.0.1/', port: 2375});
-        dockerApi.listContainers(function (err, containers) {
-            console.log(err)
+      docker.api()
+        .then((api) => {
+          let cont = []
+          api.listContainers(function (err, containers) {
             containers.forEach(function (containerInfo) {
-              // docker.getContainer(containerInfo.Id).stop(cb);
-                console.log(containerInfo)
-            });
-            console.log(err)
+              //docker.getContainer(containerInfo.Id).stop(cb);
+              //console.log(containerInfo)
+              cont.push(containerInfo)
+            });   
+            return res.status(201).json(cont);
           });
-        let vms = {
-            dockerId: 'ddddd'
-        }
-        return res.status(201).json(vms);
+        })
     },
-}    
+    list: (req, res, next) => {
+      docker.api()
+        .then((api) => {
+          let cont = []
+          api.listContainers(function (err, containers) {
+            containers.forEach(function (containerInfo) {
+              cont.push(containerInfo)
+            });   
+            return res.status(201).json(cont);
+          });
+        })
+    },
+}
 
 module.exports = vmsController

@@ -4,7 +4,7 @@ const router = express.Router();
 
 const vmsController = require('../controllers/vmsController')
 
-// router.get('/', vmsTypeController.list);
+router.get('/', vmsController.list);
 
 // router.get('/:id', vmsTypeController.get);
 

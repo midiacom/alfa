@@ -23,7 +23,7 @@ beforeEach(async () => {
     id_vmsTypeOne = vmsType._id
 })
 
-test('Create vmsType', async () => {
+test('Create VMS', async () => {
     let vms = {
         "dockerImage": "alfa/plugin/video_sample",
         "startupParameters": "192.168.0.1:5000",
@@ -34,7 +34,13 @@ test('Create vmsType', async () => {
         .send(vms)
         .expect(201)
 
-    console.log(response.body)
+    // expect(response.body.name).toBe(typeSimpleVideo.name);
+})
 
+test('Get all VMS', async () => {
+    response = await request(app)
+        .get('/vms')
+        .expect(201)
+    // console.log(response.body)
     // expect(response.body.name).toBe(typeSimpleVideo.name);
 })
