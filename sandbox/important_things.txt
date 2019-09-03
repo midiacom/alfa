@@ -1,3 +1,12 @@
+pipe = gst_parse_launch("splitmuxsink name=m rtspsrc name=r r. ! rtph264depay ! h264parse ! m. r. ! rtmp4depay ! aacparse ! m.audio_0);
+
+
+Construir um servidor RTSP usando gstreamer
+https://github.com/GStreamer/gst-rtsp-server/blob/master/examples/test-launch.c
+
+Pode ser útil 
+https://github.com/enthusiasticgeek/gstreamer-rtsp-ssl-example
+
 To list all docker networkds
 
 docker network ls
@@ -43,3 +52,142 @@ sudo docker build . -t alfa/plugin/audio_sample
 
 Run imagem
 sudo docker run -it alfa/plugin/audio_sample 172.17.0.1 5000
+
+A placa do virtualbox deve estar no modo bridge
+
+gst-discoverer-1.0 rtsp://192.168.0.101:8080/h264_ulaw.sdp
+
+FUNCIONA
+=========
+Exibe um vídeo de teste na tela
+gst-launch-1.0 videotestsrc ! autovideosink
+
+Gerar o video teste enviar via udp e consumir o teste
+gst-launch-1.0 videotestsrc \
+    ! decodebin \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink port=7001
+
+consome o vídeo de teste
+gst-launch-1.0 \
+    udpsrc port=7001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
+    
+RTSP Teste
+Funciona no celular velho 
+gst-launch-1.0 -v playbin uri=rtsp://192.168.0.100:8080/h264_ulaw.sdp
+
+// conecta com o celular e exibe na tela
+gst-launch-1.0 rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp \
+    ! rtph264depay \
+    ! h264parse \
+    ! avdec_h264 \
+    ! videoconvert \
+    ! autovideosink
+
+gst-launch-1.0 rtspsrc location=rtsp://192.168.0.101:8080/h264_ulaw.sdp \
+    ! rtph264depay \
+    ! h264parse \
+    ! decodebin \
+    ! videoconvert \
+    ! xvimagesink sync=false
+
+
+Conecta no celular via RTSP e encaminha o fluxo usando UDP
+gst-launch-1.0  rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp latency=300 \
+    ! decodebin \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink port=7001
+
+consome o vídeo do celular
+gst-launch-1.0 \
+    udpsrc port=7001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
+
+---------------  ATÉ AQUI FUNCIONA
+
+Ainda não está funcionando
+gst-launch-1.0 -vv rtspsrc location=rtsp://192.168.0.101:8080/h264_ulaw.sdp latency=300 \
+    ! rtph264depay \
+    ! rtph264pay \
+    ! udpsink port=5000
+
+gst-launch-1.0 -vvv udpsrc port=5000 \
+    ! rtph264depay \
+    ! h264parse \
+    ! avdec_h264 \
+    ! xvimagesink sync=false
+
+gst-launch-1.0 -vvv udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! h264parse \
+    ! avdec_h264 \
+    ! xvimagesink sync=false
+---------------
+
+gst-launch-1.0 rtspsrc location=rtsp://192.168.0.101:8080/h264_ulaw.sdp latency=300 \
+    ! rtph264depay \
+    ! h264parse \
+    ! decodebin \
+    ! x264enc \
+    ! video/x-h264, stream-format=byte-stream \
+    ! rtph264pay \
+    ! udpsink port=5000
+
+gst-launch-1.0 -vvv udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! h264parse \
+    ! avdec_h264 \
+    ! xvimagesink sync=false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+gst-launch-1.0 rtspsrc location=rtsp://192.168.0.110:8080/h264_ulaw.sdp \
+    ! rtph264depay \
+    ! h264parse \
+    ! decodebin \
+    ! videoconvert \
+    ! videobalance saturation=0 \
+    ! x264enc \
+    ! video/x-h264, stream-format=byte-stream \
+    ! rtph264pay \
+    ! udpsink port=5000
+
+
+
+
+gst-launch-1.0 location=rtsp://192.168.0.110:8080/h264_ulaw.sdp latency=0 ! rtpraw4vpay ! caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! udpsink port=9000
+
+
+gst-launch-1.0 rtspsrc location=rtsp://192.168.0.110:8080/h264_ulaw.sdp latency=0  ! decodebin ! video/x-h264, stream-format=byte-stream ! rtph264pay ! udpsink port=9000
+
+
+gst-launch-1.0 rtspsrc location=rtsp://192.168.0.110:8080/h264_ulaw.sdp ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
+
+gst-launch-1.0 rtspsrc location=rtsp://192.168.0.110:8080/h264_ulaw.sdp  caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96"! udpsink port=9000
+
+
+// envia via UDP
+
