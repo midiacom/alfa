@@ -15,14 +15,14 @@ Parameters:
 Lauch program
 ./rtsp_to_udp_sample rtsp://192.168.0.100:8080/h264_ulaw.sdp 3000 localhost 7001
 
-Sample pipeline to send video
+Pipeline to send video
 gst-launch-1.0  rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp latency=300 \
     ! decodebin \
     ! x264enc \
     ! rtph264pay \
     ! udpsink port=7001
 
-To show video
+Pipeline to show video
 gst-launch-1.0 \
     udpsrc port=7001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
     ! rtph264depay \
@@ -33,7 +33,7 @@ gst-launch-1.0 \
 To create de dockerfile
 sudo docker build . -t alfa/plugin/rtsp_to_udp_sample 
 
-sudo docker run alfa/plugin/rtsp_to_udp_sample
+sudo docker run alfa/plugin/rtsp_to_udp_sample rtsp://192.168.0.100:8080/h264_ulaw.sdp 3000 172.17.0.1 7001
 */
 
 #include <stdio.h>
@@ -55,20 +55,25 @@ int main(int argc, char *argv[]){
 
     gst_init(&argc, &argv);
 
+    /*
     char* pipeline_string;
     asprintf(&pipeline_string, "rtspsrc location=%s latency=%d \
     ! decodebin \
     ! x264enc \
     ! rtph264pay \
     ! udpsink host=%s port=%d",argv[1],atoi(argv[2]), argv[3], atoi(argv[4]));
-
+*/
     loop = g_main_loop_new(NULL, FALSE);
-    pipeline = gst_parse_launch(pipeline_string, &err);
+    pipeline = gst_parse_launch("rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp latency=300 \
+    ! decodebin \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=172.17.0.1 port=7001", &err);
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
     // bus = gst_element_get_bus(pipeline);
     // gst_bus_add_watch (bus, bus_call, loop);
     g_main_loop_run(loop);
-    free(pipeline_string);
+    // free(pipeline_string);
     return 0;
 }
 

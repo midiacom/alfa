@@ -12,7 +12,7 @@ RUN apk add --update --no-cache \
 
 # copy my files to the container
 COPY ./Makefile ./Makefile
-COPY ./video_sample.c ./video_sample.c
+COPY ./rtsp_to_udp_sample.c ./rtsp_to_udp_sample.c
 
 # this script compile the source code and run the program
 COPY ./start.sh ./start.sh
