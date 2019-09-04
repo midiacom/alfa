@@ -1,3 +1,6 @@
+Dynamic PAD in C
+https://gist.github.com/yashi/276365488873665d81a3f1230afa2d6f
+
 pipe = gst_parse_launch("splitmuxsink name=m rtspsrc name=r r. ! rtph264depay ! h264parse ! m. r. ! rtmp4depay ! aacparse ! m.audio_0);
 
 

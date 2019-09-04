@@ -12,53 +12,107 @@ Parameters:
     - DEST_IP:
     - DEST_POST: 
 
-Sample pipeline to send video
-gst-launch-1.0 rtspsrc location=rtsp://192.168.0.110:8080/h264_ulaw.sdp ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! autovideosink
+Lauch program
+./rtsp_to_udp_sample rtsp://192.168.0.100:8080/h264_ulaw.sdp 3000 localhost 7001
 
-gst-launch-1.0 -v autovideosrc ! x264enc ! rtph264pay ! udpsink host=localhost port=9000
+Sample pipeline to send video
+gst-launch-1.0  rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp latency=300 \
+    ! decodebin \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink port=7001
 
 To show video
-gst-launch-1.0 -v udpsrc port=9000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtph264depay ! decodebin ! videoconvert ! autovideosink
-gst-launch-1.0 -v udpsrc port=9001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtph264depay ! decodebin ! videoconvert ! autovideosink
+gst-launch-1.0 \
+    udpsrc port=7001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
 
 To create de dockerfile
-sudo docker build . -t alfa/plugin/video_sample 
+sudo docker build . -t alfa/plugin/rtsp_to_udp_sample 
 
-sudo docker run alfa/plugin/video_sample 
+sudo docker run alfa/plugin/rtsp_to_udp_sample
 */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <gst/gst.h>
+#include <glib.h>
+
+int main(int argc, char *argv[]){
+
+    if (argc != 5) {
+      g_printerr ("Usage: RTSP LATENCY IP PORT\n");
+      return -1;
+    }
+
+    GstElement *pipeline;
+    GError *err = NULL;
+    //GstBus *bus;
+    GMainLoop *loop;
+
+    gst_init(&argc, &argv);
+
+    char* pipeline_string;
+    asprintf(&pipeline_string, "rtspsrc location=%s latency=%d \
+    ! decodebin \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=%s port=%d",argv[1],atoi(argv[2]), argv[3], atoi(argv[4]));
+
+    loop = g_main_loop_new(NULL, FALSE);
+    pipeline = gst_parse_launch(pipeline_string, &err);
+    gst_element_set_state(pipeline, GST_STATE_PLAYING);
+    // bus = gst_element_get_bus(pipeline);
+    // gst_bus_add_watch (bus, bus_call, loop);
+    g_main_loop_run(loop);
+    free(pipeline_string);
+    return 0;
+}
+
+/*
 #include <stdlib.h>
 #include <gst/gst.h>
 #include <glib.h>
 
 int main (int argc, char *argv[]){
   GMainLoop *loop;
-  GstElement *pipeline, *videosrc, *enc, *pay, *udp;
+  GstElement *pipeline, *rtspsrc, *decodebin, *enc, *pay, *udp;
 
   gst_init (&argc, &argv);
 
   loop = g_main_loop_new (NULL, FALSE);
 
-  if (argc != 3) {
-    g_printerr ("Usage: IP PORT\n");
+  if (argc != 5) {
+    g_printerr ("Usage: RTSP LATENCY IP PORT\n");
     return -1;
   }
 
   pipeline  = gst_pipeline_new ("video-player");
-  videosrc  = gst_element_factory_make ("autovideosrc", "source");
+  rtspsrc  = gst_element_factory_make ("rtspsrc", "source");
+  g_object_set (G_OBJECT (rtspsrc), "location", argv[1], NULL);
+  g_object_set (G_OBJECT (rtspsrc), "latency", atoi(argv[2]), NULL);
+  decodebin       = gst_element_factory_make ("decodebin",  "decodebin");
   enc       = gst_element_factory_make ("x264enc",  "enc");
   pay       = gst_element_factory_make ("rtph264pay",  "rtph264pay");
   udp       = gst_element_factory_make("udpsink", "udp");
-
-  g_object_set (G_OBJECT (udp), "host", argv[1], NULL);
-  g_object_set (G_OBJECT (udp), "port", atoi(argv[2]), NULL);
+  g_object_set (G_OBJECT (udp), "host", argv[3], NULL);
+  g_object_set (G_OBJECT (udp), "port", atoi(argv[4]), NULL);
 
   if (!pipeline) {
     g_printerr ("Pipeline.\n");
     return -1;
   }
 
-  if (!videosrc) {
-    g_printerr ("Souce.\n");
+  if (!rtspsrc) {
+    g_printerr ("RTSP Souce.\n");
+    return -1;
+  }
+
+  if (!decodebin) {
+    g_printerr ("Decode bin.\n");
     return -1;
   }
 
@@ -77,9 +131,10 @@ int main (int argc, char *argv[]){
     return -1;
   }
 
-  gst_bin_add_many (GST_BIN (pipeline), videosrc, enc, pay, udp, NULL);
+  gst_bin_add_many (GST_BIN (pipeline), rtspsrc, decodebin, enc, pay, udp, NULL);
 
-  if (gst_element_link_many (videosrc, enc, pay, udp, NULL) != TRUE){
+  if (gst_element_link_many (rtspsrc, decodebin, enc, pay, udp, NULL) != TRUE){
+    g_printerr ("Erro when link.\n");
     return -1;
   }
 
@@ -93,3 +148,4 @@ int main (int argc, char *argv[]){
 
   return 0;
 }
+*/
