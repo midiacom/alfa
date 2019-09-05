@@ -4,11 +4,8 @@
         <b-col>            
             <h2>
                 <v-icon name="layers"></v-icon>
-                Running VMS
+                Stopped VMS
             </h2>
-        </b-col>
-        <b-col class="text-right">
-            <b-button to="/vmsType" variant="success" size="sm" class="mr-2">New</b-button>    
         </b-col>
     </b-row>
     <b-table
@@ -22,18 +19,14 @@
             {{row.item.containerId | truncate(12, ' ')}}
         </template>
 
-        <template slot="[Status]" slot-scope="row">
-            {{ row.item.containerInfo.State }}
-            {{ row.item.containerInfo.Status }}
-        </template>
-
         <template slot="[actions]" slot-scope="row">
-            <b-button variant="primary" size="sm" @click="detailsVms(row.item)" class="mr-2">
-                Details
+            <b-button variant="success" size="sm" @click="detailsVms(row.item)" class="mr-2">
+                <v-icon name="refresh-cw"></v-icon>
+                Restart
             </b-button>
 
-            <b-button variant="danger" size="sm" @click="removeVms(row.item)" class="mr-2">
-                Stop
+            <b-button variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
+                Remove
             </b-button>
       </template>        
 
@@ -62,14 +55,14 @@
 import {apiVms} from './api'
 
 export default {
-    name: 'vmsIndex',
+    name: 'vmsStopped',
     data() {
         return {
             isBusy: true,
             fields: [{
                 key: 'containerId',
             },{
-                key: 'vmsType',
+                key: 'VmsType'
             },{
                 key: 'startupParameters'
             },{
@@ -85,7 +78,7 @@ export default {
         detailsVms (vms) {
             this.$router.push(`/vms/${vms.containerId}/details`)
         },
-        removeVms(vms) {
+        removeStoppedVms(vms) {
             this.$swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -106,8 +99,9 @@ export default {
         },
         refresh() {
             this.isBusy = true
-            apiVms.getAllVms()
+            apiVms.getStoppedVms()
                 .then((data) => {
+                    console.log(data)
                     this.items = data
                     this.isBusy = false
                 })

@@ -13,11 +13,10 @@ Parameters:
     - DVMS_PARAMS: ??????????
 
 Sample pipeline to send video
-gst-launch-1.0 -v autovideosrc ! x264enc ! rtph264pay ! udpsink host=localhost port=9000
+gst-launch-1.0 -v autovideosrc ! x264enc ! rtph264pay ! udpsink host=localhost port=5000
 
 To show video
-gst-launch-1.0 -v udpsrc port=9000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtph264depay ! decodebin ! videoconvert ! autovideosink
-gst-launch-1.0 -v udpsrc port=9001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtph264depay ! decodebin ! videoconvert ! autovideosink
+gst-launch-1.0 -v udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtph264depay ! decodebin ! videoconvert ! autovideosink
 
 To create de dockerfile
 sudo docker build . -t alfa/plugin/video_sample 

@@ -16,7 +16,15 @@
             </li>
             <li>
               <v-icon name="layers"></v-icon>
-              <router-link to="/vms">VMS</router-link>
+              VMS
+              <ul>
+                <li class="subMenu">
+                  <router-link to="/vms">- Running</router-link>
+                </li>
+                <li class="subMenu">
+                  <router-link to="/vms/stopped">- Stopped</router-link>
+                </li>
+              </ul>
             </li>
             <li>
               <v-icon name="map-pin"></v-icon>
@@ -43,6 +51,10 @@
 <style>
 html,body {
   height: 100%;
+}
+
+.subMenu {
+  padding-left: 50px !important;
 }
 
 #head {
@@ -98,7 +110,7 @@ html,body {
 
 .v-icon,
 .custom-icon {
-    width: 20px;
+    width: 16px;
 }
 
 </style>

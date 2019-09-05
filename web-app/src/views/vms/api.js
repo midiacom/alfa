@@ -58,6 +58,18 @@ export const apiVms = {
     })
   },
 
+  getStoppedVms () {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/vms/stopped`)
+        .then(resp => {
+            resolve(resp.data)
+        })
+        .catch(e => {
+            reject(e)
+        })
+    })
+  },
+
   getVms (vmsId) {
     return new Promise((resolve, reject) => {
       config.api.get(`/vms/${vmsId}`)

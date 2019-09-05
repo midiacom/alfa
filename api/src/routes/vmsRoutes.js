@@ -6,6 +6,8 @@ const vmsController = require('../controllers/vmsController')
 
 router.get('/', vmsController.list);
 
+router.get('/stopped', vmsController.listStoppedVms);
+
 router.get('/:id', vmsController.get);
 
 router.post('/', vmsController.post);

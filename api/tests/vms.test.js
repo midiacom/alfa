@@ -17,9 +17,9 @@ beforeEach(async () => {
     // set the first vms type
     const vmsType = await new vmsTypeModel({
         "name": "Audio Sample",
-        "dockerImage": "alfa/plugin/audio_sample",
+        "dockerImage": "alfa/plugin/video_sample",
         "startupParameters": "{dest:'192.168.0.1:5000'}",
-        "description": "A simple audio sample"
+        "description": "A simple video sample"
     }).save()
 
     id_vmsTypeOne = vmsType._id
@@ -34,7 +34,7 @@ beforeEach(async () => {
         .send(vms)
         .expect(201)
 
-    id_vmsOne = response.body._id    
+    id_vmsOne = response.body._id
 })
 
 test('Create VMS', async () => {

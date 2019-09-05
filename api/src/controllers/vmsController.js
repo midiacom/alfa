@@ -51,6 +51,40 @@ const vmsController = {
             });
         });
     },
+    async listStoppedVms (req, res, next) {
+      let cont = [];
+      await vmsModel.find()
+      .populate('vmsType')
+      .then((vmss) => {
+        docker.api()
+        .then(async (api) => {
+          const promises = vmss.map(async function (vms) {
+            let container = api.getContainer(vms.dockerId);
+            await container.inspect()
+            .then(async (data) => {
+              if (!data.State.Running) {
+                let vmsInfo = {
+                  '_id': vms.id,
+                  'containerId': vms.dockerId,
+                  'startupParameters': vms.startupParameters,
+                  'containerInfo': data,
+                  'vmsType': vms.vmsType.name
+                }
+                cont.push(vmsInfo)
+              }
+            });
+          });
+          await Promise.all(promises);
+          return res.status(201).json(cont);          
+        })
+        //return res.status(201).json(vmss);
+      })
+      .catch(err => {
+          /* istanbul ignore next */ 
+          return res.status(422).send(err.errors);
+      });
+    },
+    
     async list (req, res, next) {
       let cont = []
       docker.api()
@@ -111,9 +145,16 @@ const vmsController = {
 
               docker.api()
                 .then((api) => {
-                  api.getContainer(vms.dockerId).stop();
-                })
+                  let container = api.getContainer(vms.dockerId);
 
+                  container.inspect(function (err, data) {
+                    // if the container is running then stop it
+                    console.log(data.State)
+                    if (data.State.Running) {
+                      container.stop();
+                    }
+                  });
+                })
               return res.status(201).json(vms);
           })
         })
