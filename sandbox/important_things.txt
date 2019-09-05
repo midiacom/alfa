@@ -1,8 +1,11 @@
+export GST_DEBUG="*:3"
+
+-gst-debug-level=3 ao final do pipeline
+
 Dynamic PAD in C
 https://gist.github.com/yashi/276365488873665d81a3f1230afa2d6f
 
 pipe = gst_parse_launch("splitmuxsink name=m rtspsrc name=r r. ! rtph264depay ! h264parse ! m. r. ! rtmp4depay ! aacparse ! m.audio_0);
-
 
 Construir um servidor RTSP usando gstreamer
 https://github.com/GStreamer/gst-rtsp-server/blob/master/examples/test-launch.c

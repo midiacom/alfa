@@ -8,7 +8,11 @@ RUN apk add --update --no-cache \
     gstreamer gstreamer-dev  \
     gst-plugins-base \
     gst-plugins-good \
-    gst-plugins-ugly
+    gst-plugins-ugly \
+    gst-plugins-bad \
+    x264-dev \
+    x264-libs \
+    gst-libav
 
 # copy my files to the container
 COPY ./Makefile ./Makefile
@@ -16,5 +20,7 @@ COPY ./rtsp_to_udp_sample.c ./rtsp_to_udp_sample.c
 
 # this script compile the source code and run the program
 COPY ./start.sh ./start.sh
+
+USER root
 
 ENTRYPOINT ["./start.sh"]

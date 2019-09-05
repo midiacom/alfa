@@ -13,18 +13,25 @@ Parameters:
     - DEST_POST: 
 
 Lauch program
-./rtsp_to_udp_sample rtsp://192.168.0.100:8080/h264_ulaw.sdp 3000 localhost 7001
+./rtsp_to_udp_sample rtsp://192.168.0.100:8080/h264_ulaw.sdp 3000 35.153.160.117 5000
 
 Pipeline to send video
 gst-launch-1.0  rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp latency=300 \
     ! decodebin \
     ! x264enc \
     ! rtph264pay \
-    ! udpsink port=7001
+    ! udpsink port=5000
+
+Sent to AMAZON
+gst-launch-1.0  rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp latency=300 \
+    ! decodebin \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=35.153.160.117 port=5000
 
 Pipeline to show video
 gst-launch-1.0 \
-    udpsrc port=7001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
     ! rtph264depay \
     ! decodebin \
     ! videoconvert \
@@ -33,7 +40,7 @@ gst-launch-1.0 \
 To create de dockerfile
 sudo docker build . -t alfa/plugin/rtsp_to_udp_sample 
 
-sudo docker run alfa/plugin/rtsp_to_udp_sample rtsp://192.168.0.100:8080/h264_ulaw.sdp 3000 172.17.0.1 7001
+sudo docker run alfa/plugin/rtsp_to_udp_sample rtsp://192.168.0.100:8080/h264_ulaw.sdp 3000 35.153.160.117 5000
 */
 
 #include <stdio.h>
@@ -54,21 +61,34 @@ int main(int argc, char *argv[]){
     GMainLoop *loop;
 
     gst_init(&argc, &argv);
+    loop = g_main_loop_new(NULL, FALSE);
 
-    /*
     char* pipeline_string;
+
     asprintf(&pipeline_string, "rtspsrc location=%s latency=%d \
     ! decodebin \
     ! x264enc \
     ! rtph264pay \
     ! udpsink host=%s port=%d",argv[1],atoi(argv[2]), argv[3], atoi(argv[4]));
-*/
-    loop = g_main_loop_new(NULL, FALSE);
+
+    /*
+    // funciona enviando os dados de teste 
+    pipeline_string = "videotestsrc \
+    ! decodebin \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=35.153.160.117 port=5000";
+  
     pipeline = gst_parse_launch("rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp latency=300 \
     ! decodebin \
     ! x264enc \
     ! rtph264pay \
-    ! udpsink host=172.17.0.1 port=7001", &err);
+    ! udpsink host=35.153.160.117 port=5000", &err);
+  */
+
+
+    pipeline = gst_parse_launch(pipeline_string, &err);
+
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
     // bus = gst_element_get_bus(pipeline);
     // gst_bus_add_watch (bus, bus_call, loop);
