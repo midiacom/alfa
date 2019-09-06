@@ -19,12 +19,17 @@
             {{row.item.containerId | truncate(12, ' ')}}
         </template>
 
+        <template slot="stoppedAt" slot-scope="row">
+            {{row.item.containerInfo.State.FinishedAt}}
+        </template>
+
         <template slot="[actions]" slot-scope="row">
+            <!--
             <b-button variant="success" size="sm" @click="detailsVms(row.item)" class="mr-2">
                 <v-icon name="refresh-cw"></v-icon>
                 Restart
             </b-button>
-
+            -->
             <b-button variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
                 Remove
             </b-button>
@@ -39,7 +44,7 @@
         variant="secondary" 
         class="text-center" 
         :show=!items.length>
-        There are no VMS yet!
+        There are no VMS stopped!
     </b-alert>
 
     <b-row>
@@ -62,11 +67,11 @@ export default {
             fields: [{
                 key: 'containerId',
             },{
-                key: 'VmsType'
+                key: 'vmsType'
             },{
                 key: 'startupParameters'
             },{
-                key: 'Status'
+                key: 'stoppedAt'
             },{
                 key:'actions',
                 class: 'vmsIndexActions'
