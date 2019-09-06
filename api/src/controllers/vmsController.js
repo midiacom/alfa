@@ -1,6 +1,3 @@
-// var Docker = require('dockerode');
-// var getDockerHost = require('get-docker-host');
-
 const vmsModel = require("../models/vmsModel")
 const vmsTypeModel = require("../models/vmsTypeModel")
 const docker = require("../util/dockerApi")
