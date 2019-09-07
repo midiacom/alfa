@@ -8,6 +8,8 @@ router.get('/', deviceController.list);
 
 router.get('/:id', deviceController.get);
 
+router.get('/:id/startSrc', deviceController.startSrc);
+
 router.post('/', deviceController.post);
 
 router.put('/:id', deviceController.put);

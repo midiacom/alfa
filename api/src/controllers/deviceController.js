@@ -1,7 +1,62 @@
 const deviceModel = require("../models/deviceModel")
 const locationModel = require("../models/locationModel")
+const docker = require("../util/dockerApi")
 
 const deviceController = {
+    /**
+     * startSrc
+     * 
+     * This funcion will start a container that will connected to the
+     * source device, the VMS will collect data from the sources.
+     */
+    startSrc: (req, res, next) => {
+        // the id of the device that will be started
+        let id = req.params.id;
+        
+        deviceModel.findById(id)
+            .exec()
+            .then(device => {
+                docker.api()
+                    .then((api) => {
+                        api.createContainer({
+                          Image: device.connectionType,
+                          Cmd: [device.connectionParameters],
+                          Devices: [{
+                            PathOnHost: "/dev/video0",
+                            PathInContainer: "/dev/video0",
+                            CgroupPermissions: "rwm" 
+                        }]
+                        }).then(function(container) {
+                            // container.start()
+                            // /dev/video0:/dev/video0 
+
+                            container.start()
+                            .then((data) => {
+                                console.log(data)
+                                return res.status(201).json(data)
+                            })  
+                        // return res.status(201).json(data);
+                        }).catch(function(err) {
+                            /* istanbul ignore next */
+                            console.log(err) 
+                            console.log("c") 
+                            return res.status(422).send(err);
+                        });
+                    }).catch(function(err) {
+                        /* istanbul ignore next */ 
+                        console.log(err) 
+                        console.log("b") 
+                        return res.status(422).send(err);
+                    });
+                })
+                .catch(err => {
+                    /* istanbul ignore next */ 
+                    console.log(err)
+                    console.log("a") 
+                return res.status(422).send(err.errors);
+            });            
+    },
+
     list: (req, res, next) => {
         deviceModel.find() 
             .select('name type location')

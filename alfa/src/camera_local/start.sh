@@ -2,7 +2,7 @@
 # run the Makefile
 make
 
-export GST_DEBUG="*:1"
+export GST_DEBUG="*:4"
 
 # this ip is the docker machine ip docker0: see the value using
 # ifconfig

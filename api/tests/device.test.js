@@ -36,11 +36,11 @@ beforeEach(async () => {
     // set the first device
     const deviceOne = await new deviceModel({
         "name": "Camera 1",
-        "connectionType": "oggFile",
-        "connectionParameters": "/home/...",        
-        "description": "Color Camera ",
+        "connectionType": "alfa/src/camera_local",
+        "connectionParameters": "/dev/video0 172.17.0.1 5000",
+        "description": "Color Camera",
         "location": id_locationOne
-    }).save()    
+    }).save()
     id_deviceOne = deviceOne._id
     
     // set the second device
@@ -119,12 +119,19 @@ test('Get all devices', async () => {
 })
 
 test('Remove a specific device', async () => {
-
     await request(app)
         .delete(`/device/${id_deviceOne}`)
         .expect(201)
 
     const removeddevice = await deviceModel.findById(id_deviceOne)
-
     expect(removeddevice).toBeNull()
+})
+
+test('Start source for a device', async () => {
+    const response = await request(app)
+        .get(`/device/${id_deviceOne}/startSrc`)
+        .expect(201)
+
+//      const removeddevice = await deviceModel.findById(id_deviceOne)
+//      expect(removeddevice).toBeNull()
 })

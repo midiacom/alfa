@@ -34,11 +34,18 @@ sudo docker build . -t alfa/src/camera_local
 
 sudo docker run alfa/src/camera_local /dev/video0 172.17.0.1 5000
 
+It's needed to map de local decive inside de running container 
+
+sudo docker run --privileged -v /dev/video0:/dev/video0 alfa/src/camera_local /dev/video0 172.17.0.1 5000
+
 To get the devices list
 v4l2-ctl --list-devices
 
 To get the specification of a specifica camera
 v4l2-ctl --all -d /dev/video0
+
+To start a container with privileges
+https://github.com/apocas/dockerode/issues/219
 */
 
 #include <stdio.h>
