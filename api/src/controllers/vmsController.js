@@ -146,7 +146,6 @@ const vmsController = {
 
                   container.inspect(function (err, data) {
                     // if the container is running then stop it
-                    console.log(data.State)
                     if (data.State.Running) {
                       container.stop();
                     }
