@@ -1,6 +1,5 @@
 import { config } from '../../config'
 import { apiVmsType } from '../vmsType/api'
-import { types } from 'util';
 
 export const apiDevice = {
   getConnectionTypes() {
@@ -46,6 +45,35 @@ export const apiDevice = {
         })
     })
   },  
+  starSrcDevice (deviceId) {
+    if (!deviceId) {
+      return Promise.reject(new Error('Data not informed'))
+    }
+    return new Promise((resolve, reject) => {
+      config.api.get(`/device/${deviceId}/startSrc`)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch((e) => {
+          reject(new Error(`Error whem starting the SRC for the device ${e}`))
+        })
+    })
+  },  
+  stopSrcDevice (deviceId) {
+    if (!deviceId) {
+      return Promise.reject(new Error('Data not informed'))
+    }
+    return new Promise((resolve, reject) => {
+      config.api.get(`/device/${deviceId}/stopSrc`)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch((e) => {
+          reject(new Error(`Error whem stopping the SRC for the device ${e}`))
+        })
+    })
+  },  
+
   removeDevice (deviceId) {
     if (!deviceId) {
       return Promise.reject(new Error('Data not informed'))

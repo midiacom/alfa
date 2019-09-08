@@ -1,6 +1,5 @@
 <template>
-  <div>
-    
+  <div>    
     <b-row>
         <b-col>            
             <h2>
@@ -12,6 +11,13 @@
             <b-button to="/device/new" variant="success" size="sm" class="mr-2">New</b-button>    
         </b-col>
     </b-row>
+    <b-row>
+        <b-col>            
+            <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
+                {{ msg.text }}
+            </b-alert>
+        </b-col>            
+    </b-row>
     <b-table
         :busy="isBusy"
         :items="items" 
@@ -21,7 +27,18 @@
       <template slot="location" slot-scope="row">
           {{ row.item.location.name }}
       </template>
+
       <template slot="[actions]" slot-scope="row">
+        <b-button v-show=!row.item.dockerId variant="success" size="sm" @click="starSrcDevice(row.item)" class="mr-2">
+            <v-icon name="play-circle"></v-icon>
+            Start SRC
+        </b-button>
+
+        <b-button v-show=row.item.dockerId variant="secondary" size="sm" @click="stopSrcDevice(row.item)" class="mr-2">
+            <v-icon name="stop-circle"></v-icon>
+            Stop SRC
+        </b-button>
+        
         <b-button variant="primary" size="sm" @click="editDevice(row.item)" class="mr-2">
             Edit
         </b-button>
@@ -68,10 +85,40 @@ export default {
                 key:'actions',
                 class: 'deviceIndexActions'
             }],
-            items: []
+            items: [],
+            msg: {
+                text: false,
+                type: ''
+            }
         }
     },
     methods: {
+        stopSrcDevice (device) {
+            apiDevice.stopSrcDevice(device._id)
+                .then(() => {
+                    this.refresh()
+                    this.msg.text = "Device SRC stopped"
+                    this.msg.type = "success"
+                })
+                .catch((e) => {
+                    this.refresh()
+                    this.msg.text = `Error when stopping the SRC device ${e}`
+                    this.msg.type = "danger"
+                })
+        },
+        starSrcDevice (device) {
+            apiDevice.starSrcDevice(device._id)
+                .then(() => {
+                    this.refresh()
+                    this.msg.text = "Device SRC started"
+                    this.msg.type = "success"
+                })
+                .catch((e) => {
+                    this.refresh()
+                    this.msg.text = `Error when starting the SRC device ${e}`
+                    this.msg.type = "danger"
+                })
+        },
         editDevice (device) {
             this.$router.push(`/device/${device._id}/edit`)
         },
@@ -115,7 +162,7 @@ export default {
 
 <style>
     .deviceIndexActions {
-        width: 250px;
+        width: 270px;
         text-align: center;
     }
 </style>

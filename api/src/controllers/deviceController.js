@@ -24,10 +24,10 @@ const deviceController = {
                     // if the container is running then stop it
                     if (data.State.Running) {
                       container.stop();
-                      device.dockerId = null;
-                      const d = device.save()
-                      return res.status(201).json(d)
                     }
+                    device.dockerId = null;
+                    const d = device.save()
+                    return res.status(201).json(d)
                   });
                 })
             }).catch(function(err) {
@@ -48,14 +48,13 @@ const deviceController = {
     startSrc: (req, res, next) => {
         // the id of the device that will be started
         let id = req.params.id;
-        
         deviceModel.findById(id)
             .exec()
             .then(device => {
                 let createParameters = {}
                 createParameters.Image = device.connectionType
                 createParameters.Cmd = [device.connectionParameters]
-            
+
                 // if there is a physicalPath then add it to Devices options
                 // it will mapp the local device inside the container
                 if (device.physicalPath) {
@@ -73,7 +72,12 @@ const deviceController = {
                                 device.dockerId = data.id
                                 device.save()
                                 return res.status(201).json(data)
-                            })  
+                            }).catch(function(err) {
+                                console.log('kkkkk')
+                                console.log(err)
+                                /* istanbul ignore next */
+                                return res.status(422).send(err);
+                            });
                         }).catch(function(err) {
                             /* istanbul ignore next */
                             return res.status(422).send(err);
@@ -91,7 +95,7 @@ const deviceController = {
 
     list: (req, res, next) => {
         deviceModel.find() 
-            .select('name type location')
+            .select('name type location dockerId')
             .populate('location')
             .exec()
             .then(devices => {
