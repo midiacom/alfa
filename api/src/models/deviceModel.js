@@ -6,6 +6,7 @@ var Schema   = mongoose.Schema;
 var devicesSchema = new Schema({
 	'name' : String,
   'description' : String, 
+  'physicalPath' : String,  // it is the place when de device is connected locally /dev/video for example
   'connectionType': {
     type: String,
     required: true
@@ -15,10 +16,11 @@ var devicesSchema = new Schema({
     required: true,
   },
   'location': {
-      type: Schema.Types.ObjectId,
-      ref: 'location',
-      required: true        
-  }
+    type: Schema.Types.ObjectId,
+    ref: 'location',
+    required: true        
+  },
+  'dockerId' : String 
 },{
   timestamps: true
 });

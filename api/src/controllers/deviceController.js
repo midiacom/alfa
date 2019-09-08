@@ -3,6 +3,42 @@ const locationModel = require("../models/locationModel")
 const docker = require("../util/dockerApi")
 
 const deviceController = {
+
+    /**
+     * stopSrc
+     * 
+     * This funcion will stop the container that was connected to the
+     * source device. It's independet if the device was locally or remote
+     */
+    stopSrc: (req, res, next) => {
+        // the id of the device that will be started
+        let id = req.params.id;
+        
+        deviceModel.findById(id)
+            .exec()
+            .then(device => {
+                docker.api()
+                .then((api) => {
+                  let container = api.getContainer(device.dockerId);
+                  container.inspect(function (err, data) {
+                    // if the container is running then stop it
+                    if (data.State.Running) {
+                      container.stop();
+                      device.dockerId = null;
+                      const d = device.save()
+                      return res.status(201).json(d)
+                    }
+                  });
+                })
+            }).catch(function(err) {
+                /* istanbul ignore next */
+                return res.status(422).send(err);
+            }).catch(function(err) {
+                /* istanbul ignore next */
+                return res.status(422).send(err);
+            });
+    },
+
     /**
      * startSrc
      * 
@@ -16,45 +52,41 @@ const deviceController = {
         deviceModel.findById(id)
             .exec()
             .then(device => {
+                let createParameters = {}
+                createParameters.Image = device.connectionType
+                createParameters.Cmd = [device.connectionParameters]
+            
+                // if there is a physicalPath then add it to Devices options
+                // it will mapp the local device inside the container
+                if (device.physicalPath) {
+                    createParameters.Devices = [{
+                      PathOnHost: device.physicalPath,
+                      PathInContainer: device.physicalPath,
+                      CgroupPermissions: "rwm" 
+                    }]
+                }
                 docker.api()
                     .then((api) => {
-                        api.createContainer({
-                          Image: device.connectionType,
-                          Cmd: [device.connectionParameters],
-                          Devices: [{
-                            PathOnHost: "/dev/video0",
-                            PathInContainer: "/dev/video0",
-                            CgroupPermissions: "rwm" 
-                        }]
-                        }).then(function(container) {
-                            // container.start()
-                            // /dev/video0:/dev/video0 
-
+                        api.createContainer(createParameters).then(function(container) {
                             container.start()
                             .then((data) => {
-                                console.log(data)
+                                device.dockerId = data.id
+                                device.save()
                                 return res.status(201).json(data)
                             })  
-                        // return res.status(201).json(data);
                         }).catch(function(err) {
                             /* istanbul ignore next */
-                            console.log(err) 
-                            console.log("c") 
                             return res.status(422).send(err);
                         });
                     }).catch(function(err) {
-                        /* istanbul ignore next */ 
-                        console.log(err) 
-                        console.log("b") 
+                        /* istanbul ignore next */
                         return res.status(422).send(err);
                     });
                 })
                 .catch(err => {
-                    /* istanbul ignore next */ 
-                    console.log(err)
-                    console.log("a") 
-                return res.status(422).send(err.errors);
-            });            
+                    /* istanbul ignore next */
+                    return res.status(422).send(err.errors);
+                });
     },
 
     list: (req, res, next) => {

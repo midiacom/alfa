@@ -36,6 +36,7 @@ beforeEach(async () => {
     // set the first device
     const deviceOne = await new deviceModel({
         "name": "Camera 1",
+        "physicalPath": "/dev/video0",
         "connectionType": "alfa/src/camera_local",
         "connectionParameters": "/dev/video0 172.17.0.1 5000",
         "description": "Color Camera",
@@ -127,11 +128,14 @@ test('Remove a specific device', async () => {
     expect(removeddevice).toBeNull()
 })
 
-test('Start source for a device', async () => {
+test('Start and Stop source for a device', async () => {
+    // started
     const response = await request(app)
         .get(`/device/${id_deviceOne}/startSrc`)
         .expect(201)
 
-//      const removeddevice = await deviceModel.findById(id_deviceOne)
-//      expect(removeddevice).toBeNull()
+    // stopped the container
+    const response2 = await request(app)
+        .get(`/device/${id_deviceOne}/stopSrc`)
+        .expect(201)
 })
