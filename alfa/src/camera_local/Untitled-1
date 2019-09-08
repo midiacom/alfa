@@ -1,0 +1,77 @@
+gst-launch-1.0 v4l2src device=/dev/video0 \
+    ! decodebin \
+    ! tee name=t \
+    ! queue \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=localhost port=5000 \
+    t. \
+    ! queue \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=localhost port=5001 \
+
+
+show de video
+gst-launch-1.0 \
+    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
+
+gst-launch-1.0 \
+    udpsrc port=5001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
+
+
+
+
+/*
+	decodebin = gst_element_factory_make("decodebin", NULL);
+	encoder = gst_element_factory_make("x264enc", NULL);
+	muxer = gst_element_factory_make("mp4mux", NULL);
+	filesink = gst_element_factory_make("filesink", NULL);
+
+	x264enc = gst_element_factory_make("x264enc", NULL);
+	rtph264pay = gst_element_factory_make("rtph264pay", NULL);
+	udpsink = gst_element_factory_make("udpsink", NULL);
+	g_object_set(udpsink, "host", "localhost", NULL);
+	g_object_set(udpsink, "port", 5000, NULL);
+
+	queue_display = gst_element_factory_make("queue", "queue_display");
+	queue_record = gst_element_factory_make("queue", "queue_record");
+
+	if (!pipeline || !src || !tee || !encoder || !muxer || !filesink || !videoconvert || !x264enc || !rtph264pay || !udpsink || !queue_record || !queue_display) {
+		g_error("Failed to create elements");
+		return -1;
+	}
+
+	g_object_set(src, "device", "/dev/video0", NULL);
+	g_object_set(filesink, "location", "rec.mp4", NULL);
+	g_object_set(encoder, "tune", 4, NULL); /* important, the encoder usually takes 1-3 seconds to process this. Queue buffer is generally upto 1 second. Hence, set tune=zerolatency (0x4) 
+
+	gst_bin_add_many(GST_BIN(pipeline), src, decodebin, tee, queue_record, encoder, muxer, filesink, queue_display, videoconvert, NULL);
+	if (!gst_element_link_many(src, tee, decodebin, NULL) 
+		|| !gst_element_link_many(tee, queue_record, encoder, muxer, filesink, NULL)
+		|| !gst_element_link_many(tee, queue_display, x264enc, rtph264pay, udpsink, NULL)) {
+		g_error("Failed to link elements");
+		return -2;
+	}
+	loop = g_main_loop_new(NULL, FALSE);
+
+	bus = gst_pipeline_get_bus(GST_PIPELINE (pipeline));
+	gst_bus_add_signal_watch(bus);
+	g_signal_connect(G_OBJECT(bus), "message", G_CALLBACK(message_cb), NULL);
+	gst_object_unref(GST_OBJECT(bus));
+
+	gst_element_set_state(pipeline, GST_STATE_PLAYING);
+
+	g_print("Starting loop");
+	g_main_loop_run(loop);
+
+	return 0;
+*/

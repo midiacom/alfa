@@ -2,10 +2,10 @@
   <div id="app" class="h-100">
     <b-container fluid class="h-100">
       <b-row id="head">        
-        <h1>
+        <h2>
           <v-icon name="airplay"></v-icon>
           Virtual Multimidia Sensor Manager
-        </h1>
+        </h2>
       </b-row>
       <b-row>        
         <b-col cols="2" id="menu">
