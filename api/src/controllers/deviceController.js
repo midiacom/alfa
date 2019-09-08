@@ -119,6 +119,7 @@ const deviceController = {
         const device = new deviceModel({
             name: req.body.name,
             connectionType: req.body.connectionType,
+            physicalPath: req.body.physicalPath,
             connectionParameters: req.body.connectionParameters,
             description: req.body.description,
             location: req.body.location
@@ -148,6 +149,7 @@ const deviceController = {
 
             device.name = req.body.name
             device.connectionType = req.body.connectionType
+            device.physicalPath = req.body.physicalPath
             device.connectionParameters = req.body.connectionParameters
             device.description = req.body.description
             device.location = req.body.location

@@ -1,16 +1,21 @@
 import { config } from '../../config'
+import { apiVmsType } from '../vmsType/api'
+import { types } from 'util';
 
 export const apiDevice = {
   getConnectionTypes() {
     return new Promise((resolve) => {
-      let conectionTypes = [{
-        value: 'oggFile',
-        text: 'OGGFile'
-      },{
-        value: "rtsp",
-        text: 'RTSP'
-      }]
-      resolve(conectionTypes);
+      let conectionTypes = []
+      apiVmsType.getVmsTypes()
+        .then((vmsTypes) => {
+          vmsTypes.forEach(type => {       
+            conectionTypes.push({
+              text: type.name,
+              value: type.dockerImage
+            })     
+          })
+          resolve(conectionTypes);
+        })
     })
   },
   newDevice (device) {

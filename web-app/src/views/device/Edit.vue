@@ -11,6 +11,10 @@
             <b-form-input id="name" v-model="form.name" type="text" required/>
         </b-form-group>
 
+        <b-form-group id="input-group-1" label="Physical Path:" label-for="physicalPath">
+            <b-form-input id="physicalPath" v-model="form.physicalPath" type="text"/>
+        </b-form-group>
+
         <b-form-group id="input-group-3" label="Connection Type:" label-for="connectionType">
             <b-form-select style="margin-top:0px!important" id="connectionType" v-model="form.connectionType" :options="connectionTypes" size="sm" class="mt-3"></b-form-select>
         </b-form-group>
@@ -53,6 +57,7 @@ export default {
             form: {
                 id: '',
                 name: '',
+                physicalPath: '',
                 connectionType: "",
                 connectionParameters: "",
                 location: '',
@@ -90,6 +95,7 @@ export default {
                 .then((device) => {
                     this.form.id = device._id
                     this.form.name = device.name
+                    this.form.physicalPath = device.physicalPath
                     this.form.connectionType = device.connectionType
                     this.form.connectionParameters = device.connectionParameters
                     this.form.description = device.description

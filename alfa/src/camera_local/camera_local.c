@@ -43,9 +43,6 @@ v4l2-ctl --list-devices
 
 To get the specification of a specifica camera
 v4l2-ctl --all -d /dev/video0
-
-To start a container with privileges
-https://github.com/apocas/dockerode/issues/219
 */
 
 #include <stdio.h>

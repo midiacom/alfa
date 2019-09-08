@@ -11,6 +11,10 @@
                 <b-form-input id="name" v-model="form.name" type="text" required/>
             </b-form-group>
 
+            <b-form-group id="input-group-1" label="Physical Path:" label-for="physicalPath">
+                <b-form-input id="physicalPath" v-model="form.physicalPath" type="text"/>
+            </b-form-group>
+
             <b-form-group id="input-group-3" label="Connection Type:" label-for="connectionType">
                 <b-form-select style="margin-top:0px!important" id="connectionType" v-model="form.connectionType" :options="connectionTypes" size="sm" class="mt-3"></b-form-select>
             </b-form-group>
@@ -24,7 +28,7 @@
             </b-form-group>
 
             <b-form-group id="input-group-2" label="Description:" label-for="description">
-                <b-form-input id="description" v-model="form.description" type="text"/>
+                <b-form-textarea id="description" v-model="form.description" type="text"/>
             </b-form-group>
 
             <b-row>
@@ -51,6 +55,7 @@ export default {
             connectionTypes: [],
             form: {
                 name: '',
+                physicalPath: '',
                 connectionType: "",
                 connectionParameters: "",                
                 description: ''
