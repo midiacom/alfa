@@ -1,6 +1,7 @@
 import { config } from '../../config'
 
 export const apiVms = {
+  
   newVms (vms) {
     if (!vms) {
       return Promise.reject(new Error('Data not informed'))
@@ -15,22 +16,22 @@ export const apiVms = {
         })
       })
   },  
-  /*
-  updateVmsType (vmsType) {
-    if (!vmsType) {
+  
+  bindSrc (data) {
+    if (!data) {
       return Promise.reject(new Error('Data not informed'))
     }
     return new Promise((resolve, reject) => {
-      config.api.put(`/vmsType/${vmsType.id}`,vmsType)
+      config.api.get(`/vms/bindSrc/${data.vmsId}/${data.deviceId}`)
         .then(resp => {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem updating  avmsType ${e}`))
+          reject(new Error(`Error whem creating a new VMS ${e}`))
         })
-    })
+      })
   },  
-   */  
+  
   removeVms (vmsId) {
     if (!vmsId) {
       return Promise.reject(new Error('Data not informed'))

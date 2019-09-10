@@ -88,6 +88,7 @@ export const apiDevice = {
         })
     })
   },  
+
   getDevices () {
     return new Promise((resolve, reject) => {
       config.api.get(`/device/`)
@@ -99,6 +100,26 @@ export const apiDevice = {
         })
     })
   },
+
+  getDevicesToSelect () {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/device/`)
+        .then(resp => {
+          let devices = []
+          resp.data.forEach(device=> {
+              devices.push({
+                text: device.name,
+                value: device._id
+              })     
+            })
+            resolve(devices);
+          })    
+          .catch(e => {
+              reject(e)
+          })
+      })
+  },
+
   getDevice (deviceId) {
     return new Promise((resolve, reject) => {
       config.api.get(`/device/${deviceId}`)

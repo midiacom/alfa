@@ -28,6 +28,12 @@
         </template>
 
         <template slot="[actions]" slot-scope="row">
+            
+            <b-button variant="success" size="sm" @click="bindSrc(row.item)" class="mr-2">
+                Bind SRC
+            </b-button>
+
+
             <b-button variant="primary" size="sm" @click="detailsVms(row.item)" class="mr-2">
                 Details
             </b-button>
@@ -67,8 +73,6 @@ export default {
         return {
             isBusy: true,
             fields: [{
-                key: 'containerId',
-            },{
                 key: 'vmsType',
             },{
                 key: 'startupParameters'
@@ -82,6 +86,9 @@ export default {
         }
     },
     methods: {
+        bindSrc (vms) {
+            this.$router.push(`/vms/${vms._id}/bindSrc`)
+        },
         detailsVms (vms) {
             this.$router.push(`/vms/${vms.containerId}/details`)
         },

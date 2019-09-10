@@ -65,14 +65,11 @@ const deviceController = {
                     }]
                 }
 
-                console.log(createParameters);
-                
                 docker.api()
                     .then((api) => {
                         api.createContainer(createParameters).then(function(container) {
                             container.start()
                             .then((data) => {
-                                console.log(data)
                                 device.dockerId = data.id
                                 device.save()
                                 return res.status(201).json(data)

@@ -1,6 +1,7 @@
 const vmsModel = require("../models/vmsModel")
 const vmsTypeModel = require("../models/vmsTypeModel")
 const docker = require("../util/dockerApi")
+var mqtt = require('mqtt')
 
 const vmsController = {
     post: (req, res, next) => {
@@ -154,7 +155,38 @@ const vmsController = {
               return res.status(201).json(vms);
           })
         })
-  },    
+  },
+
+  bindSrc: (req, res, next) => {
+
+    let vmsId = req.params.vmsId;
+    let deviceId = req.params.deviceId;
+
+    vmsModel.findById(vmsId)
+      .then((vms) => {
+      // 1 - Get the ip of the container's VMS
+      docker.api()
+      .then((api) => {
+        let container = api.getContainer(vms.dockerId);
+        container.inspect(function (err, data) {
+          let ipDockerContainer = data.NetworkSettings.IPAddress;
+          var client  = mqtt.connect('mqtt://172.17.0.1:1883') 
+          client.on('connect', function () {
+            client.subscribe(deviceId, function (err) {
+              if (!err) {
+                // 2 - Send to MQQT the IP and PORT of this VMS, it will be published 
+                // in a topic with the name of the device ID
+                client.publish(deviceId, `${ipDockerContainer};5000`)
+                return res.status(201).json({"ok":"ok"});
+              } else {
+                console.log(err)
+              }
+            })
+          })
+        });
+      })
+    })
+  }
 }
 
 module.exports = vmsController
