@@ -1,3 +1,6 @@
+
+sudo -E gst-launch-1.0 videotestsrc ! videobalance saturation=0 ! x264enc ! video/x-h264, stream-format=byte-stream ! rtph264pay ! udpsink port=80
+
 export GST_DEBUG="*:3"
 
 -gst-debug-level=3 ao final do pipeline
