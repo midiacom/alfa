@@ -47,13 +47,14 @@ const deviceController = {
      */
     startSrc: (req, res, next) => {
         // the id of the device that will be started
+        // console.log("a")
         let id = req.params.id;
         deviceModel.findById(id)
             .exec()
             .then(device => {
                 let createParameters = {}
                 createParameters.Image = device.connectionType
-                createParameters.Cmd = [device.connectionParameters]
+                createParameters.Cmd = [`${device.id} ${device.connectionParameters}`]
 
                 // if there is a physicalPath then add it to Devices options
                 // it will mapp the local device inside the container
@@ -74,22 +75,25 @@ const deviceController = {
                                 device.save()
                                 return res.status(201).json(data)
                             }).catch(function(err) {
-                                console.log('kkkkk')
+                                console.log('1')
                                 console.log(err)
                                 /* istanbul ignore next */
                                 return res.status(422).send(err);
                             });
                         }).catch(function(err) {
                             /* istanbul ignore next */
+                            console.log(err)
                             return res.status(422).send(err);
                         });
                     }).catch(function(err) {
                         /* istanbul ignore next */
+                        console.log(err)
                         return res.status(422).send(err);
                     });
                 })
                 .catch(err => {
                     /* istanbul ignore next */
+                    console.log(err)
                     return res.status(422).send(err.errors);
                 });
     },

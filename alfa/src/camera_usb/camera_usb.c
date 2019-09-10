@@ -28,11 +28,11 @@ gst-launch-1.0 \
     ! autovideosink
 
 Parameters:
-    - LOCAL OF DEVICE
-	- ID of the device
+	- id of the device
+    - device Path
 
 Lauch program
-./camera /dev/video0 123456
+./camera_usb 123456 /dev/video0
 
 To create de dockerfile
 
@@ -40,7 +40,7 @@ docker build . -t alfa/src/camera_usb
 
 docker run -d --privileged -v /dev/video0:/dev/video0 alfa/src/camera_usb /dev/video0 123
 
-sudo docker run alfa/src/camera_usb /dev/video0 123456
+sudo docker run alfa/src/camera_usb 123456 /dev/video0 
 
 To get the devices list
 v4l2-ctl --list-devices
@@ -48,16 +48,8 @@ v4l2-ctl --list-devices
 To get the specification of a specifica camera
 v4l2-ctl --all -d /dev/video0
 
-Paho-mqtt
-https://www.embarcados.com.br/paho-mqtt-em-c-no-linux-embarcado/
-
-/dev/video0 172.17.0.1 5000
-/dev/video0 unique_name
-
 MQQT Message
 172.17.0.1;5000
-
-
 */
 
 #include <string.h>
@@ -258,13 +250,13 @@ int main(int argc, char *argv[])
 {
 
 	if (argc != 3) {
-      g_printerr ("Usage: DEVICE SRC_ID\n");
+      g_printerr ("Usage: deviceId devicePath\n");
       return -1;
     }
 
     const char* addr  = "172.17.0.1";
     const char* port  = "1883";
-    const char* topic = argv[2];
+    const char* topic = argv[1]; // this is the ID of
 
     /* open the non-blocking TCP socket (connecting to the broker) */
     int sockfd = open_nb_socket(addr, port);
@@ -304,7 +296,7 @@ int main(int argc, char *argv[])
 	src = gst_element_factory_make("v4l2src", NULL);
 	my_tee = gst_element_factory_make("tee", "tee");
 
-	g_object_set(src, "device", argv[1], NULL);
+	g_object_set(src, "device", argv[2], NULL);
 
 	if (!pipeline || !src || !my_tee ){
 		g_error("Failed to create elements");
