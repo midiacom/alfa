@@ -1,7 +1,7 @@
 PROGRAMS= camera_usb
 MODULES= glib-2.0 gstreamer-1.0
-CFLAGS= -g -Wall -Wextra `pkg-config --cflags $(MODULES)` -D _GNU_SOURCE
-LDLIBS= `pkg-config --libs $(MODULES)` -l paho-mqtt3c 
+CFLAGS= mqtt/src/mqtt.c mqtt/src/mqtt_pal.c -l pthread -g -Wall -Wextra `pkg-config --cflags $(MODULES)` -D _GNU_SOURCE -Wno-unused-parameter -Wno-unused-variable -Wno-duplicate-decl-specifier -Wmisleading-indentation
+LDLIBS= `pkg-config --libs $(MODULES)` 
 all: $(PROGRAMS)
 clean:
 	-rm -f $(PROGRAMS)

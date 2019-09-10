@@ -36,9 +36,7 @@ Lauch program
 
 To create de dockerfile
 
-docker build . -t alfa/src/camera_usb 
-
-docker run -d --privileged -v /dev/video0:/dev/video0 alfa/src/camera_usb /dev/video0 123
+sudo docker build . -t alfa/src/camera_usb 
 
 sudo docker run alfa/src/camera_usb /dev/video0 123456
 
@@ -51,13 +49,6 @@ v4l2-ctl --all -d /dev/video0
 Paho-mqtt
 https://www.embarcados.com.br/paho-mqtt-em-c-no-linux-embarcado/
 
-/dev/video0 172.17.0.1 5000
-/dev/video0 unique_name
-
-MQQT Message
-172.17.0.1;5000
-
-
 */
 
 #include <string.h>
@@ -66,42 +57,71 @@ MQQT Message
 #include <stdlib.h>
 #include <stdio.h>
 #include <gst/gst.h>
-
-#include "./mqtt/src/mqtt.h"
-#include "./mqtt/examples/templates/posix_sockets.h"
+#include "./paho.mqtt.c/src/MQTTClient.h"
 
 static GMainLoop *loop;
 static GstBus *bus;
 
-static GstElement *pipeline, *src, *my_tee;
+static GstElement *pipeline, *src, *tee;
+// static gboolean;
 
-int addQueue(char* host, int port);
-void publish_callback(void** unused, struct mqtt_response_publish *published);
-void* client_refresher(void* client);
-void exit_example(int status, int sockfd, pthread_t *client_daemon);
+/*
+* Defines
+*/
+/* Caso desejar utilizar outro broker MQTT, substitua o endereco abaixo */
+#define MQTT_ADDRESS   "tcp://localhost:1883"
 
-void exit_example(int status, int sockfd, pthread_t *client_daemon)
-{
-    if (sockfd != -1) close(sockfd);
-    if (client_daemon != NULL) pthread_cancel(*client_daemon);
-    exit(status);
+/* Substitua este por um ID unico em sua aplicacao */
+#define CLIENTID       "MQTTCClientID"
+
+/* Substitua aqui os topicos de publish e subscribe por topicos exclusivos de sua aplicacao */
+char MQTT_PUBLISH_TOPIC[100] = "PUB_";
+char MQTT_SUBSCRIBE_TOPIC[100] = "SUB_";
+
+/*
+*  Variaveis globais
+*/
+MQTTClient client;
+
+/*
+* Prototipos de funcao
+*/
+int addQueue(GstElement *pipeline, GstElement *tee, char* host, int port);
+void publish(MQTTClient client, char* topic, char* payload);
+int on_message(void *context, char *topicName, int topicLen, MQTTClient_message *message);
+
+/*
+* Implementacoes
+*/
+
+/* Funcao: publicacao de mensagens MQTT
+ * Parametros: cleinte MQTT, topico MQTT and payload
+ * Retorno: nenhum
+*/
+void publish(MQTTClient client, char* topic, char* payload) {
+    MQTTClient_message pubmsg = MQTTClient_message_initializer;
+    pubmsg.payload = payload;
+    pubmsg.payloadlen = strlen(pubmsg.payload);
+    pubmsg.qos = 2;
+    pubmsg.retained = 0;
+    MQTTClient_deliveryToken token;
+    MQTTClient_publishMessage(client, topic, &pubmsg, &token);
+    MQTTClient_waitForCompletion(client, token, 1000L);
 }
 
-void publish_callback(void** unused, struct mqtt_response_publish *published) 
-{
-    /* note that published->topic_name is NOT null-terminated (here we'll change it to a c-string) */
-    char* topic_name = (char*) malloc(published->topic_name_size + 1);
-    memcpy(topic_name, published->topic_name, published->topic_name_size);
-    topic_name[published->topic_name_size] = '\0';
+/* Funcao: callback de mensagens MQTT recebidas e echo para o broker
+ * Parametros: contexto, ponteiro para nome do topico da mensagem recebida, tamanho do nome do topico e mensagem recebida
+ * Retorno : 1: sucesso (fixo / nao ha checagem de erro neste exemplo)
+*/
+int on_message(void *context, char *topicName, int topicLen, MQTTClient_message *message) {
+    char* payload = message->payload;
 
-    printf("Received publish('%s'): %s\n", topic_name, (const char*) published->application_message);
+	if (context) {}
+	if (topicLen) {}
 
+    /* Mostra a mensagem recebida */
     // printf("Mensagem recebida! \n\rTopico: %s Mensagem: %s\n", topicName, payload);
 	// the message should be like IP;PORT localhost;5001
-	char payload[100] = "";
-
-	strcpy(payload, (char*) published->application_message);
-	printf("%s", payload);
 	char host[100] = "";
 	char port[100] = ""; 
 	int i = 0;
@@ -121,20 +141,14 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 
 	// printf("\n - %s",host);
 	// printf("\n - %s\n",port);
+	addQueue(pipeline, tee, host, atoi(port));
 
-	addQueue(host, atoi(port));
+    /* Faz echo da mensagem recebida */
+    publish(client, MQTT_PUBLISH_TOPIC, payload);
 
-    free(topic_name);
-}
-
-void* client_refresher(void* client)
-{
-    while(1) 
-    {
-        mqtt_sync((struct mqtt_client*) client);
-        usleep(100000U);
-    }
-    return NULL;
+    MQTTClient_freeMessage(&message);
+    MQTTClient_free(topicName);
+    return 1;
 }
 
 int message_cb (GstBus * bus, GstMessage * message, gpointer user_data)
@@ -211,10 +225,7 @@ static void cb_new_pad (GstElement *element, GstPad *pad, gpointer data){
   gst_element_link(element, other);
 }
 
-int addQueue(char* host, int port) {
-	// printf("\n -------------- \n");
-	// printf("\n%s - %d",host, port);
-	// printf("\n -------------- \n");
+int addQueue(GstElement *pipeline, GstElement *tee, char* host, int port) {
 	// add a new queue to a tee :)
 	GstElement *queue, *decodebin, *x264enc, *rtph264pay, *udpsink;
 	queue = gst_element_factory_make("queue", NULL);
@@ -234,7 +245,7 @@ int addQueue(char* host, int port) {
 	gst_bin_add_many(GST_BIN(pipeline), queue, decodebin, x264enc, rtph264pay, udpsink, NULL);
 
 	// link the tee -> queue -> decodebin
-	if (!gst_element_link_many(my_tee, queue, decodebin, NULL)) {
+	if (!gst_element_link_many(tee, queue, decodebin, NULL)) {
 		g_error("Failed to link elements A");
 		return -1;
 	}
@@ -257,56 +268,43 @@ int addQueue(char* host, int port) {
 int main(int argc, char *argv[])
 {
 
-	if (argc != 3) {
-      g_printerr ("Usage: DEVICE SRC_ID\n");
+    if (argc != 3) {
+      g_printerr ("Usage: SRC_ID DEVICE\n");
       return -1;
     }
 
-    const char* addr  = "172.17.0.1";
-    const char* port  = "1883";
-    const char* topic = argv[2];
+	strcat(MQTT_SUBSCRIBE_TOPIC, argv[2]);
+	strcat(MQTT_PUBLISH_TOPIC, argv[2]);
 
-    /* open the non-blocking TCP socket (connecting to the broker) */
-    int sockfd = open_nb_socket(addr, port);
+	// printf("\n\n %s \n\n",MQTT_SUBSCRIBE_TOPIC);
 
-    if (sockfd == -1) {
-        perror("Failed to open socket: ");
-        exit_example(EXIT_FAILURE, sockfd, NULL);
-    }
+	int rc;
+	MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
 
-    /* setup a client */
-    struct mqtt_client client;
-    uint8_t sendbuf[2048]; /* sendbuf should be large enough to hold multiple whole mqtt messages */
-    uint8_t recvbuf[1024]; /* recvbuf should be large enough any whole mqtt message expected to be received */
-    mqtt_init(&client, sockfd, sendbuf, sizeof(sendbuf), recvbuf, sizeof(recvbuf), publish_callback);
-    mqtt_connect(&client, "subscribing_client", NULL, NULL, 0, NULL, NULL, 0, 400);
+	/* Inicializacao do MQTT (conexao & subscribe) */
+	MQTTClient_create(&client, MQTT_ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
+	MQTTClient_setCallbacks(client, NULL, NULL, on_message, NULL);
 
-    /* check that we don't have any errors */
-    if (client.error != MQTT_OK) {
-        fprintf(stderr, "error: %s\n", mqtt_error_str(client.error));
-        exit_example(EXIT_FAILURE, sockfd, NULL);
-    }
+	rc = MQTTClient_connect(client, &conn_opts);
 
-    /* start a thread to refresh the client (handle egress and ingree client traffic) */
-    pthread_t client_daemon;
-    if(pthread_create(&client_daemon, NULL, client_refresher, &client)) {
-        fprintf(stderr, "Failed to start client daemon.\n");
-        exit_example(EXIT_FAILURE, sockfd, NULL);
-    }
+	if (rc != MQTTCLIENT_SUCCESS)
+	{
+		printf("\n\rFalha na conexao ao broker MQTT. Erro: %d\n", rc);
+		exit(-1);
+	}
 
-    /* subscribe */
-    mqtt_subscribe(&client, topic, 0);
-    
+	MQTTClient_subscribe(client, MQTT_SUBSCRIBE_TOPIC, 0);
+
 	// signal(SIGINT, sigintHandler);
 	gst_init (&argc, &argv);
 
 	pipeline = gst_pipeline_new(NULL);
 	src = gst_element_factory_make("v4l2src", NULL);
-	my_tee = gst_element_factory_make("tee", "tee");
+	tee = gst_element_factory_make("tee", "tee");
 
 	g_object_set(src, "device", argv[1], NULL);
 
-	if (!pipeline || !src || !my_tee ){
+	if (!pipeline || !src || !tee ){
 		g_error("Failed to create elements");
 		return -1;
 	}
@@ -318,16 +316,12 @@ int main(int argc, char *argv[])
 	g_signal_connect(G_OBJECT(bus), "message", G_CALLBACK(message_cb), NULL);
 	gst_object_unref(GST_OBJECT(bus));
 
-	gst_bin_add_many(GST_BIN(pipeline), src, my_tee, NULL);
-	if (!gst_element_link_many(src, my_tee, NULL)) { 
+	gst_bin_add_many(GST_BIN(pipeline), src, tee, NULL);
+	if (!gst_element_link_many(src, tee, NULL)) { 
 		g_error("Failed to link elements");
 		return -2;
 	}
 
-    /* start publishing the time */
-    printf("%s listening for '%s' messages.\n", argv[0], topic);
-    printf("Press CTRL-D to exit.\n\n");
-    
 	loop = g_main_loop_new(NULL, FALSE);
 
 	bus = gst_pipeline_get_bus(GST_PIPELINE (pipeline));
@@ -337,9 +331,6 @@ int main(int argc, char *argv[])
 
 	g_print("Starting loop");
 	g_main_loop_run(loop);
-
-	/* block */
-    while(fgetc(stdin) != EOF); 
 
 	return 0;
 }
