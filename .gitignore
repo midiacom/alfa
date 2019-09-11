@@ -23,3 +23,4 @@ yarn-error.log*
 *.sw?
 
 .vscode
+alfa/src/camera_usb/mqtt
