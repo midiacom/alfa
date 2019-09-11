@@ -4,22 +4,19 @@ FROM alpine:3.10.0
 # instalation of gstreamer and bash gcc (build-base)
 RUN apk add --update --no-cache \
     bash \
-    gstreamer gstreamer-dev \
+    build-base \
+    gstreamer gstreamer-dev  \
     gst-plugins-base \
     gst-plugins-good \
     gst-plugins-ugly \
     gst-plugins-bad \
-    gst-libav \
     x264-dev \
     x264-libs \
-    libressl \
-    make
+    gst-libav
 
 # copy my files to the container
-COPY ./paho.mqtt.c ./paho.mqtt.c
 COPY ./Makefile ./Makefile
-COPY ./camera_usb.c ./camera_usb.c
-COPY ./camera_usb ./camera_usb
+COPY ./udp_video_crop.c ./udp_video_crop.c
 
 # this script compile the source code and run the program
 COPY ./start.sh ./start.sh
