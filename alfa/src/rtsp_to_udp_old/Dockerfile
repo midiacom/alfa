@@ -5,20 +5,18 @@ FROM alpine:3.10.0
 RUN apk add --update --no-cache \
     bash \
     build-base \
-    gstreamer gstreamer-dev \
+    gstreamer gstreamer-dev  \
     gst-plugins-base \
     gst-plugins-good \
     gst-plugins-ugly \
     gst-plugins-bad \
-    gst-libav \
     x264-dev \
     x264-libs \
-    libressl
-    
+    gst-libav
+
 # copy my files to the container
-COPY ./mqtt ./mqtt
 COPY ./Makefile ./Makefile
-COPY ./rtsp_to_udp.c ./rtsp_to_udp.c
+COPY ./rtsp_to_udp_sample.c ./rtsp_to_udp_sample.c
 
 # this script compile the source code and run the program
 COPY ./start.sh ./start.sh
