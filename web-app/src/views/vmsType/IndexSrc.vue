@@ -25,11 +25,6 @@
             {{ row.item.dockerImage }}
         </template>
         <template slot="[actions]" slot-scope="row">
-            <b-button variant="success" size="sm" @click="newVms(row.item)" class="mr-2">
-                <v-icon name="play-circle"></v-icon>
-                Start New VMS
-            </b-button>
-
             <b-button variant="primary" size="sm" @click="editVmsType(row.item)" class="mr-2">
                 Edit
             </b-button>
@@ -74,7 +69,7 @@ export default {
                 key: 'dockerImage'
             },{
                 key:'actions',
-                class: 'vmsTypeIndexActions'
+                class: 'vmsTypeSrcIndexActions'
             }],
             items: []
         }
@@ -125,8 +120,8 @@ export default {
 </script>
 
 <style>
-    .vmsTypeIndexActions {
-        width: 300px;
+    .vmsTypeSrcIndexActions {
+        width: 160px;
         text-align: center;
     }
 </style>

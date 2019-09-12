@@ -3,3 +3,8 @@ docker rm  $(docker ps -q -a)
 
 # remove unussed images
 docker rmi $(docker images -q -f dangling=true)
+
+# all imges
+docker rmi $(docker images -q)
+
+35.153.160.117 5001
