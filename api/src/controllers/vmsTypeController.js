@@ -12,6 +12,18 @@ const vmsTypeController = {
                 return res.status(422).send(err.errors);
             });        
     },
+
+    listSrc: (req, res, next) => {
+        vmsTypeModel.find({src:1})
+            .select('name dockerImage')
+            .then(vmsTypes => {
+                return res.status(201).json(vmsTypes);
+            })
+            .catch(err => {
+                /* istanbul ignore next */ 
+                return res.status(422).send(err.errors);
+            });        
+    },
         
     get: (req, res, next) => {
         let id = req.params.id;
@@ -30,7 +42,8 @@ const vmsTypeController = {
             name: req.body.name,
             dockerImage: req.body.dockerImage,
             startupParameters: req.body.startupParameters,
-            description: req.body.description
+            description: req.body.description,
+            src: req.body.src
         })                
         
         vmsType.save((err,vmsType) => {
@@ -59,6 +72,7 @@ const vmsTypeController = {
             vmsType.dockerImage = req.body.dockerImage
             vmsType.startupParameters = req.body.startupParameters
             vmsType.description = req.body.description
+            vmsType.src = req.body.src
 
             vmsType.save(function (err, vmsType) {
                 /* istanbul ignore next */ 

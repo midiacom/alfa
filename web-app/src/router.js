@@ -57,6 +57,11 @@ export default new Router({
       component: () => import(/* webpackChunkName: "vmsTypeIndex" */ './views/vmsType/Index.vue')
     },
     {
+      path: '/vmsType/indexSrc',
+      name: 'vmsTypeIndex',
+      component: () => import(/* webpackChunkName: "vmsTypeIndexSrc" */ './views/vmsType/IndexSrc.vue')
+    },
+    {
       path: '/vmsType/new',
       name: 'vmsTypeNew',
       component: () => import(/* webpackChunkName: "vmsTypeNew" */ './views/vmsType/New.vue')

@@ -23,6 +23,11 @@
             <b-form-input id="description" v-model="form.description" type="text"/>
         </b-form-group>
 
+        <b-form-group id="input-group-4" label="Type of VMS:" label-for="src">
+            <b-form-radio v-model="form.src" name="src" value="0">Plugin</b-form-radio>
+            <b-form-radio v-model="form.src" name="src" value="1">SRC</b-form-radio>            
+        </b-form-group>
+
         <b-row>
             <b-col>
                 <b-button type="submit" variant="primary">Save</b-button>
@@ -47,7 +52,8 @@ export default {
                 name: '',
                 dockerImage: '',
                 startupParameters: '',
-                description: ''
+                description: '',
+                src: ''
             },
             msg: {
                 text: false,
@@ -76,6 +82,7 @@ export default {
                     this.form.dockerImage = vmsType.dockerImage
                     this.form.startupParameters = vmsType.startupParameters
                     this.form.description = vmsType.description
+                    this.form.src = vmsType.src
                 })
         }
     },
