@@ -3,7 +3,7 @@
     <b-row>
         <b-col>            
             <h2>
-                <v-icon name="layers"></v-icon>
+                <v-icon style="width: 32px;" name="pause-circle"></v-icon>
                 Stopped VMS
             </h2>
         </b-col>

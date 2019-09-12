@@ -3,12 +3,15 @@
     <b-row>
         <b-col>            
             <h2>
-                <v-icon name="type"></v-icon>
+                <v-icon style="width: 32px;" name="command"></v-icon>
                 VMS Types
             </h2>
         </b-col>
         <b-col class="text-right">
-            <b-button to="/vmsType/new" variant="success" size="sm" class="mr-2">New</b-button>    
+            <b-button to="/vmsType/new" variant="success" class="mr-2">
+                <v-icon name="plus"></v-icon>
+                New
+            </b-button>    
         </b-col>
     </b-row>
     <b-table
@@ -38,7 +41,7 @@
 
         <div slot="table-busy" class="text-center text-danger my-2">
             <b-spinner class="align-middle"></b-spinner>
-            <strong>Loading...</strong>
+            <strong> Loading...</strong>
         </div>      
     </b-table>
     <b-alert 

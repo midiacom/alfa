@@ -1,5 +1,9 @@
 <template>
   <div class="home">
+    <h2 class="text-center">
+      <v-icon style="width: 48px;" name="bar-chart"></v-icon>
+      Dashboard
+    </h2>
     <b-card-group deck>
       <b-card header="Location" class="text-center">
         <b-card-text>

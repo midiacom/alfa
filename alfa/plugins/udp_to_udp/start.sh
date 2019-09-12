@@ -6,6 +6,6 @@ export GST_DEBUG="*:0"
 
 # this ip is the docker machine ip docker0: see the value using
 # ifconfig
-# $1 = device Id
-# $2 = rtsp source ip
-./rtsp_to_udp $1 $2
+# $1 = destination ip
+# $2 = destination port
+./udp_to_udp $1 $2

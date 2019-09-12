@@ -1,18 +1,20 @@
 <template>
   <div id="app" class="h-100">
     <b-container fluid class="h-100">
-      <b-row id="head">        
-        <h2>
-          <v-icon name="airplay"></v-icon>
+      <b-row id="head">
+        <h1>
+          <v-icon style="width: 32px;" name="airplay"></v-icon>
           Virtual Multimidia Sensor Manager
-        </h2>
+        </h1>
       </b-row>
       <b-row>        
         <b-col cols="2" id="menu">
           <ul>
             <li>
-              <v-icon name="home"></v-icon>
-              <router-link to="/">Home</router-link>
+              <router-link to="/">
+                <v-icon name="home"></v-icon>
+                Home
+              </router-link>
             </li>
             <li>
               <v-icon name="layers"></v-icon>
@@ -27,16 +29,29 @@
               </ul>
             </li>
             <li>
-              <v-icon name="map-pin"></v-icon>
-              <router-link to="/location">Locations</router-link>
+              <router-link to="/location">
+                <v-icon name="map-pin"></v-icon>
+                Locations
+              </router-link>
             </li>
             <li>
-              <v-icon name="cast"></v-icon>
-              <router-link to="/device">Devices</router-link>
+              <router-link to="/device">
+                <v-icon name="cast"></v-icon>
+                Devices
+              </router-link>
             </li>
             <li>
-              <v-icon name="type"></v-icon>
-              <router-link to="/vmsType">VMS Types</router-link>
+              <router-link to="/vmsType">
+                <v-icon name="command"></v-icon>
+                VMS Types
+              </router-link>
+            </li>
+            <hr/>
+            <li>
+              <a target="_blank" href="https://github.com/anselmobattisti/alfa">
+                <v-icon name="github"></v-icon>
+                Github
+              </a>
             </li>
           </ul>
         </b-col>
@@ -53,14 +68,20 @@ html,body {
   height: 100%;
 }
 
+#content {
+  padding-top: 15px;
+}
+
 .subMenu {
   padding-left: 50px !important;
 }
 
 #head {
-  border-bottom: 1px solid #e2e2e2;
-  margin-bottom: 5px;
+  background-color: #2c3e50;
+  border-bottom: 5px solid #e5e5e5;
+  padding-top: 5px;
   padding-left: 10px;
+  color: #fff;
 }
 
 #app {
@@ -74,8 +95,8 @@ html,body {
 
 #menu {
   background-color: #e5e5e5;
-  min-height: 600px;
-  height: 100%;  
+  min-height: 1024px;
+  height: 100%; 
 }
 
 #app #menu ul {
@@ -97,11 +118,11 @@ html,body {
 
 #app #menu li a:hover {
   text-decoration: none;
-  font-weight: bolder;
+  font-weight: bold;
 }
 
 #app #menu li:hover {
-  background-color: #e9e9e9;
+  background-color: #e7e7e7;
 }
 
 #app #menu svg {
@@ -110,7 +131,7 @@ html,body {
 
 .v-icon,
 .custom-icon {
-    width: 16px;
+    width: 20px;
 }
 
 </style>

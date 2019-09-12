@@ -21,7 +21,6 @@
             </b-col>
         </b-row>
     </b-form>
-    {{ form }}
   </div>
 </template>
 

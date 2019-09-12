@@ -3,12 +3,15 @@
     <b-row>
         <b-col>            
             <h2>
-                <v-icon name="layers"></v-icon>
+                <v-icon style="width: 32px;" name="send"></v-icon>
                 Running VMS
             </h2>
         </b-col>
         <b-col class="text-right">
-            <b-button to="/vmsType" variant="success" size="sm" class="mr-2">New</b-button>    
+            <b-button to="/vmsType" variant="success" class="mr-2">
+                <v-icon name="plus"></v-icon>
+                New
+            </b-button>    
         </b-col>
     </b-row>
     <b-table

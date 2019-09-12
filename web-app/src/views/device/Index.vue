@@ -3,12 +3,15 @@
     <b-row>
         <b-col>            
             <h2>
-                <v-icon name="cast"></v-icon>
+                <v-icon style="width: 32px;" name="cast"></v-icon>
                 Devices
             </h2>
         </b-col>
         <b-col class="text-right">
-            <b-button to="/device/new" variant="success" size="sm" class="mr-2">New</b-button>    
+            <b-button to="/device/new" variant="success" class="mr-2">
+                <v-icon name="plus"></v-icon>
+                New
+            </b-button>    
         </b-col>
     </b-row>
     <b-row>
