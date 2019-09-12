@@ -21,7 +21,10 @@
               VMS
               <ul>
                 <li class="subMenu">
-                  <router-link to="/vms">- Running</router-link>
+                  <router-link to="/vms">
+                    -
+                    Running
+                  </router-link>
                 </li>
                 <li class="subMenu">
                   <router-link to="/vms/stopped">- Stopped</router-link>
@@ -122,7 +125,7 @@ html,body {
 }
 
 #app #menu li:hover {
-  background-color: #e7e7e7;
+  background-color: #ccc;
 }
 
 #app #menu svg {
