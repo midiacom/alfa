@@ -1,6 +1,9 @@
 <template>
     <div>
-        <h2>Bind VMS With a Device</h2>
+        <h2>
+            <v-icon style="width: 32px;" name="minimize-2"></v-icon>
+            Bind VMS With a Device
+        </h2>
 
         <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
             {{ msg.text }}

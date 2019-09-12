@@ -81,7 +81,7 @@ html,body {
 
 #head {
   background-color: #2c3e50;
-  border-bottom: 5px solid #e5e5e5;
+  border-bottom: 15px solid #e5e5e5;
   padding-top: 5px;
   padding-left: 10px;
   color: #fff;
