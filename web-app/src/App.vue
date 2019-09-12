@@ -4,7 +4,7 @@
       <b-row id="head">
         <h1>
           <v-icon style="width: 32px;" name="airplay"></v-icon>
-          Virtual Multimidia Sensor Manager
+          Virtual Multimedia Sensor Manager
         </h1>
       </b-row>
       <b-row>        

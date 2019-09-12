@@ -5,7 +5,8 @@ export const apiDevice = {
   getConnectionTypes() {
     return new Promise((resolve) => {
       let conectionTypes = []
-      apiVmsType.getVmsTypes()
+      // only the sources
+      apiVmsType.getVmsTypesSrc()
         .then((vmsTypes) => {
           vmsTypes.forEach(type => {       
             conectionTypes.push({

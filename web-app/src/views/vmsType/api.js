@@ -65,6 +65,17 @@ export const apiVmsType = {
         })
     })
   },
+  getVmsTypesVms () {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/vmsType/listVms`)
+        .then(resp => {
+            resolve(resp.data)
+        })
+        .catch(e => {
+            reject(e)
+        })
+    })
+  },
   getVmsType (vmsTypeId) {
     return new Promise((resolve, reject) => {
       config.api.get(`/vmsType/${vmsTypeId}`)

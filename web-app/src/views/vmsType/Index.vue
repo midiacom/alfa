@@ -4,7 +4,7 @@
         <b-col>            
             <h2>
                 <v-icon style="width: 32px;" name="command"></v-icon>
-                VMS Types
+                VMS Types Plugins
             </h2>
         </b-col>
         <b-col class="text-right">
@@ -107,7 +107,7 @@ export default {
         },
         refresh() {
             this.isBusy = true
-            apiVmsType.getVmsTypes()
+            apiVmsType.getVmsTypesVms()
                 .then((data) => {
                     this.items = data
                     this.isBusy = false
