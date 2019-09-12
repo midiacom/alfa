@@ -3,7 +3,7 @@
     <b-row>
         <b-col>            
             <h2>
-                <v-icon style="width: 32px;" name="command"></v-icon>
+                <v-icon style="width: 32px;" name="move"></v-icon>
                 VMS Types SRC
             </h2>
         </b-col>

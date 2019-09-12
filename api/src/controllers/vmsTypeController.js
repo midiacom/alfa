@@ -2,7 +2,7 @@ const vmsTypeModel = require("../models/vmsTypeModel")
 
 const vmsTypeController = {
     list: (req, res, next) => {
-        vmsTypeModel.find() 
+        vmsTypeModel.find({src:0})
             .select('name dockerImage')
             .then(vmsTypes => {
                 return res.status(201).json(vmsTypes);
@@ -14,6 +14,7 @@ const vmsTypeController = {
     },
 
     listSrc: (req, res, next) => {
+        // 1 means that it is a source
         vmsTypeModel.find({src:1})
             .select('name dockerImage')
             .then(vmsTypes => {
