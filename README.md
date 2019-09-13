@@ -2,6 +2,26 @@
 
 This is the mains project to the Alfa-DVMS. Alfa-DVMS is a tool for create a infrastructere to virtualize câmeras and microphones. The mains idea behind this tool is: a single camera can be source to a variaty of plugins that process, manipulate and extract data from the multimedia stream and delivery it to a aplication that started this plugins remotly via FIWARE.
 
+# Docker
+
+You need a docker host with the API enabled! 
+
+To do it
+
+1 - Navigate to /lib/systemd/system in your terminal and open docker.service file vi /lib/systemd/system/docker.service
+2 - Find the line which starts with ExecStart and adds -H=tcp://0.0.0.0:2375 to make it look like
+3 - ExecStart=/usr/bin/dockerd -H=fd:// -H=tcp://0.0.0.0:2375
+4 - Save the Modified File
+5 - Reload the docker daemon: systemctl daemon-reload
+6 - Restart the container: sudo service docker restart
+7 - Test if it is working by using this command, if everything is fine below command should return a JSON
+
+curl http://localhost:2375/images/json
+
+Important!
+
+Configure the docker API to port: 2375
+
 # To run the API
 
 You need the docker and docker-compose instaled in your machine.

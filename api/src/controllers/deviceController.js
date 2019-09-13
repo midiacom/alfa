@@ -77,24 +77,27 @@ const deviceController = {
                                 device.save()
                                 return res.status(201).json(data)
                             }).catch(function(err) {
-                                console.log('1')
+                                // console.log('1')
                                 console.log(err)
                                 /* istanbul ignore next */
                                 return res.status(422).send(err);
                             });
                         }).catch(function(err) {
                             /* istanbul ignore next */
+                            // console.log("2")
                             console.log(err)
                             return res.status(422).send(err);
                         });
                     }).catch(function(err) {
                         /* istanbul ignore next */
+                        // console.log("3")
                         console.log(err)
                         return res.status(422).send(err);
                     });
                 })
                 .catch(err => {
                     /* istanbul ignore next */
+                    console.log("3")
                     console.log(err)
                     return res.status(422).send(err.errors);
                 });
