@@ -23,5 +23,3 @@ yarn-error.log*
 *.sw?
 
 .vscode
--./alfa/src/camera_usb/mqtt/*.*
--./alfa/src/rtsp_to_udp/mqtt/*.*
