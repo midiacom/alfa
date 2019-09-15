@@ -93,6 +93,7 @@ const vmsController = {
                   'dockerId': containerInfo.Id
                 })
                 .populate('vmsType')
+                .populate('bindedTo')
                 .exec()
                 .then((res) => {
                   if (res) {
@@ -103,6 +104,11 @@ const vmsController = {
                       'containerInfo': containerInfo,
                       'vmsType': res.vmsType.name
                     }
+
+                    if (res.bindedTo) {
+                      vmsInfo.bindedTo = res.bindedTo.name
+                    }
+                    
                     cont.push(vmsInfo)
                   }
                 })
@@ -179,6 +185,19 @@ const vmsController = {
                 // 2 - Send to MQQT the IP and PORT of this VMS, it will be published 
                 // in a topic with the name of the device ID
                 client.publish(deviceId, `${ipDockerContainer};5000`)
+                
+                vms.bindedTo = deviceId;
+
+                vms.save((err,vms) => {
+                  /* istanbul ignore next */                   
+                  if (err) {
+                    console.log(err)
+                      return res.status(500).json({
+                          message: 'Error when creating vmsType',
+                          error: err
+                      });
+                  }
+                })
                 return res.status(201).json({"ok":"ok"});
               } else {
                 console.log(err)

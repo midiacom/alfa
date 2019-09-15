@@ -7,7 +7,7 @@ const d = {
             getDockerHost((error, ipHost) => {
                 if (ipHost) {
                     // if you whant to know the ip
-                    var dockerApi = new Docker({host: ipHost, port: 2375});                    
+                    var dockerApi = new Docker({host: ipHost, port: process.env.DOCKER_PORT_API});                    
                     resolve(dockerApi);                
                 } else {
                     reject(new Error(`Error whem connection to docker ${error}`))

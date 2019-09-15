@@ -79,6 +79,8 @@ export default {
                 key: 'vmsType',
             },{
                 key: 'startupParameters'
+            },{            
+                key: 'bindedTo'
             },{
                 key: 'Status'
             },{

@@ -9,9 +9,13 @@
             {{ msg.text }}
         </b-alert>
 
+        <b-alert show=true variant="info">
+            After start the SRC and VMS wait some seconds before bind then.
+        </b-alert>
+
         <b-form @submit="onSubmit">
 
-        <b-form-group id="input-group-3" label="Device SRC:" label-for="deviceId">
+        <b-form-group id="input-group-3" label="Device With SRC Started:" label-for="deviceId">
             <b-form-select style="margin-top:0px!important" id="deviceId" v-model="form.deviceId" :options="devices" size="sm" class="mt-3"></b-form-select>
         </b-form-group>
 
