@@ -172,7 +172,7 @@ const vmsController = {
         let container = api.getContainer(vms.dockerId);
         container.inspect(function (err, data) {
           let ipDockerContainer = data.NetworkSettings.IPAddress;
-          var client  = mqtt.connect('mqtt://172.17.0.1:1883') 
+          var client  = mqtt.connect(process.env.MQTT_SERVER) 
           client.on('connect', function () {
             client.subscribe(deviceId, function (err) {
               if (!err) {
