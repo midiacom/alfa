@@ -27,7 +27,8 @@ services:
       - express-mongo-network
   app:
     build: .
-    command: npm run dev
+    # command: npm run dev
+    command: npm run testBattery
     ports:
       - "3000:3000"
     volumes:

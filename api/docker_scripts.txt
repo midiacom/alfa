@@ -10,3 +10,8 @@ docker rmi $(docker images -q)
 35.153.160.117 5001
 
 rtsp://179.206.150.80:8080/h264_ulaw.sdp
+
+
+docker stop $(docker ps | egrep alfa | awk '{print $1}')
+
+docker stop $(docker ps | egrep alfa | awk '{print $1}'); docker container prune --force

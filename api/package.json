@@ -7,6 +7,7 @@
     "testAll": "env-cmd -f ./config/test.env jest --watchAll --colors --coverage --runInBand",
     "testVms": "env-cmd -f ./config/test.env jest --watchAll --colors --runInBand -- vms.test.js",
     "testDevice": "env-cmd -f ./config/test.env jest --watchAll --colors --runInBand -- device.test.js",
+    "testBattery": "env-cmd -f ./config/test.env jest --watchAll --colors --runInBand -- battery.test.js",
     "dev": "env-cmd -f ./config/dev.env nodemon server.js"
   },
   "jest": {

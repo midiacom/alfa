@@ -36,15 +36,19 @@ const vmsController = {
                   // return res.status(201).json(data);
                 }).catch(function(err) {
                   /* istanbul ignore next */ 
+                  console.log('1')
                   return res.status(422).send(err);
                 });
               }).catch(function(err) {
                 /* istanbul ignore next */ 
+                console.log('2')
                 return res.status(422).send(err);
               });
             })
             .catch(err => {
               /* istanbul ignore next */ 
+              console.log('3')
+              console.log(err)
               return res.status(422).send(err.errors);
             });
         });
