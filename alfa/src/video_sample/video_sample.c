@@ -1,11 +1,39 @@
 /*
-Plugin Name: Camera RTSP
+Plugin Name: Sample Video
 
-It takes the data from a RTSP câmera and send to many VMS
+It will generate the patterns video sample test, it can be used to test VMS 
+or to test some APP
 
 Pipeline: 
-Capture RTSP video and send video 
-gst-launch-1.0  rtspsrc location=rtsp://192.168.0.102:8080/h264_ulaw.sdp \
+Generate the patterns video 
+
+smpte (0) – SMPTE 100%% color bars
+snow (1) – Random (television snow)
+black (2) – 100%% Black
+white (3) – 100%% White
+red (4) – Red
+green (5) – Green
+blue (6) – Blue
+checkers-1 (7) – Checkers 1px
+checkers-2 (8) – Checkers 2px
+checkers-4 (9) – Checkers 4px
+checkers-8 (10) – Checkers 8px
+circular (11) – Circular
+blink (12) – Blink
+smpte75 (13) – SMPTE 75%% color bars
+zone-plate (14) – Zone plate
+gamut (15) – Gamut checkers
+chroma-zone-plate (16) – Chroma zone plate
+solid-color (17) – Solid color
+ball (18) – Moving ball
+smpte100 (19) – SMPTE 100%% color bars
+bar (20) – Bar
+pinwheel (21) – Pinwheel
+spokes (22) – Spokes
+gradient (23) – Gradient
+colors (24) – Colors
+
+gst-launch-1.0  videotestsrc pattern=ball \
     ! tee name=t \
     ! queue \
     ! decodebin \
@@ -19,62 +47,9 @@ gst-launch-1.0  rtspsrc location=rtsp://192.168.0.102:8080/h264_ulaw.sdp \
     ! rtph264pay \
     ! udpsink host=localhost port=5001
 
-gst-launch-1.0  rtspsrc location=rtsp://192.168.0.102:8080/h264_ulaw.sdp \
-    ! tee name=t \
-    ! queue \
-    ! decodebin \
-    ! x264enc \
-    ! rtph264pay \
-    ! udpsink host=localhost port=5000
-
-Pipeline to covnert video in GREYSCALE and send data to UDP dest (simulating de VMS)
-gst-launch-1.0 \
-    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-    ! rtph264depay \
-    ! decodebin \
-    ! videobalance saturation=0 \
-    ! x264enc \
-    ! rtph264pay \
-    ! decodebin \
-    ! videoconvert \
-    ! autovideosink
-
-Play the pipeline in gray	    
-gst-launch-1.0 \
-    tcpclientsrc port=5000 \
-    ! rtph264depay \
-    ! decodebin \
-    ! videobalance saturation=0 \
-    ! x264enc \
-    ! rtph264pay \
-    ! decodebin \
-    ! videoconvert \
-    ! autovideosink
-
-Play the pipeline forward
-gst-launch-1.0 \
-    tcpclientsrc port=5000 \
-    ! rtph264depay \
-    ! decodebin \
-    ! x264enc \
-    ! rtph264pay \
-    ! decodebin \
-    ! videoconvert \
-    ! autovideosink
-
-
 Show the video
-First stream 
 gst-launch-1.0 \
     udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-    ! rtph264depay \
-    ! decodebin \
-    ! videoconvert \
-    ! autovideosink
-
-Second stream 
-gst-launch-1.0 \
-    udpsrc port=5001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
     ! rtph264depay \
     ! decodebin \
     ! videoconvert \
@@ -82,20 +57,21 @@ gst-launch-1.0 \
 
 Parameters:
 	- id of the device
-    - path to rtsp 
+    - type of video pattern
 
 Lauch program
-./rtsp_to_udp 123456 rtsp://192.168.0.102:8080/h264_ulaw.sdp
+./video_sample 123456 20
 
 To create de dockerfile
 
-docker build . -t alfa/src/rtsp_to_udp
+docker build . -t alfa/src/video_sample
 
-docker run alfa/src/rtsp_to_udp 123456 rtsp://192.168.0.102:8080/h264_ulaw.sdp
+docker run alfa/src/video_sample 123456 1
 
 MQQT Message
 172.17.0.1;5000 send data do host machine at port 5000
 172.17.0.1;5001 send data do host machine at port 5001
+
 */
 
 #include <string.h>
@@ -313,27 +289,12 @@ int addQueue(char *host, int port)
 	return 1;
 }
 
-static void on_pad_added_rtsc(GstElement *element, GstPad *pad, gpointer data)
-{
-	GstPad *sinkpad;
-	GstElement *decoder = (GstElement *)data;
-
-	/* We can now link this pad with the vorbis-decoder sink pad */
-	g_print("Dynamic pad created, linking demuxer/decoder\n");
-
-	sinkpad = gst_element_get_static_pad(decoder, "sink");
-
-	gst_pad_link(pad, sinkpad);
-
-	gst_object_unref(sinkpad);
-}
-
 int main(int argc, char *argv[])
 {
 
 	if (argc != 3)
 	{
-		g_printerr("Usage: deviceId devicePath\n");
+		g_printerr("Usage: deviceId pattern\n");
 		return -1;
 	}
 
@@ -379,20 +340,16 @@ int main(int argc, char *argv[])
 	gst_init(&argc, &argv);
 
 	pipeline = gst_pipeline_new(NULL);
-	src = gst_element_factory_make("rtspsrc", NULL);
+	src = gst_element_factory_make("videotestsrc", NULL);
 	my_tee = gst_element_factory_make("tee", "tee");
 
-	g_object_set(src, "location", argv[2], NULL);
-	g_object_set(src, "latency", 3000, NULL);
+	g_object_set(src, "pattern", atoi(argv[2]), NULL);
 
 	if (!pipeline || !src || !my_tee)
 	{
 		g_error("Failed to create elements");
 		return -1;
 	}
-
-	g_signal_connect(G_OBJECT(src), "pad-added", G_CALLBACK(on_pad_added_rtsc), my_tee);
-	//g_signal_connect (demuxer, "pad-added", G_CALLBACK (on_pad_added), decoder);
 
 	loop = g_main_loop_new(NULL, FALSE);
 
@@ -402,6 +359,9 @@ int main(int argc, char *argv[])
 	gst_object_unref(GST_OBJECT(bus));
 
 	gst_bin_add_many(GST_BIN(pipeline), src, my_tee, NULL);
+	if (gst_element_link_many (src, my_tee, NULL) != TRUE){
+		return -1;
+	}	
 
 	/* start publishing the time */
 	printf("%s listening for '%s' messages.\n", argv[0], topic);
