@@ -14,7 +14,6 @@ You need a hostwith docker installed AND the API MUST BE enabled!
 
 To enable the API do it
 
-``` 
 1 - Navigate to /lib/systemd/system in your terminal and open docker.service file vi /lib/systemd/system/docker.service
 2 - Find the line which starts with ExecStart and adds -H=tcp://0.0.0.0:2375 to make it look like
 3 - ExecStart=/usr/bin/dockerd -H=fd:// -H=tcp://0.0.0.0:2375
@@ -24,8 +23,6 @@ To enable the API do it
 7 - Test if it is working by using this command, if everything is fine below command should return a JSON
 
 curl http://localhost:2375/images/json
-
-```
 
 Important!
 Be default the docker API to port: 2375 if you need another port then change the configuration at api/config/dev.env
@@ -40,20 +37,23 @@ access the folder api and run
 docker-compose up
 ```
 
-To API access the Docker API is necessary that it started with this feature
+# WEB AP
 
-Edit the file sudo vi /lib/systemd/system/docker.service
-
-Modify the line that starts with ExecStart to look like this:
-ExecStart=/usr/bin/docker daemon -H fd:// -H tcp://0.0.0.0:4243
-
-systemctl daemon-reload
-sudo service docker restart
-curl http://localhost:4243/version
-
-#web app
+To run the web interface access the folder web-app then run `npm run serve`
 
 We are using this icons lib https://qinshenxue.github.io/vue-icon/
+
+# Types of Suported SRC
+
+* Video Sample Test
+* USB devices
+* RTSP devices
+
+# Types of Suported VMS
+
+* UDP to UDP
+* Crop video and send to UDP
+* Greyscale and send to UDP
 
 # Roadmap
 
@@ -61,6 +61,3 @@ We are using this icons lib https://qinshenxue.github.io/vue-icon/
 * Web Interface
 * Plugins: here are some basic plugins that can be used as as template to your own plugins
 * FIWARE Integration
-
-
-
