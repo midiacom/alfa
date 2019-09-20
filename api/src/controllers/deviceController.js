@@ -22,10 +22,12 @@ const deviceController = {
                   let container = api.getContainer(device.dockerId);
                   container.inspect(function (err, data) {
                     // if the container is running then stop it
-                    if (data.State.Running) {
-                      container.stop(function (err, data) {
-                          container.remove()
-                      });
+                    if (data) {
+                        if (data.State.Running) {
+                          container.stop(function (err, data) {
+                              container.remove()
+                          });
+                        }
                     }
                     device.dockerId = null;
                     const d = device.save()
