@@ -7,24 +7,32 @@ video to an application via UDP. It's use gstreamer
 Pipeline: SRC -> Forward -> Application
 
 Parameters:
-    - DEST: The IP and PORT that the stream must be delivered
-    - APP_PARAMS: none
-    - SRC: ?????????
-    - DVMS_PARAMS: ??????????
+    - IP: the dest ip 
+    - PORT: the dest port
+    - PATTERN: the type of video test
 
-Sample pipeline to send video
+Sample pipeline to send video (pipeline)
 gst-launch-1.0 -v autovideosrc \
     ! x264enc \
     ! rtph264pay \
     ! udpsink host=localhost port=5000
 
-To show video
-gst-launch-1.0 -v udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtph264depay ! decodebin ! videoconvert ! autovideosink
+Show the video
+gst-launch-1.0 \
+    udpsrc port=50009 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
 
 To create de dockerfile
-sudo docker build . -t alfa/plugin/video_sample 
+docker build . -t alfa/plugin/video_sample 
 
-sudo docker run alfa/plugin/video_sample 
+docker run alfa/plugin/video_sample 172.17.0.1 50009 13
+
+Run the program
+./video_sample 127.0.0.1 5003 13
+
 */
 #include <stdlib.h>
 #include <gst/gst.h>
@@ -38,19 +46,20 @@ int main (int argc, char *argv[]){
 
   loop = g_main_loop_new (NULL, FALSE);
 
-  if (argc != 3) {
-    g_printerr ("Usage: IP PORT\n");
+  if (argc != 4) {
+    g_printerr ("Usage: IP PORT PATTERN\n");
     return -1;
   }
 
   pipeline  = gst_pipeline_new ("video-player");
-  videosrc  = gst_element_factory_make ("autovideosrc", "source");
+  videosrc  = gst_element_factory_make ("videotestsrc", "source");
   enc       = gst_element_factory_make ("x264enc",  "enc");
   pay       = gst_element_factory_make ("rtph264pay",  "rtph264pay");
   udp       = gst_element_factory_make("udpsink", "udp");
 
   g_object_set (G_OBJECT (udp), "host", argv[1], NULL);
   g_object_set (G_OBJECT (udp), "port", atoi(argv[2]), NULL);
+  g_object_set (G_OBJECT (videosrc), "pattern", atoi(argv[3]), NULL);
 
   if (!pipeline) {
     g_printerr ("Pipeline.\n");
@@ -76,7 +85,6 @@ int main (int argc, char *argv[]){
     g_printerr ("udp.\n");
     return -1;
   }
-
   gst_bin_add_many (GST_BIN (pipeline), videosrc, enc, pay, udp, NULL);
 
   if (gst_element_link_many (videosrc, enc, pay, udp, NULL) != TRUE){

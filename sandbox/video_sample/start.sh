@@ -6,4 +6,5 @@ make
 # ifconfig
 # $1 = destination ip
 # $2 = destination port
-./video_sample $1 $2
+# $3 = pattern
+./video_sample $1 $2 $3

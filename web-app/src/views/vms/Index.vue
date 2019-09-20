@@ -10,7 +10,7 @@
         <b-col class="text-right">
             <b-button to="/vmsType" variant="success" class="mr-2">
                 <v-icon name="plus"></v-icon>
-                New
+                Start a New VMS
             </b-button>    
         </b-col>
     </b-row>
