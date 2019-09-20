@@ -33,6 +33,7 @@
         <template slot="[actions]" slot-scope="row">
             
             <b-button variant="success" size="sm" @click="bindSrc(row.item)" class="mr-2">
+                <v-icon name="minimize-2"></v-icon>
                 Bind SRC
             </b-button>
 
