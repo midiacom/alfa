@@ -10,7 +10,8 @@
         </b-alert>
 
         <b-alert show=true variant="info">
-            After start the SRC and VMS wait some seconds before bind then.
+            The Device SRC <strong>MUST BE</strong> started before binded with the VMS. <br/>
+            Before bind the VMS wait some seconds to docker starts the container properly.
         </b-alert>
 
         <b-form @submit="onSubmit">
@@ -72,7 +73,7 @@ export default {
                     // console.log(vms)
                 })
 
-            apiDevice.getDevicesToSelect()
+            apiDevice.getDevicesToSelectSRCStarted()
                 .then((devices) => {
                     this.devices = devices
                 })

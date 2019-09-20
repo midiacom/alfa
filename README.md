@@ -55,6 +55,11 @@ We are using this icons lib https://qinshenxue.github.io/vue-icon/
 * Crop video and send to UDP
 * Greyscale and send to UDP
 
+# Important things to do
+
+1 - Create a "import" to basic configurations
+2 - Login and password feature
+
 # Roadmap
 
 * API
