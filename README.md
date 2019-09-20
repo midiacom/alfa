@@ -41,8 +41,6 @@ docker-compose up
 
 To run the web interface access the folder web-app then run `npm run serve`
 
-We are using this icons lib https://qinshenxue.github.io/vue-icon/
-
 # Types of Suported SRC
 
 * Video Sample Test
@@ -66,3 +64,7 @@ We are using this icons lib https://qinshenxue.github.io/vue-icon/
 * Web Interface
 * Plugins: here are some basic plugins that can be used as as template to your own plugins
 * FIWARE Integration
+
+# Special Thanks to 
+
+* Lib icons: https://feathericons.com/

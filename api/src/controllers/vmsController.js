@@ -58,6 +58,8 @@ const vmsController = {
       await vmsModel.find()
       .populate('vmsType')
       .then((vmss) => {
+        return res.status(201).json(vmss);          
+        /*
         docker.api()
         .then(async (api) => {
           const promises = vmss.map(async function (vms) {
@@ -78,8 +80,10 @@ const vmsController = {
           });
           await Promise.all(promises);
           return res.status(201).json(cont);          
+          
         })
         //return res.status(201).json(vmss);
+        */
       })
       .catch(err => {
           /* istanbul ignore next */ 
@@ -157,10 +161,12 @@ const vmsController = {
 
                   container.inspect(function (err, data) {
                     // if the container is running then stop it
-                    if (data.State.Running) {
-                      container.stop(function (err, data) {
-                        container.remove()
-                      });
+                    if (data) {
+                      if (data.State.Running) {
+                        container.stop(function (err, data) {
+                          container.remove()
+                        });
+                      }
                     }
                   });
                 })

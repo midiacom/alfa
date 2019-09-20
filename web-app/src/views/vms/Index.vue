@@ -39,10 +39,12 @@
 
 
             <b-button variant="primary" size="sm" @click="detailsVms(row.item)" class="mr-2">
+                <v-icon name="code"></v-icon>
                 Details
             </b-button>
 
             <b-button variant="danger" size="sm" @click="removeVms(row.item)" class="mr-2">
+                <v-icon name="stop-circle"></v-icon>
                 Stop
             </b-button>
       </template>        
@@ -138,7 +140,7 @@ export default {
 
 <style>
     .vmsIndexActions {
-        width: 300px;
+        width: 380px;
         text-align: center;
     }
 </style>

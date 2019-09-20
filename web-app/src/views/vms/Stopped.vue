@@ -15,12 +15,12 @@
         striped 
         responsive="sm">
 
-        <template slot="containerId" slot-scope="row">
-            {{row.item.containerId | truncate(12, ' ')}}
+        <template slot="vmsType" slot-scope="row">
+            {{row.item.vmsType.name}}
         </template>
 
-        <template slot="stoppedAt" slot-scope="row">
-            {{row.item.containerInfo.State.FinishedAt}}
+        <template slot="containerId" slot-scope="row">
+            {{row.item.dockerId | truncate(12, ' ')}}
         </template>
 
         <template slot="[actions]" slot-scope="row">
@@ -31,6 +31,7 @@
             </b-button>
             -->
             <b-button variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
+                <v-icon name="trash"></v-icon>
                 Remove
             </b-button>
       </template>        
@@ -71,8 +72,6 @@ export default {
             },{
                 key: 'startupParameters'
             },{
-                key: 'stoppedAt'
-            },{
                 key:'actions',
                 class: 'vmsIndexActions'
             }],
@@ -106,7 +105,6 @@ export default {
             this.isBusy = true
             apiVms.getStoppedVms()
                 .then((data) => {
-                    console.log(data)
                     this.items = data
                     this.isBusy = false
                 })
