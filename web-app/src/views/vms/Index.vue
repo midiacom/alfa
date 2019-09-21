@@ -88,7 +88,7 @@ export default {
                 key: 'Status'
             },{
                 key:'actions',
-                class: 'vmsIndexActions'
+                class: 'vmsIndexActions2'
             }],
             items: []
         }
@@ -139,8 +139,8 @@ export default {
 </script>
 
 <style>
-    .vmsIndexActions {
-        width: 380px;
+    .vmsIndexActions2 {
+        width: 390px;
         text-align: center;
     }
 </style>
