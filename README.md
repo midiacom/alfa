@@ -79,6 +79,14 @@ a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-set
 * Plugins: here are some basic plugins that can be used as as template to your own plugins
 * FIWARE Integration
 
+# Video Tutoriais (in portuguese)
+
+## Introdução ao gsteramer
+https://www.youtube.com/watch?v=KLhZmEGeqHk&t=331s
+
+## Criando um programa em C usando gstreamer e rodando em um docker container
+https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be
+
 # Special Thanks to 
 
 * Lib icons: https://feathericons.com/
