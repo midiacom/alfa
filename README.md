@@ -57,11 +57,13 @@ To run the web interface access the folder web-app then run `npm run serve`
 
 1 - Create a play.sdp file with the content
 
+```
 v=0
 c=IN IP4 127.0.0.1
 m=video 50000 RTP/AVP 96
 a=rtpmap:96 H264/90000
 a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-sets=Z2QAFKzZQUH7AWoMAgtKAAADAAIAAAMAeR4oUyw\=\,aOvssiw\=
+```
 
 2 - vlc play.sdp
 
