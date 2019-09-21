@@ -110,7 +110,8 @@ const vmsController = {
                       'containerId': res.dockerId,
                       'startupParameters': res.startupParameters,
                       'containerInfo': containerInfo,
-                      'vmsType': res.vmsType.name
+                      'vmsType': res.vmsType.name,
+                      'sdp': res.vmsType.sdp
                     }
 
                     if (res.bindedTo) {

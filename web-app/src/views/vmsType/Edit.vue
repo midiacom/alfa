@@ -28,6 +28,11 @@
             <b-form-radio v-model="form.src" name="src" value="1">SRC</b-form-radio>            
         </b-form-group>
 
+        <b-form-group v-show="form.src == 0" id="input-group-6" label="SDP File:" label-for="sdp">
+            <textarea v-model="form.sdp" name="" id="" cols="90" rows="10">
+            </textarea>
+        </b-form-group>
+
         <b-row>
             <b-col>
                 <b-button type="submit" variant="primary">Save</b-button>
@@ -53,7 +58,8 @@ export default {
                 dockerImage: '',
                 startupParameters: '',
                 description: '',
-                src: ''
+                src: '',
+                sdp: ''
             },
             msg: {
                 text: false,
@@ -83,6 +89,7 @@ export default {
                     this.form.startupParameters = vmsType.startupParameters
                     this.form.description = vmsType.description
                     this.form.src = vmsType.src
+                    this.form.sdp = vmsType.sdp
                 })
         }
     },

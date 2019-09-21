@@ -56,7 +56,8 @@ const vmsTypeController = {
             dockerImage: req.body.dockerImage,
             startupParameters: req.body.startupParameters,
             description: req.body.description,
-            src: req.body.src
+            src: req.body.src,
+            sdp: req.body.sdp,
         })                
         
         vmsType.save((err,vmsType) => {
@@ -86,6 +87,7 @@ const vmsTypeController = {
             vmsType.startupParameters = req.body.startupParameters
             vmsType.description = req.body.description
             vmsType.src = req.body.src
+            vmsType.sdp = req.body.sdp
 
             vmsType.save(function (err, vmsType) {
                 /* istanbul ignore next */ 

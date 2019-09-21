@@ -6,7 +6,8 @@ var vmsTypeSchema = new Schema({
 	'dockerImage': String,
 	'description' : String,
 	'startupParameters' : String,
-	'src' : Number
+	'src' : Number,
+	'sdp' : String
 },{
   timestamps: true
 });

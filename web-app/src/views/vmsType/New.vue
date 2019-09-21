@@ -23,9 +23,14 @@
                 <b-form-input id="description" v-model="form.description" type="text"/>
             </b-form-group>
 
-            <b-form-group id="input-group-4" label="Type of VMS:" label-for="src">
+            <b-form-group id="input-group-6" label="Type of VMS:" label-for="src">
                 <b-form-radio v-model="form.src" name="src" value="0">Plugin</b-form-radio>
                 <b-form-radio v-model="form.src" name="src" value="1">SRC</b-form-radio>            
+            </b-form-group>
+
+            <b-form-group v-show="form.src == 0" id="input-group-6" label="SDP File:" label-for="sdp">
+                <textarea v-model="form.sdp" name="" id="" cols="90" rows="10">
+                </textarea>
             </b-form-group>
 
             <b-row>
@@ -52,7 +57,12 @@ export default {
                 dockerImage: '',
                 startupParameters: '',
                 description: '',
-                src: ''
+                src: 1,
+                sdp: 'v=0 \n \
+c=IN IP4 127.0.0.1 \n \
+m=video ${port} RTP/AVP 96 \n \
+a=rtpmap:96 H264/90000 \n \
+a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-sets=Z2QAFKzZQUH7AWoMAgtKAAADAAIAAAMAeR4oUyw\=\,aOvssiw\='
             },
             msg: {
                 text: false,

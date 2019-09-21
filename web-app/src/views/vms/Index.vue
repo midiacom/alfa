@@ -3,7 +3,7 @@
     <b-row>
         <b-col>            
             <h2>
-                <v-icon style="width: 32px;" name="send"></v-icon>
+            <v-icon style="width: 32px;" name="send"></v-icon>
                 Running VMS
             </h2>
         </b-col>
@@ -14,6 +14,30 @@
             </b-button>    
         </b-col>
     </b-row>
+
+    <b-modal 
+        ok-only
+        size="lg"
+        ref="sdpModal" 
+        id="modal-1" 
+        title="Example of how to display the result of the VMS">
+        <h2>SDP File Content</h2>
+        <b-alert show=true variant="info">
+            Copy and past this content in a .sdp file and open it using VLC to show de content of the VMS. Change the port to the correct one.
+        </b-alert>
+        <pre>{{ sdp }}</pre>
+
+        <h2>Gstreamer Example</h2>
+        <pre>
+gst-launch-1.0 \
+    udpsrc port=5001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
+        </pre>
+    </b-modal>
+
     <b-table
         :busy="isBusy"
         :items="items" 
@@ -37,7 +61,6 @@
                 Bind SRC
             </b-button>
 
-
             <b-button variant="primary" size="sm" @click="detailsVms(row.item)" class="mr-2">
                 <v-icon name="code"></v-icon>
                 Details
@@ -46,6 +69,11 @@
             <b-button variant="danger" size="sm" @click="removeVms(row.item)" class="mr-2">
                 <v-icon name="stop-circle"></v-icon>
                 Stop
+            </b-button>
+
+            <b-button variant="secondary" size="sm" @click="showSdp(row.item)" class="mr-2">
+                <v-icon name="eye"></v-icon>
+                View
             </b-button>
       </template>        
 
@@ -78,6 +106,7 @@ export default {
     data() {
         return {
             isBusy: true,
+            sdp: '',
             fields: [{
                 key: 'vmsType',
             },{
@@ -94,6 +123,10 @@ export default {
         }
     },
     methods: {
+        showSdp (vms) {
+            this.sdp = vms.sdp
+            this.$refs['sdpModal'].show()
+        }, 
         bindSrc (vms) {
             this.$router.push(`/vms/${vms._id}/bindSrc`)
         },
@@ -140,7 +173,7 @@ export default {
 
 <style>
     .vmsIndexActions2 {
-        width: 390px;
+        width: 420px;
         text-align: center;
     }
 </style>
