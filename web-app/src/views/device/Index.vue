@@ -43,10 +43,12 @@
         </b-button>
         
         <b-button variant="primary" size="sm" @click="editDevice(row.item)" class="mr-2">
+            <v-icon name="edit-2"></v-icon>
             Edit
         </b-button>
 
         <b-button variant="danger" size="sm" @click="removeDevice(row.item)" class="mr-2">
+            <v-icon name="trash"></v-icon>
             Remove
         </b-button>
       </template>        
@@ -165,7 +167,7 @@ export default {
 
 <style>
     .deviceIndexActions {
-        width: 270px;
+        width: 320px;
         text-align: center;
     }
 </style>

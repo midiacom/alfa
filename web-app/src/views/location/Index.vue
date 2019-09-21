@@ -22,14 +22,17 @@
         responsive="sm">
       <template slot="[actions]" slot-scope="row">
         <b-button variant="primary" size="sm" @click="editLocation(row.item)" class="mr-2">
+            <v-icon name="edit-2"></v-icon>
             Edit
         </b-button>
 
         <b-button variant="warning" size="sm" @click="devicesLocation(row.item)" class="mr-2">
+            <v-icon name="cpu"></v-icon>
             Devices
         </b-button>
 
         <b-button variant="danger" size="sm" @click="removeLocation(row.item)" class="mr-2">
+            <v-icon name="trash"></v-icon>
             Remove
         </b-button>
       </template>        
@@ -119,7 +122,7 @@ export default {
 
 <style>
     .locationIndexActions {
-        width: 250px;
+        width: 350px;
         text-align: center;
     }
 </style>

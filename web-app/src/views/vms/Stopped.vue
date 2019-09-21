@@ -4,7 +4,7 @@
         <b-col>            
             <h2>
                 <v-icon style="width: 32px;" name="pause-circle"></v-icon>
-                Stopped VMS
+                VMS in All States (Running and Stopped)
             </h2>
         </b-col>
     </b-row>
@@ -73,7 +73,7 @@ export default {
                 key: 'startupParameters'
             },{
                 key:'actions',
-                class: 'vmsIndexActions'
+                class: 'vmsIndexActionsStopped'
             }],
             items: []
         }
@@ -121,8 +121,8 @@ export default {
 </script>
 
 <style>
-    .vmsIndexActions {
-        width: 300px;
+    .vmsIndexActionsStopped {
+        width: 130px;
         text-align: center;
     }
 </style>

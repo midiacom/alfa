@@ -71,6 +71,8 @@ a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-set
 
 1 - Create a "import" to basic configurations
 2 - Login and password feature
+3 - Create a way do remove gst_bin_remove_many elementos from SRC queue (when stop the VMS)
+4 - Create a VMS that use data from two different SRCs
 
 # Roadmap
 

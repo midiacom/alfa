@@ -26,10 +26,12 @@
         </template>
         <template slot="[actions]" slot-scope="row">
             <b-button variant="primary" size="sm" @click="editVmsType(row.item)" class="mr-2">
+                <v-icon name="edit-2"></v-icon>
                 Edit
             </b-button>
 
             <b-button variant="danger" size="sm" @click="removeVmsType(row.item)" class="mr-2">
+                <v-icon name="trash"></v-icon>
                 Remove
             </b-button>
       </template>        
@@ -121,7 +123,7 @@ export default {
 
 <style>
     .vmsTypeSrcIndexActions {
-        width: 160px;
+        width: 210px;
         text-align: center;
     }
 </style>

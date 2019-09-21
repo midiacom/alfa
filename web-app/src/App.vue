@@ -27,7 +27,7 @@
                   </router-link>
                 </li>
                 <li class="subMenu">
-                  <router-link to="/vms/stopped">- Stopped</router-link>
+                  <router-link to="/vms/stopped">- All States</router-link>
                 </li>
               </ul>
             </li>

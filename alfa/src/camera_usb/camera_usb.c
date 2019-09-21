@@ -222,7 +222,7 @@ int addQueue(char* host, int port) {
 		g_printerr ("Not all elements could be created.\n");
 		return -1;
 	}
-
+	
 	gst_bin_add_many(GST_BIN(pipeline), queue, decodebin, x264enc, rtph264pay, udpsink, NULL);
 
 	// link the tee -> queue -> decodebin
