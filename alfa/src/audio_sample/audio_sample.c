@@ -1,77 +1,85 @@
 /*
-Plugin Name: Sample Video
+SRC Name: Audio Sample
 
-It will generate the patterns video sample test, it can be used to test VMS 
-or to test some APP
+This SRC will grab the data from a MP3 file and send it via UDP
 
 Pipeline: 
-Generate the patterns video 
 
-smpte (0) – SMPTE 100%% color bars
-snow (1) – Random (television snow)
-black (2) – 100%% Black
-white (3) – 100%% White
-red (4) – Red
-green (5) – Green
-blue (6) – Blue
-checkers-1 (7) – Checkers 1px
-checkers-2 (8) – Checkers 2px
-checkers-4 (9) – Checkers 4px
-checkers-8 (10) – Checkers 8px
-circular (11) – Circular
-blink (12) – Blink
-smpte75 (13) – SMPTE 75%% color bars
-zone-plate (14) – Zone plate
-gamut (15) – Gamut checkers
-chroma-zone-plate (16) – Chroma zone plate
-solid-color (17) – Solid color
-ball (18) – Moving ball
-smpte100 (19) – SMPTE 100%% color bars
-bar (20) – Bar
-pinwheel (21) – Pinwheel
-spokes (22) – Spokes
-gradient (23) – Gradient
-colors (24) – Colors
-
-gst-launch-1.0  videotestsrc pattern=ball \
+Send audio data
+gst-launch-1.0 multifilesrc location=sample.mp3 loop=true \
     ! tee name=t \
     ! queue \
-    ! decodebin \
-    ! x264enc \
-    ! rtph264pay \
-    ! udpsink host=localhost port=5000 \
-    t. \
+	! mpegaudioparse \
+	! mpg123audiodec \
+	! audioconvert \
+	! audioresample \
+	! capsfilter caps="audio/x-raw, rate=16000, channels=1, format=S16LE" \
+	! audiomixer blocksize=320 \
+	! udpsink host=localhost port=10000
+	
+gst-launch-1.0 multifilesrc location=sample.mp3 loop=true \
+    ! tee name=t \
     ! queue \
-    ! decodebin \
-    ! x264enc \
-    ! rtph264pay \
-    ! udpsink host=localhost port=5001
+	! mpegaudioparse \
+	! mpg123audiodec \
+	! audioconvert \
+	! audioresample \
+	! capsfilter caps="audio/x-raw, rate=16000, channels=1, format=S16LE" \
+	! audiomixer blocksize=320 \
+	! udpsink host=localhost port=10000 \
+	t. \
+	! queue \
+	! mpegaudioparse \
+	! mpg123audiodec \
+	! audioconvert \
+	! audioresample \
+	! capsfilter caps="audio/x-raw, rate=16000, channels=1, format=S16LE" \
+	! audiomixer blocksize=320 \
+	! udpsink host=localhost port=10005
 
-Show the video
+// Queue only before udpsink
+gst-launch-1.0 multifilesrc location=sample.mp3 loop=true \
+	! mpegaudioparse \
+	! mpg123audiodec \
+	! audioconvert \
+	! audioresample \
+	! capsfilter caps="audio/x-raw, rate=16000, channels=1, format=S16LE" \
+	! audiomixer blocksize=320 \
+    ! tee name=t \
+    ! queue \
+	! udpsink host=localhost port=10000 \
+	t. \
+	! queue \
+	! udpsink host=localhost port=10005
+
+VMS udp_to_udp
 gst-launch-1.0 \
-    udpsrc port=50000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-    ! rtph264depay \
-    ! decodebin \
-    ! videoconvert \
-    ! autovideosink
+    udpsrc port=10000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! udpsink host=localhost port=10001
+
+Consume audio data 
+gst-launch-1.0 -v udpsrc port=10001 \
+	! rawaudioparse use-sink-caps=false format=pcm pcm-format=s16le sample-rate=16000 num-channels=1 \
+	! queue \
+	! audioconvert \
+	! audioresample \
+	! autoaudiosink
 
 Parameters:
 	- id of the device
-    - type of video pattern
 
 Lauch program
-./video_sample 123 20
+./audio_sample 123456
 
 To create de dockerfile
 
-docker build . -t alfa/src/video_sample
+docker build . -t alfa/src/audio_sample
 
-docker run alfa/src/video_sample 123456 1
+docker run alfa/src/audio_sample 123456
 
 MQQT Message
-172.17.0.1;5000 send data do host machine at port 5000
-172.17.0.1;5001 send data do host machine at port 5001
-
+172.17.0.1;10000 send data do host machine at port 50000
+172.17.0.1;10001 send data do host machine at port 50001
 */
 
 #include <string.h>
@@ -229,59 +237,59 @@ int sigintHandler(int unused)
 	return 0;
 }
 
-static void cb_new_pad(GstElement *element, GstPad *pad, gpointer data)
-{
-	gchar *name;
-	GstElement *other = data;
-	name = gst_pad_get_name(pad);
-	g_print("A new pad %s was created for %s\n", name, gst_element_get_name(element));
-	g_free(name);
-	g_print("element %s will be linked to %s\n",
-			gst_element_get_name(element),
-			gst_element_get_name(other));
-	gst_element_link(element, other);
+
+static void cb_new_pad (GstElement *element, GstPad *pad, gpointer data){
+  gchar *name;
+  GstElement *other = data;
+  name = gst_pad_get_name (pad);
+  g_print ("A new pad %s was created for %s\n", name, gst_element_get_name(element));
+  g_free (name);
+  g_print ("element %s will be linked to %s\n",
+           gst_element_get_name(element),
+           gst_element_get_name(other));
+  gst_element_link(element, other);
 }
 
 int addQueue(char *host, int port)
 {
-	// printf("\n -------------- \n");
-	// printf("\n%s - %d",host, port);
-	// printf("\n -------------- \n");
+	printf("\n --------------");
+	printf("\n%s - %d",host, port);
+	printf("\n --------------");
+
 	// add a new queue to a tee :)
-	GstElement *queue, *decodebin, *x264enc, *rtph264pay, *udpsink;
+	// printf("\n 1 ");
+
+	GstElement *queue, *mpegaudioparse, *mpg123audiodec, *audioconvert, *audioresample, *audiomixer, *udpsink;
+	GstCaps *caps = gst_caps_from_string ("audio/x-raw, rate=16000, channels=1, format=S16LE");	
+
 	queue = gst_element_factory_make("queue", NULL);
-	decodebin = gst_element_factory_make("decodebin", NULL);
-	x264enc = gst_element_factory_make("x264enc", NULL);
-	rtph264pay = gst_element_factory_make("rtph264pay", NULL);
+	mpegaudioparse = gst_element_factory_make("mpegaudioparse", NULL);
+	mpg123audiodec = gst_element_factory_make("mpg123audiodec", NULL);
+	audioconvert = gst_element_factory_make("audioconvert", NULL);
+	audioresample = gst_element_factory_make("audioresample", NULL);
+	GstElement *capsfilter2 = gst_element_factory_make("capsfilter", NULL);
+
+	audiomixer = gst_element_factory_make("audiomixer", NULL);
 	udpsink = gst_element_factory_make("udpsink", NULL);
 
+	// g_object_set(audiomixer, "blocksize", 320, NULL);
+	g_object_set(capsfilter2, "caps", caps, NULL);
 	g_object_set(udpsink, "host", host, NULL);
 	g_object_set(udpsink, "port", port, NULL);
 
-	if (!queue || !decodebin || !x264enc || !rtph264pay || !udpsink)
+	if (!queue || !mpegaudioparse || !mpg123audiodec || !audioconvert || !audioresample || !capsfilter2 || !audiomixer || !udpsink )
 	{
-		g_printerr("Not all elements could be created.\n");
+		g_printerr("Not all elements could be created 1.\n");
 		return -1;
 	}
 
-	gst_bin_add_many(GST_BIN(pipeline), queue, decodebin, x264enc, rtph264pay, udpsink, NULL);
+	gst_bin_add_many(GST_BIN(pipeline), queue, mpegaudioparse, mpg123audiodec, audioconvert, audioresample, capsfilter2, audiomixer, udpsink, NULL);
 
 	// link the tee -> queue -> decodebin
-	if (!gst_element_link_many(my_tee, queue, decodebin, NULL))
-	{
+	if (!gst_element_link_many(my_tee, queue, mpegaudioparse, mpg123audiodec, audioconvert, audioresample, capsfilter2, audiomixer, udpsink, NULL))	{
 		g_error("Failed to link elements A");
 		return -1;
 	}
-
-	// link the x264 -> rtp -> udpsink
-	if (!gst_element_link_many(x264enc, rtph264pay, udpsink, NULL))
-	{
-		g_error("Failed to link elements B");
-		return -1;
-	}
-
-	// quen de decodebin has something to play the pad will be linked betewen decodebin and x264
-	g_signal_connect(decodebin, "pad-added", G_CALLBACK(cb_new_pad), x264enc);
 
 	// only start playing when the pad was add
 	gst_element_set_state(pipeline, GST_STATE_PLAYING);
@@ -294,9 +302,9 @@ int addQueue(char *host, int port)
 int main(int argc, char *argv[])
 {
 
-	if (argc != 3)
+	if (argc != 2)
 	{
-		g_printerr("Usage: deviceId pattern\n");
+		g_printerr("Usage: deviceId\n");
 		return -1;
 	}
 
@@ -342,10 +350,10 @@ int main(int argc, char *argv[])
 	gst_init(&argc, &argv);
 
 	pipeline = gst_pipeline_new(NULL);
-	src = gst_element_factory_make("videotestsrc", NULL);
+	src = gst_element_factory_make("multifilesrc", NULL);
 	my_tee = gst_element_factory_make("tee", "tee");
 
-	g_object_set(src, "pattern", atoi(argv[2]), NULL);
+	g_object_set(src, "location", "sample.mp3", NULL);
 
 	if (!pipeline || !src || !my_tee)
 	{

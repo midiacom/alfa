@@ -89,6 +89,7 @@ https://www.youtube.com/watch?v=KLhZmEGeqHk&t=331s
 ## Criando um programa em C usando gstreamer e rodando em um docker container
 https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be
 
-# Special Thanks to 
-
+# Special Thanks To 
+* VUEJS https://vuejs.org/
+* Bootstrap VUE https://bootstrap-vue.js.org/
 * Lib icons: https://feathericons.com/

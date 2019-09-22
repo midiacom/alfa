@@ -212,3 +212,15 @@ m=video 5009 RTP/AVP 96
 a=rtpmap:96 H264/90000
 a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-sets=Z2QAFKzZQUH7AWoMAgtKAAADAAIAAAMAeR4oUyw\=\,aOvssiw\=
 --------------
+
+
+how to know which program is running in which port
+lsof -i :10002
+
+
+tcpdump -D list all interces
+
+sudo tcpdump -i 6 get all packages in my machine
+
+
+export GST_DEBUG_DUMP_DOT_DIR=/home/battisti/versionado/alfa/alfa/src/audio_sample/pipeline_images
