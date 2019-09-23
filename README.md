@@ -93,3 +93,10 @@ https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be
 * VUEJS https://vuejs.org/
 * Bootstrap VUE https://bootstrap-vue.js.org/
 * Lib icons: https://feathericons.com/
+
+# links importantes
+
+* https://embeddedartistry.com/blog/2018/2/22/generating-gstreamer-pipeline-graphs how to plot dot files from gstreamer pipelines
+
+* http://tordwessman.blogspot.com/2013/06/gstreamer-tee-code-example.html
+Example dynamic pad

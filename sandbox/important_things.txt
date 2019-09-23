@@ -224,3 +224,7 @@ sudo tcpdump -i 6 get all packages in my machine
 
 
 export GST_DEBUG_DUMP_DOT_DIR=/home/battisti/versionado/alfa/alfa/src/audio_sample/pipeline_images
+
+
+
+https://embeddedartistry.com/blog/2018/2/22/generating-gstreamer-pipeline-graphs

@@ -17,6 +17,7 @@ gst-launch-1.0 multifilesrc location=sample.mp3 loop=true \
 	! audiomixer blocksize=320 \
 	! udpsink host=localhost port=10000
 	
+Correct example
 gst-launch-1.0 multifilesrc location=sample.mp3 loop=true \
     ! tee name=t \
     ! queue \
@@ -237,24 +238,26 @@ int sigintHandler(int unused)
 	return 0;
 }
 
-
-static void cb_new_pad (GstElement *element, GstPad *pad, gpointer data){
-  gchar *name;
-  GstElement *other = data;
-  name = gst_pad_get_name (pad);
-  g_print ("A new pad %s was created for %s\n", name, gst_element_get_name(element));
-  g_free (name);
-  g_print ("element %s will be linked to %s\n",
-           gst_element_get_name(element),
-           gst_element_get_name(other));
-  gst_element_link(element, other);
+/*
+static void cb_new_pad(GstElement *element, GstPad *pad, gpointer data)
+{
+	gchar *name;
+	GstElement *other = data;
+	name = gst_pad_get_name(pad);
+	g_print("A new pad %s was created for %s\n", name, gst_element_get_name(element));
+	g_free(name);
+	g_print("element %s will be linked to %s\n",
+			gst_element_get_name(element),
+			gst_element_get_name(other));
+	gst_element_link(element, other);
 }
+*/
 
 int addQueue(char *host, int port)
 {
-	printf("\n --------------");
-	printf("\n%s - %d",host, port);
-	printf("\n --------------");
+	// printf("\n --------------");
+	// sprintf("\n%s - %d",host, port);
+	// printf("\n --------------");
 
 	// add a new queue to a tee :)
 	// printf("\n 1 ");
@@ -282,19 +285,74 @@ int addQueue(char *host, int port)
 		g_printerr("Not all elements could be created 1.\n");
 		return -1;
 	}
-
-	gst_bin_add_many(GST_BIN(pipeline), queue, mpegaudioparse, mpg123audiodec, audioconvert, audioresample, capsfilter2, audiomixer, udpsink, NULL);
+	
+	gst_bin_add_many(GST_BIN(pipeline), queue, mpegaudioparse, mpg123audiodec, audioconvert, audioresample, capsfilter2, audiomixer, udpsink, NULL) ;
 
 	// link the tee -> queue -> decodebin
-	if (!gst_element_link_many(my_tee, queue, mpegaudioparse, mpg123audiodec, audioconvert, audioresample, capsfilter2, audiomixer, udpsink, NULL))	{
-		g_error("Failed to link elements A");
+	/*if (!gst_element_link_many(my_tee, queue, mpegaudioparse, mpg123audiodec, audioconvert, audioresample, capsfilter2, audiomixer, udpsink, NULL))	{
+		g_error("Failed to link elements B");
+		return -1;
+	}
+	*/
+
+	if (!gst_element_link_many(queue, mpegaudioparse, mpg123audiodec, audioconvert, audioresample, capsfilter2, audiomixer, udpsink, NULL))	{
+		g_error("Failed to link elements B");
 		return -1;
 	}
 
+	GstPadTemplate *tee_src_pad_template = gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (my_tee), "src_%u");
+	GstPad *tee_pad = gst_element_request_pad (my_tee, tee_src_pad_template, NULL, NULL);
+	GstPad *q_pad = gst_element_get_static_pad (queue, "sink");
+	/* Link the tee to the queue 1 */
+	if (gst_pad_link (tee_pad, q_pad) != GST_PAD_LINK_OK ){
+		g_critical ("Tee for q1 could not be linked.\n");
+		gst_object_unref (pipeline);
+		return 0;
+	}
+
+	/* idea about the src and sink was not linkded
+	GstPad *sinkpad;
+	GstPad *teepad;
+    GstPadTemplate *templ;
+
+	templ = gst_element_class_get_pad_template(GST_ELEMENT_GET_CLASS(my_tee), "src_%u");
+    teepad = gst_element_request_pad(my_tee, templ, NULL, NULL);
+
+	printf("-------------------");
+	printf("teepad %s",teepad);
+	printf("-------------------");
+	*/
+
 	// only start playing when the pad was add
+	// gst_element_set_state(udpsink, GST_STATE_PLAYING);
+	// gst_element_set_state(audiomixer, GST_STATE_PLAYING);
+	// gst_element_set_state(capsfilter2, GST_STATE_PLAYING);
+	// gst_element_set_state(audioresample, GST_STATE_PLAYING);
+	// gst_element_set_state(audioconvert, GST_STATE_PLAYING);
+	// gst_element_set_state(mpg123audiodec, GST_STATE_PLAYING);
+	// gst_element_set_state(mpegaudioparse, GST_STATE_PLAYING);
+	// gst_element_set_state(queue, GST_STATE_PLAYING);
+
+	// quen de decodebin has something to play the pad will be linked betewen decodebin and x264
+	// g_signal_connect(mpg123audiodec, "pad-added", G_CALLBACK(cb_new_pad), audioconvert);	
+
+ 	gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_NULL);
 	gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
-	GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline");
+	// gst_element_sync_state_with_parent(udpsink);
+	// gst_element_sync_state_with_parent(audiomixer);
+	// gst_element_sync_state_with_parent(capsfilter2);
+	// gst_element_sync_state_with_parent(audioresample);
+	// gst_element_sync_state_with_parent(audioconvert);
+	// gst_element_sync_state_with_parent(mpg123audiodec);
+	// gst_element_sync_state_with_parent(mpegaudioparse);
+	// gst_element_sync_state_with_parent(queue);
+
+	// gst_element_set_state(pipeline, GST_STATE_CHANGE_PLAYING_TO_PLAYING);
+
+	GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_VERBOSE, "pipeline");
+
+	g_printerr("terminou");
 
 	return 1;
 }
