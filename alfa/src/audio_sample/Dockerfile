@@ -9,15 +9,12 @@ RUN apk add --update --no-cache \
     gst-plugins-base \
     gst-plugins-good \
     gst-plugins-ugly \
-    gst-plugins-bad \
-    gst-libav \
-    x264-dev \
-    x264-libs \
-    libressl
+    gst-plugins-bad
     
 # copy my files to the container
 COPY ./mqtt ./mqtt
 COPY ./Makefile ./Makefile
+COPY ./sample.mp3 ./sample.mp3
 COPY ./audio_sample.c ./audio_sample.c
 
 # this script compile the source code and run the program

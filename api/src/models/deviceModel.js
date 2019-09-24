@@ -7,13 +7,10 @@ var devicesSchema = new Schema({
 	'name' : String,
   'description' : String, 
   'physicalPath' : String,  // it is the place when de device is connected locally /dev/video for example
+  'connectionParameters': String,
   'connectionType': {
     type: String,
     required: true
-  },
-  'connectionParameters': {
-    type: String,
-    required: true,
   },
   'location': {
     type: Schema.Types.ObjectId,

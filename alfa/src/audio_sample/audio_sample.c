@@ -81,6 +81,7 @@ docker run alfa/src/audio_sample 123456
 MQQT Message
 172.17.0.1;10000 send data do host machine at port 50000
 172.17.0.1;10001 send data do host machine at port 50001
+172.17.0.1;10002 send data do host machine at port 50001
 */
 
 #include <string.h>
@@ -295,21 +296,22 @@ int addQueue(char *host, int port)
 	}
 	*/
 
-	if (!gst_element_link_many(queue, mpegaudioparse, mpg123audiodec, audioconvert, audioresample, capsfilter2, audiomixer, udpsink, NULL))	{
+	if (!gst_element_link_many(my_tee, queue, mpegaudioparse, mpg123audiodec, audioconvert, audioresample, capsfilter2, audiomixer, udpsink, NULL))	{
 		g_error("Failed to link elements B");
 		return -1;
 	}
 
+/*
 	GstPadTemplate *tee_src_pad_template = gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (my_tee), "src_%u");
 	GstPad *tee_pad = gst_element_request_pad (my_tee, tee_src_pad_template, NULL, NULL);
 	GstPad *q_pad = gst_element_get_static_pad (queue, "sink");
-	/* Link the tee to the queue 1 */
+
 	if (gst_pad_link (tee_pad, q_pad) != GST_PAD_LINK_OK ){
 		g_critical ("Tee for q1 could not be linked.\n");
 		gst_object_unref (pipeline);
 		return 0;
 	}
-
+*/
 	/* idea about the src and sink was not linkded
 	GstPad *sinkpad;
 	GstPad *teepad;
@@ -350,9 +352,10 @@ int addQueue(char *host, int port)
 
 	// gst_element_set_state(pipeline, GST_STATE_CHANGE_PLAYING_TO_PLAYING);
 
-	GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_VERBOSE, "pipeline");
+	// this is to create the dot file
+	// GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_VERBOSE, "pipeline");
 
-	g_printerr("terminou");
+	// g_printerr("terminou");
 
 	return 1;
 }
