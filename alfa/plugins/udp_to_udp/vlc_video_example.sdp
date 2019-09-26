@@ -1,0 +1,5 @@
+v=0
+c=IN IP4 127.0.0.1
+m=audio 10005 RTP/S16LE 96
+a=rtpmap:96 PCMA/16000
+a=fmtp:96 media=audio; clock-rate=16000; encoding-name=s16le
