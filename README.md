@@ -6,11 +6,11 @@ The final result of this project can be seen at the above images.
 
 <img src="docs/img/vms.png" width="50%">
 
-# Download the repository 
+# Installation
+
+## Download the repository 
 
 git clone git@github.com:anselmobattisti/alfa.git
-
-# Installation
 
 ## Docker and Docker Compose
 
