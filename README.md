@@ -10,7 +10,7 @@ The final result of this project can be seen at the above images.
 
 git clone git@github.com:anselmobattisti/alfa.git
 
-# Requirements
+# Installation
 
 ## Docker and Docker Compose
 
@@ -44,7 +44,7 @@ To install docker compose follow this steps
 
 https://docs.docker.com/compose/install/
 
-# Build de SRC and the VMS
+## Build de SRC and the VMS
 
 Before using the system you need to build the dockerfiles of SRC and VMS. To do it follow the above steps.
 
@@ -53,7 +53,7 @@ Before using the system you need to build the dockerfiles of SRC and VMS. To do 
 2 - sudo ./setup.sh
 ```
 
-# To run the API
+## To run the API
 
 You need the docker and docker-compose instaled in your machine.
 
@@ -64,7 +64,7 @@ sudo npm install
 sudo docker-compose up
 ```
 
-# WEB APP
+## Run the WEB APP
 
 If you are running at development mode you will need nodejs and npm
 
@@ -75,19 +75,9 @@ npm install
 npm run serve
 ``` 
 
-# Types of Suported SRC
+## To Developers 
 
-* Video Sample Test
-* USB devices
-* RTSP devices
-
-# Types of Suported VMS
-
-* UDP to UDP
-* Crop video and send to UDP
-* Greyscale and send to UDP
-
-# View Videos in VLC
+### View Videos in VLC
 
 1 - Create a play.sdp file with the content
 
@@ -101,14 +91,38 @@ a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-set
 
 2 - vlc play.sdp
 
-# Important things to do
+### Gstreamer Packages for development
+
+Install GStreamer on Ubuntu or Debian
+Run the following command:
+
+apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio gstreamer1.0-libav
+
+More detais here 
+https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-language=c
+
+# Undertanding ALFA
+
+## Types of Suported SRC
+
+* Video Sample Test
+* USB devices
+* RTSP devices
+
+## Types of Suported VMS
+
+* UDP to UDP
+* Crop video and send to UDP
+* Greyscale and send to UDP
+
+## Important things to do
 
 1 - Create a "import" to basic configurations
 2 - Login and password feature
 3 - Create a way do remove gst_bin_remove_many elementos from SRC queue (when stop the VMS)
 4 - Create a VMS that use data from two different SRCs
 
-# Roadmap
+## Roadmap
 
 * API
 * Web Interface
@@ -134,7 +148,3 @@ https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be
 
 * http://tordwessman.blogspot.com/2013/06/gstreamer-tee-code-example.html
 Example dynamic pad
-
-# Gstreamer Packages for development
-
-apt install gstreamer1.0-libav
