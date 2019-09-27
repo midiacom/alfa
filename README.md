@@ -32,6 +32,11 @@ curl http://localhost:2375/images/json
 Important!
 Be default the docker API to port: 2375 if you need another port then change the configuration at api/config/dev.env
 
+# Build de SRC and the VMS
+
+1 - Access the folder alfa
+2 - sudo ./setup.sh
+
 # To run the API
 
 You need the docker and docker-compose instaled in your machine.
