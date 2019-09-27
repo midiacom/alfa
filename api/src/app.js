@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser')
-const router = express.Router();
 const db = require('./db/connect');
+const bootstrap = require('./controllers/bootstrap');
+
+const router = express.Router();
 
 //Rotas
 const index = require('./routes/index');
@@ -34,5 +36,11 @@ app.use('/vmsType', vmsTypeRoutes);
 app.use('/vms', vmsRoutes);
 
 app.use('/', index);
+
+app.get('/bootstrap', (req, res, next) => {
+
+  return bootstrap.boot(req, res, next)
+
+});
 
 module.exports = app;
