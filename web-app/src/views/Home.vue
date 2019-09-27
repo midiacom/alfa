@@ -7,7 +7,7 @@
     </h2>
 
     <!-- This is the part of the system that imports the basic data -->
-    <b-alert :show="items.length>0" >
+    <b-alert :show="showMsg" >
       <h3>It seems that is the first time you are here!</h3>
       <p>If it's true then to run the above button and import the initial data.</p>
       <hr>
@@ -19,10 +19,15 @@
         <li>4 Devices</li>
       </ul>
 
-      <strong>This button will compile the dockerfiles of SRC and VMS, it can takes a while. .</strong>
       <b-button variant="warning" @click="bootstrap()" size="lg">Import Data</b-button>
 
     </b-alert>
+
+    <b-alert :show="showMsg" variant="danger">
+      <h3>Important!</h3>
+      <strong>Before using this system you need to build the docker images from SRC and VMS. The easy way to do it is running ./setup at the alfa folder .</strong>
+    </b-alert>
+
 
     <!-- <b-card-group deck>
       <b-card header="Location" class="text-center">
@@ -48,7 +53,8 @@ export default {
   name: 'home',
   data() {
       return {
-          items: []
+          items: [],
+          showMsg: false
       }
   },  
   methods: {
@@ -64,12 +70,12 @@ export default {
     refresh() {
       apiLocation.getLocations()
           .then((data) => {
-              this.items = data
-              this.isBusy = false
+              if (data.length == 0) {
+                this.showMsg = true;
+              }
           })
           .catch(e => {
               console.log(e)
-              this.isBusy = false
           })
     }
   },
