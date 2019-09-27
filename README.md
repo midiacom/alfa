@@ -8,7 +8,9 @@ The final result of this project can be seen at the above images.
 
 # Requirements
 
-## Docker
+## Docker and Docker Compose
+
+### Docker 
 
 You need a host with docker installed AND the API MUST BE enabled! 
 
@@ -32,10 +34,20 @@ curl http://localhost:2375/images/json
 Important!
 Be default the docker API to port: 2375 if you need another port then change the configuration at api/config/dev.env
 
+### Docker Compose
+
+To install docker compose follow this steps
+
+https://docs.docker.com/compose/install/
+
 # Build de SRC and the VMS
 
+Before using the system you need to build the dockerfiles of SRC and VMS. To do it follow the above steps.
+
+```
 1 - Access the folder alfa
 2 - sudo ./setup.sh
+```
 
 # To run the API
 
