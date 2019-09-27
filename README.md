@@ -10,18 +10,21 @@ The final result of this project can be seen at the above images.
 
 ## Docker
 
-You need a hostwith docker installed AND the API MUST BE enabled! 
+You need a host with docker installed AND the API MUST BE enabled! 
+
+To install docker follow this steps:
+
+https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
 To enable the API do it
 
 ```
 1 - Navigate to /lib/systemd/system in your terminal and open docker.service file vi /lib/systemd/system/docker.service
-2 - Find the line which starts with ExecStart and adds -H=tcp://0.0.0.0:2375 to make it look like
-3 - ExecStart=/usr/bin/dockerd -H=fd:// -H=tcp://0.0.0.0:2375
-4 - Save the Modified File
-5 - Reload the docker daemon: systemctl daemon-reload
-6 - Restart the container: sudo service docker restart
-7 - Test if it is working by using this command, if everything is fine below command should return a JSON
+2 - Find the line which starts with  ExecStart and replace to ExecStart=/usr/bin/dockerd -H=fd:// -H=tcp://0.0.0.0:2375
+3 - Save the Modified File
+4 - Reload the docker daemon: systemctl daemon-reload
+5 - Restart the container: sudo service docker restart
+6 - Test if it is working by using this command, if everything is fine below command should return a JSON
 
 curl http://localhost:2375/images/json
 ```
