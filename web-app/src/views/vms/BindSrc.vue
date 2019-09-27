@@ -69,7 +69,7 @@ export default {
             let id = this.$route.params.id;
             this.form.vmsId = id;
             apiVms.getVms(id)
-                .then((vms) => {
+                .then(() => {
                     // console.log(vms)
                 })
 

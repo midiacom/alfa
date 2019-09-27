@@ -54,7 +54,7 @@ gst-launch-1.0 \
             {{ row.item.containerInfo.Status }}
         </template>
 
-        <template slot="[actions]" slot-scope="row">
+      <template v-slot:cell(actions)="row">
             
             <b-button variant="success" size="sm" @click="bindSrc(row.item)" class="mr-2">
                 <v-icon name="minimize-2"></v-icon>

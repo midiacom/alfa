@@ -24,7 +24,7 @@
         <template slot="[dockerImage]" slot-scope="row">
             {{ row.item.dockerImage }}
         </template>
-        <template slot="[actions]" slot-scope="row">
+      <template v-slot:cell(actions)="row">
             <b-button variant="primary" size="sm" @click="editVmsType(row.item)" class="mr-2">
                 <v-icon name="edit-2"></v-icon>
                 Edit

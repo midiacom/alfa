@@ -31,6 +31,16 @@
             <b-form-group v-show="form.src == 0" id="input-group-6" label="SDP File:" label-for="sdp">
                 <textarea v-model="form.sdp" name="" id="" cols="90" rows="10">
                 </textarea>
+
+                <h4>An SDP example file can be.</h4>
+                <pre>
+                v=0 \n \
+                c=IN IP4 127.0.0.1 \n \
+                m=video ${port} RTP/AVP 96 \n \
+                a=rtpmap:96 H264/90000 \n \
+                a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-sets=Z2QAFKzZQUH7AWoMAgtKAAADAAIAAAMAeR4oUyw\=\,aOvssiw\=
+                </pre>
+
             </b-form-group>
 
             <b-row>
@@ -58,11 +68,7 @@ export default {
                 startupParameters: '',
                 description: '',
                 src: 1,
-                sdp: 'v=0 \n \
-c=IN IP4 127.0.0.1 \n \
-m=video ${port} RTP/AVP 96 \n \
-a=rtpmap:96 H264/90000 \n \
-a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-sets=Z2QAFKzZQUH7AWoMAgtKAAADAAIAAAMAeR4oUyw\=\,aOvssiw\='
+                sdp: ''
             },
             msg: {
                 text: false,

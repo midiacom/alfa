@@ -79,10 +79,19 @@ const bootstrapController = {
 
         // create the devices
         const device0 = await new deviceModel({
-            name: 'Video Sample #1',
+            name: 'Video Sample Ball #1',
             connectionType: 'alfa/src/video_sample',
             physicalPath: '',
-            connectionParameters: '20',
+            connectionParameters: '18',
+            description: '',
+            location: loc._id
+        }).save();
+
+        const device01 = await new deviceModel({
+            name: 'Video Sample Color Bars #1',
+            connectionType: 'alfa/src/video_sample',
+            physicalPath: '',
+            connectionParameters: '13',
             description: '',
             location: loc._id
         }).save();

@@ -221,6 +221,7 @@ lsof -i :10002
 tcpdump -D list all interces
 
 sudo tcpdump -i 6 get all packages in my machine
+sudo tcpdump -i 8 get all packages in my machine
 
 
 export GST_DEBUG_DUMP_DOT_DIR=/home/battisti/versionado/alfa/alfa/src/audio_sample/pipeline_images
