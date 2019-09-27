@@ -56,7 +56,7 @@ You need the docker and docker-compose instaled in your machine.
 access the folder api and run 
 
 ```
-docker-compose up
+sudo docker-compose up
 ```
 
 # WEB AP
