@@ -1,5 +1,6 @@
 <template>
   <div>    
+    <loading :active.sync="isLoading" :is-full-page="true"></loading>      
     <b-row>
         <b-col>            
             <h2>
@@ -77,12 +78,16 @@
 
 <script>
 import {apiDevice} from './api'
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
     name: 'deviceIndex',
+    components: {Loading},
     data() {
         return {
             isBusy: true,
+            isLoading: false,
             fields: [{
                 key: 'name',
             },{
@@ -113,6 +118,7 @@ export default {
                 })
         },
         starSrcDevice (device) {
+            this.isLoading = true
             apiDevice.starSrcDevice(device._id)
                 .then(() => {
                     this.refresh()
@@ -149,6 +155,7 @@ export default {
         },
         refresh() {
             this.isBusy = true
+            this.isLoading = false
             apiDevice.getDevices()
                 .then((data) => {
                     this.items = data

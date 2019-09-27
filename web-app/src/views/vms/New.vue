@@ -1,5 +1,8 @@
 <template>
     <div>
+
+        <loading :active.sync="isLoading" :is-full-page="true"></loading>
+
         <h2>New VMS</h2>
 
         <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
@@ -48,10 +51,14 @@
 import {apiVms} from './api'
 import {apiVmsType} from '../vmsType/api'
 
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
+
 export default {
     name: 'vmsNew',
+    components: {Loading},    
     data() {
-        return {
+        return {            
             vmsType: {
                 name: '',
                 dockerImage: '',
@@ -65,16 +72,18 @@ export default {
             msg: {
                 text: false,
                 type: ''
-            }
+            },
+            isLoading: false
         }
     },
     methods: {
         onSubmit(evt) {
-            evt.preventDefault()
+            this.isLoading = true;
             apiVms.newVms(this.form)
                 .then(() => {
                     this.msg.text = "VMS created"
                     this.msg.type = "success"
+                    this.isLoading = false;
                 })
                 .catch((e) => {
                     this.msg.text = `Error when creating VMS ${e}`
@@ -82,6 +91,7 @@ export default {
                 })
         },
         refresh() {
+            this.isLoading = false;
             apiVmsType.getVmsType(this.$route.params.id)
                 .then((vmsType) => {
                     this.form.vmsType = vmsType._id

@@ -61,6 +61,7 @@ export default {
     bootstrap () {
       config.api.get(`/bootstrap`)
         .then(() => {
+          this.showMsg = false;
           this.refresh()
         })
         .catch(e => {
