@@ -59,9 +59,17 @@ access the folder api and run
 sudo docker-compose up
 ```
 
-# WEB AP
+# WEB APP
 
-To run the web interface access the folder web-app then run `npm run serve`
+If you are running at development mode you will need nodejs and npm
+
+To run the web interface access the folder web-app then run 
+
+``` 
+npm install
+npm run serve
+``` 
+
 
 # Types of Suported SRC
 
