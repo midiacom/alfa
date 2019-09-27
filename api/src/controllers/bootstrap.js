@@ -53,7 +53,7 @@ const bootstrapController = {
         const vmsTypeVms0 = await new vmsTypeModel({
             name: 'VMS = Forward UDP to UDP changing video to greyscale',
             dockerImage: 'alfa/plugin/udp_video_black_white',
-            startupParameters: "HOST_IP PORT | Ex:172.17.0.1 5001",
+            startupParameters: "HOST_IP PORT | Ex:172.17.0.1 10001",
             description: 'This will get a UDP video stream and send it in greyscale',
             src: 0,
             sdp: '',
@@ -62,7 +62,7 @@ const bootstrapController = {
         const vmsTypeVms1 = await new vmsTypeModel({
             name: 'VMS = Forward UDP to UDP cropping the video',
             dockerImage: 'alfa/plugin/udp_video_crop',
-            startupParameters: "TOP LEFT RIGHT BOTTOM IP PORT | Example 100 100 100 100 172.17.0.1 5001",
+            startupParameters: "TOP LEFT RIGHT BOTTOM IP PORT | Example 100 100 100 100 172.17.0.1 10001",
             description: 'This plugin grabs a video and cut it ',
             src: 0,
             sdp: '',
@@ -71,7 +71,7 @@ const bootstrapController = {
         const vmsTypeVms2 = await new vmsTypeModel({
             name: 'VMS = UDP to UDP',
             dockerImage: 'alfa/plugin/udp_to_udp',
-            startupParameters: "IP PORT | Example 172.17.0.1 5001",
+            startupParameters: "IP PORT | Example 172.17.0.1 10001",
             description: 'This plugin will Forward UDP package',
             src: 0,
             sdp: '',
