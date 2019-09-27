@@ -27,11 +27,12 @@
         :fields="fields" 
         striped 
         responsive="sm">
-      <template slot="location" slot-scope="row">
-          {{ row.item.location.name }}
+
+      <template v-slot:cell(location)="data">
+          {{ data.item.location.name }}
       </template>
 
-      <template slot="[actions]" slot-scope="row">
+      <template v-slot:cell(actions)="row">
         <b-button v-show=!row.item.dockerId variant="success" size="sm" @click="starSrcDevice(row.item)" class="mr-2">
             <v-icon name="play-circle"></v-icon>
             Start SRC

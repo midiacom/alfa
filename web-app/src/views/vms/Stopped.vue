@@ -23,7 +23,7 @@
             {{row.item.dockerId | truncate(12, ' ')}}
         </template>
 
-        <template slot="[actions]" slot-scope="row">
+      <template v-slot:cell(actions)="row">
             <!--
             <b-button variant="success" size="sm" @click="detailsVms(row.item)" class="mr-2">
                 <v-icon name="refresh-cw"></v-icon>

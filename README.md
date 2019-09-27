@@ -60,12 +60,18 @@ You need the docker and docker-compose instaled in your machine.
 access the folder api and run 
 
 ```
+sudo npm install
 sudo docker-compose up
 ```
 
 # WEB AP
 
-To run the web interface access the folder web-app then run `npm run serve`
+To run the web interface access the folder web-app then run
+
+```
+sudo npm install
+npm run serve
+```
 
 # Types of Suported SRC
 
@@ -126,3 +132,7 @@ https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be
 
 * http://tordwessman.blogspot.com/2013/06/gstreamer-tee-code-example.html
 Example dynamic pad
+
+# Gstreamer Packages for development
+
+apt install gstreamer1.0-libav

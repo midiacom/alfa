@@ -60,11 +60,11 @@ export default {
   methods: {
     bootstrap () {
       config.api.get(`/bootstrap`)
-        .then(resp => {
+        .then(() => {
           this.refresh()
         })
         .catch(e => {
-          reject(e)
+          console.log(e)
         })
     },
     refresh() {
