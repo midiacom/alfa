@@ -14,6 +14,7 @@ You need a hostwith docker installed AND the API MUST BE enabled!
 
 To enable the API do it
 
+```
 1 - Navigate to /lib/systemd/system in your terminal and open docker.service file vi /lib/systemd/system/docker.service
 2 - Find the line which starts with ExecStart and adds -H=tcp://0.0.0.0:2375 to make it look like
 3 - ExecStart=/usr/bin/dockerd -H=fd:// -H=tcp://0.0.0.0:2375
@@ -23,6 +24,7 @@ To enable the API do it
 7 - Test if it is working by using this command, if everything is fine below command should return a JSON
 
 curl http://localhost:2375/images/json
+```
 
 Important!
 Be default the docker API to port: 2375 if you need another port then change the configuration at api/config/dev.env
