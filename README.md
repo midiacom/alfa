@@ -75,13 +75,6 @@ npm install
 npm run serve
 ``` 
 
-To run the web interface access the folder web-app then run
-
-```
-sudo npm install
-npm run serve
-```
-
 # Types of Suported SRC
 
 * Video Sample Test
