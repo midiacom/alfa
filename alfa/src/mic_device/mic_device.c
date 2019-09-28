@@ -29,6 +29,7 @@ gst-launch-1.0 udpsrc port=10001 \
 	! audio/x-raw,format=S16LE,channels=2,layout=interleaved,rate=48000 \
 	! autoaudiosink
 
+
 Parameters:
 	- ID of the device
     - Device Path

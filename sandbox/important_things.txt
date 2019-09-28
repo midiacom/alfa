@@ -229,3 +229,6 @@ export GST_DEBUG_DUMP_DOT_DIR=/home/battisti/versionado/alfa/alfa/src/audio_samp
 
 
 https://embeddedartistry.com/blog/2018/2/22/generating-gstreamer-pipeline-graphs
+
+
+https://stackoverflow.com/questions/54597788/stream-audio-from-microphone-to-pocketsphinx-and-browser-at-once
