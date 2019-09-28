@@ -148,3 +148,6 @@ https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be
 
 * http://tordwessman.blogspot.com/2013/06/gstreamer-tee-code-example.html
 Example dynamic pad
+
+
+* https://stackoverflow.com/questions/45700653/can-my-docker-container-app-access-the-hosts-microphone-and-speaker-mac-wind/48795232 Map a mic inside docker container
