@@ -10,50 +10,21 @@ Parameters:
 Lauch program
 ./udp_to_udp localhost 5000
 
-Pipeline to send video (simulating Remote SRC)
-gst-launch-1.0  rtspsrc location=rtsp://192.168.0.102:8080/h264_ulaw.sdp \
-    ! tee name=t \
-    ! queue \
-    ! decodebin \
-    ! x264enc \
-    ! rtph264pay \
-    ! udpsink host=localhost port=5000
+Pipeline to send video (From audio mic)
+gst-launch-1.0 alsasrc device=hw:0 \
+  ! tee name=t \
+  ! queue \
+  ! audioconvert \
+  ! audioresample \
+  ! audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved \
+  ! udpsink host=localhost port=5000
 
-Pipeline to send video (simulating Remote SRC)
-gst-launch-1.0  rtspsrc location=rtsp://192.168.0.102:8080/h264_ulaw.sdp \
-    ! tee name=t \
-    ! queue \
-    ! decodebin \
-    ! x264enc \
-    ! rtph264pay \
-    ! udpsink host=172.17.0.2 port=5000
-
-Pipeline to send video (simulating SRC)
-gst-launch-1.0 autovideosrc \
-    ! decodebin \
-    ! x264enc \
-    ! rtph264pay \
-    ! udpsink host=172.17.0.2 port=5000
-
-Pipeline to crop a video and send data to UDP dest (simulating de VMS)
-gst-launch-1.0 \
-    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-    ! udpsink host=localhost port=5001
- 
-Pipeline to show video (simulating the application)
-gst-launch-1.0 \
-    udpsrc port=5005 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-    ! rtph264depay \
-    ! decodebin \
-    ! videoconvert \
-    ! autovideosink
-
-./level 123 ddd 172.17.0.1 1883
+./noise_detector 321 0.1 alto 172.17.0.1 1883
 
 To create de dockerfile
-docker build . -t alfa/plugin/udp_to_udp
+docker build . -t alfa/plugin/noise_detector
 
-docker run alfa/plugin/udp_to_udp 172.17.0.1 5001
+docker run alfa/plugin/noise_detector 123 0.1 alert 172.17.0.1 5001
 
 export GST_DEBUG="*:3"
 */
@@ -119,13 +90,12 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 		i++;
 	}
 
-	// printf("\n - %s",host);
-	// printf("\n - %s\n",port);
-
-	// addQueue(host, atoi(port));
-
     free(topic_name);
 }
+	// printf("\n - %s",host);
+	// printf("\n - %s\n",port);
+	// addQueue(host, atoi(port));
+
 
 void* client_refresher(void* client)
 {
@@ -192,7 +162,7 @@ static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer da
             snprintf(str, 9, "%f", rms);
             // snprintf(str, 8, "%d", rms);
             //ftoa(rms,&str,6);
-            g_print("Data published");
+            g_print("\n Data published");
             mqtt_publish(&client, id_topic, str, 8, 1);
             // g_print (" ->   normalized rms value: %f\n", rms);
         }
@@ -208,14 +178,15 @@ int
 main (int argc, char *argv[])
 {
 
-	if (argc != 5) {
-      g_printerr ("Usage: deviceId Topic MQTT_SERVER_IP MQTT_SERVER_PORT \n");
+	if (argc != 6) {
+      g_printerr ("Usage: deviceId Sensitiveness Topic MQTT_SERVER_IP MQTT_SERVER_PORT \n");
       return -1;
     }
 
-    sensitiveness = 0.02;
 
-    strcpy(id_topic, argv[2]);
+    sensitiveness = atof(argv[2]);
+
+    strcpy(id_topic, argv[3]);
 
     // const char* addr  = "172.17.0.1";
     // const char* port  = "1883";
@@ -275,7 +246,7 @@ main (int argc, char *argv[])
   // g_object_set(audiotestsrc, "device", "hw:0", NULL);  
 
    audiotestsrc = gst_element_factory_make ("udpsrc", NULL);
-   g_object_set(audiotestsrc, "port", 10000, NULL);  
+   g_object_set(audiotestsrc, "port", 5000, NULL);  
 
 	GstCaps *caps = gst_caps_from_string ("audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved");	
 	GstElement *capsfilter2 = gst_element_factory_make("capsfilter", NULL);
