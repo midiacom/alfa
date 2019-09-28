@@ -49,7 +49,7 @@ const bootstrapController = {
             sdp: '',
         }).save();
 
-        const vmsTypeSrc3 = await new vmsTypeModel({
+        const vmsTypeSrc4 = await new vmsTypeModel({
             name: 'SRC = Mic Local Device #1',
             dockerImage: 'alfa/src/mic_device',
             startupParameters: "",
@@ -132,7 +132,7 @@ const bootstrapController = {
             location: loc._id
         }).save();
 
-        const device4 = await new deviceModel({
+        const device5 = await new deviceModel({
             name: 'Local Mic hw:0 #1',
             connectionType: 'alfa/src/mic_device',
             physicalPath: '',
