@@ -135,7 +135,7 @@ const bootstrapController = {
         const device5 = await new deviceModel({
             name: 'Local Mic hw:0 #1',
             connectionType: 'alfa/src/mic_device',
-            physicalPath: '',
+            physicalPath: '/dev/snd',
             connectionParameters: 'hw:0',
             description: '',
             location: loc._id
