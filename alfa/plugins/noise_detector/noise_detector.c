@@ -154,17 +154,18 @@ static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer da
 
         value = g_value_array_get_nth (decay_arr, i);
         decay_dB = g_value_get_double (value);
-        g_print ("    RMS: %f dB, peak: %f dB, decay: %f dB\n", rms_dB, peak_dB, decay_dB);
+        // g_print ("    RMS: %f dB, peak: %f dB, decay: %f dB\n", rms_dB, peak_dB, decay_dB);
 
         /* converting from dB to normal gives us a value between 0.0 and 1.0 */
         rms = pow (10, rms_dB / 20);
         if (rms > sensitiveness) {
             char str[10];
-            snprintf(str, 9, "%f", rms);
+            snprintf(str, 10, "%f", rms);
             // snprintf(str, 8, "%d", rms);
             //ftoa(rms,&str,6);
             g_print("\n Data published");
-            mqtt_publish(&client, id_topic, str, 10, 1);
+            g_print("\n %s %s",id_topic, str);
+            mqtt_publish(&client, id_topic, str, strlen(str)+1, MQTT_PUBLISH_QOS_0);
             // g_print (" ->   normalized rms value: %f\n", rms);
         }
       }

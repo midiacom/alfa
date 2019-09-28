@@ -232,3 +232,10 @@ https://embeddedartistry.com/blog/2018/2/22/generating-gstreamer-pipeline-graphs
 
 
 https://stackoverflow.com/questions/54597788/stream-audio-from-microphone-to-pocketsphinx-and-browser-at-once
+
+
+no container alpine
+apk add tcpdump
+apk add ethtool
+
+ethtool -S <interface> | grep -E 'rx_packets|tx_packets|rx_bytes|tx_bytes'
