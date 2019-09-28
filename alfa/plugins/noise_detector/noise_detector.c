@@ -19,12 +19,12 @@ gst-launch-1.0 alsasrc device=hw:0 \
   ! audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved \
   ! udpsink host=localhost port=5000
 
-./noise_detector 321 0.1 alto 172.17.0.1 1883
+./noise_detector 0.1 alto 172.17.0.1 1883
 
 To create de dockerfile
 docker build . -t alfa/plugin/noise_detector
 
-docker run alfa/plugin/noise_detector 123 0.1 alert 172.17.0.1 5001
+docker run alfa/plugin/noise_detector 0.1 alert 172.17.0.1 1883
 
 export GST_DEBUG="*:3"
 */
@@ -178,21 +178,20 @@ int
 main (int argc, char *argv[])
 {
 
-	if (argc != 6) {
-      g_printerr ("Usage: deviceId Sensitiveness Topic MQTT_SERVER_IP MQTT_SERVER_PORT \n");
+	if (argc != 5) {
+      g_printerr ("Usage: Sensitiveness Topic MQTT_SERVER_IP MQTT_SERVER_PORT \n");
       return -1;
     }
 
+    sensitiveness = atof(argv[1]);
 
-    sensitiveness = atof(argv[2]);
-
-    strcpy(id_topic, argv[3]);
+    strcpy(id_topic, argv[2]);
 
     // const char* addr  = "172.17.0.1";
     // const char* port  = "1883";
 
-    const char* addr  = argv[4];
-    const char* port  = argv[5];
+    const char* addr  = argv[3];
+    const char* port  = argv[4];
 
     /* open the non-blocking TCP socket (conmqtt/src/mqtt.c mqtt/src/mqtt_pal.c -l pthread necting to the broker) */
     int sockfd = open_nb_socket(addr, port);
@@ -202,7 +201,6 @@ main (int argc, char *argv[])
         exit_example(EXIT_FAILURE, sockfd, NULL);
     }
 
-    
     uint8_t sendbuf[2048]; /* sendbuf should be large enough to hold multiple whole mqtt messages */
     uint8_t recvbuf[1024]; /* recvbuf should be large enough any whole mqtt message expected to be received */
     mqtt_init(&client, sockfd, sendbuf, sizeof(sendbuf), recvbuf, sizeof(recvbuf), publish_callback);

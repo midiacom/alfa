@@ -7,9 +7,15 @@ RUN apk add --update --no-cache \
     build-base \
     gstreamer gstreamer-dev  \
     gst-plugins-base \
-    gst-plugins-good 
+    gst-plugins-good  \
+    gst-plugins-ugly \
+    gst-plugins-bad \
+    gst-libav \
+    pulseaudio \
+    pulseaudio-alsa    
 
 # copy my files to the container
+COPY ./mqtt ./mqtt
 COPY ./Makefile ./Makefile
 COPY ./noise_detector.c ./noise_detector.c
 
