@@ -44,6 +44,14 @@ cecho "GREEN"
 cd ../../src/video_sample/
 docker build . -t alfa/src/video_sample
 
+cecho "GREEN" 
+cecho "GREEN" ----------------------
+cecho "GREEN" "Build SRC Video Sample"
+cecho "GREEN" ----------------------
+cecho "GREEN" 
+cd ../../src/mic_device/
+docker build . -t alfa/src/mic_device
+
 # The VMS Types
 cecho "GREEN" 
 cecho "GREEN" ----------------------

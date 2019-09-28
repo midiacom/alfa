@@ -40,9 +40,7 @@ To create de dockerfile
 
 docker build . -t alfa/src/mic_device
 
-docker run -d --privileged -v /dev/video0:/dev/video0 alfa/src/camera_usb /dev/video0 123
-
-sudo docker run alfa/src/mic_device 123456 hw:0
+docker run --device /dev/snd:/dev/snd alfa/src/mic_device 123456 hw:0
 
 To get the devices list
 arecord -l

@@ -49,6 +49,15 @@ const bootstrapController = {
             sdp: '',
         }).save();
 
+        const vmsTypeSrc3 = await new vmsTypeModel({
+            name: 'SRC = Mic Local Device #1',
+            dockerImage: 'alfa/src/mic_device',
+            startupParameters: "",
+            description: 'This is get the audio from a local mic',
+            src: 1,
+            sdp: '',
+        }).save();
+
         // Create the VMS types
         const vmsTypeVms0 = await new vmsTypeModel({
             name: 'VMS = Forward UDP to UDP changing video to greyscale',
@@ -87,7 +96,7 @@ const bootstrapController = {
             location: loc._id
         }).save();
 
-        const device01 = await new deviceModel({
+        const device1 = await new deviceModel({
             name: 'Video Sample Color Bars #1',
             connectionType: 'alfa/src/video_sample',
             physicalPath: '',
@@ -96,7 +105,7 @@ const bootstrapController = {
             location: loc._id
         }).save();
 
-        const device1 = await new deviceModel({
+        const device2 = await new deviceModel({
             name: 'Audio Sample #1',
             connectionType: 'alfa/src/audio_sample',
             physicalPath: '',
@@ -105,7 +114,7 @@ const bootstrapController = {
             location: loc._id
         }).save();
 
-        const device2 = await new deviceModel({
+        const device3 = await new deviceModel({
             name: 'Webcan of Notebook - USB Device #1',
             connectionType: 'alfa/src/camera_usb',
             physicalPath: '/dev/video0',
@@ -114,14 +123,23 @@ const bootstrapController = {
             location: loc._id
         }).save();
 
-        const device3 = await new deviceModel({
+        const device4 = await new deviceModel({
             name: 'Phone- RTSP #1',
             connectionType: 'alfa/src/rtsp_to_udp',
             physicalPath: '',
             connectionParameters: 'rtsp://192.168.0.102:8080/h264_ulaw.sdp',
             description: '',
             location: loc._id
-        }).save();        
+        }).save();
+
+        const device4 = await new deviceModel({
+            name: 'Local Mic hw:0 #1',
+            connectionType: 'alfa/src/mic_device',
+            physicalPath: '',
+            connectionParameters: 'hw:0',
+            description: '',
+            location: loc._id
+        }).save();
         
         return res.status(201).json("{ok:ok}");
     }

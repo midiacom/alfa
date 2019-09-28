@@ -11,10 +11,9 @@ RUN apk add --update --no-cache \
     gst-plugins-ugly \
     gst-plugins-bad \
     gst-libav \
-    x264-dev \
-    x264-libs \
-    libressl
-    
+    pulseaudio \
+    pulseaudio-alsa
+
 # copy my files to the container
 COPY ./mqtt ./mqtt
 COPY ./Makefile ./Makefile
