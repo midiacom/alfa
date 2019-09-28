@@ -77,6 +77,14 @@ cecho "GREEN"
 cd ../../plugins/udp_video_crop
 docker build . -t alfa/plugin/udp_video_crop
 
+cecho "GREEN" 
+cecho "GREEN" ----------------------
+cecho "GREEN" "Build Plugin Noise Detector"
+cecho "GREEN" ----------------------
+cecho "GREEN" 
+cd ../../plugins/noise_detector
+docker build . -t alfa/plugin/noise_detector
+
 
 cecho "GREEN" "-----------------------------"
 cecho "GREEN" "The installation was completed"

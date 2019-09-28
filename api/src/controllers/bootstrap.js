@@ -86,6 +86,15 @@ const bootstrapController = {
             sdp: '',
         }).save();
 
+        const vmsTypeVms3 = await new vmsTypeModel({
+            name: 'VMS = Noise Detector',
+            dockerImage: 'alfa/plugin/noise_detector',
+            startupParameters: "SENSITIVENESS TOPIC MQTT_SERVER MQTT_PORT | Example 0.1 topic_alert 172.17.0.1 5001",
+            description: 'This send to a MQTT server the noise captured',
+            src: 0,
+            sdp: '',
+        }).save();
+
         // create the devices
         const device0 = await new deviceModel({
             name: 'Video Sample Ball #1',

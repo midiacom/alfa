@@ -7,17 +7,11 @@ RUN apk add --update --no-cache \
     build-base \
     gstreamer gstreamer-dev  \
     gst-plugins-base \
-    gst-plugins-good \
-    gst-plugins-ugly \
-    gst-plugins-bad \
-    x264-dev \
-    x264-libs \
-    gst-libav \
-    tcpdump
+    gst-plugins-good 
 
 # copy my files to the container
 COPY ./Makefile ./Makefile
-COPY ./udp_to_udp.c ./udp_to_udp.c
+COPY ./noise_detector.c ./noise_detector.c
 
 # this script compile the source code and run the program
 COPY ./start.sh ./start.sh

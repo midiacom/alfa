@@ -194,7 +194,7 @@ main (int argc, char *argv[])
     const char* addr  = argv[4];
     const char* port  = argv[5];
 
-    /* open the non-blocking TCP socket (connecting to the broker) */
+    /* open the non-blocking TCP socket (conmqtt/src/mqtt.c mqtt/src/mqtt_pal.c -l pthread necting to the broker) */
     int sockfd = open_nb_socket(addr, port);
 
     if (sockfd == -1) {
