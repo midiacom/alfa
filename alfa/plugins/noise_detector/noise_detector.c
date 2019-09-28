@@ -19,7 +19,8 @@ gst-launch-1.0 alsasrc device=hw:0 \
   ! audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved \
   ! udpsink host=localhost port=5000
 
-./noise_detector 0.1 alto 172.17.0.1 1883
+./noise_detector 0.01 alto 172.17.0.1 1883
+./start.sh 0.01 alto 172.17.0.1 1883
 
 To create de dockerfile
 docker build . -t alfa/plugin/noise_detector
@@ -153,17 +154,17 @@ static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer da
 
         value = g_value_array_get_nth (decay_arr, i);
         decay_dB = g_value_get_double (value);
-        // g_print ("    RMS: %f dB, peak: %f dB, decay: %f dB\n", rms_dB, peak_dB, decay_dB);
+        g_print ("    RMS: %f dB, peak: %f dB, decay: %f dB\n", rms_dB, peak_dB, decay_dB);
 
         /* converting from dB to normal gives us a value between 0.0 and 1.0 */
         rms = pow (10, rms_dB / 20);
         if (rms > sensitiveness) {
-            char str[8];
+            char str[10];
             snprintf(str, 9, "%f", rms);
             // snprintf(str, 8, "%d", rms);
             //ftoa(rms,&str,6);
             g_print("\n Data published");
-            mqtt_publish(&client, id_topic, str, 8, 1);
+            mqtt_publish(&client, id_topic, str, 10, 1);
             // g_print (" ->   normalized rms value: %f\n", rms);
         }
       }

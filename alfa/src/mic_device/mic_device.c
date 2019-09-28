@@ -192,10 +192,6 @@ int sigintHandler(int unused) {
 
 int addQueue(char* host, int port) {
 
-	printf("\n -------------- \n");
-	printf("\n%s - %d",host, port);
-	printf("\n -------------- \n");
-
 	GstElement *queue, *audioconvert, *audioresample, *udpsink;
 	GstCaps *caps = gst_caps_from_string ("audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved");	
 	GstElement *capsfilter2 = gst_element_factory_make("capsfilter", NULL);
