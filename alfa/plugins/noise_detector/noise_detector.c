@@ -19,7 +19,7 @@ gst-launch-1.0 alsasrc device=hw:0 \
   ! audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved \
   ! udpsink host=localhost port=5000
 
-./noise_detector 0.01 alto 172.17.0.1 1883
+./noise_detector 0.01 altola 172.17.0.1 1883
 ./start.sh 0.01 alto 172.17.0.1 1883
 
 To create de dockerfile
@@ -40,6 +40,7 @@ export GST_DEBUG="*:3"
 
 #include "./mqtt/src/mqtt.h"
 #include "./mqtt/include/posix_sockets.h"
+#include <time.h>
 
 #define GLIB_DISABLE_DEPRECATION_WARNINGS
 
@@ -48,9 +49,27 @@ struct mqtt_client client;
 float sensitiveness;
 char id_topic[50];
 
+char* mqtt_server_addr;
+char* mqtt_server_port;
+char* c_name;
+
 void publish_callback(void** unused, struct mqtt_response_publish *published);
 void* client_refresher(void* client);
 void exit_example(int status, int sockfd, pthread_t *client_daemon);
+
+#define ASCII_START 65
+#define ASCII_END 90
+
+char* client_name(int size) {
+    int i;
+    srand(time(0)); 
+    char *res = malloc(size + 1);
+    for(i = 0; i < size; i++) {
+        res[i] = (char) (rand()%(ASCII_END-ASCII_START))+ASCII_START;
+    }
+    res[i] = '\0';
+    return res;
+}
 
 void exit_example(int status, int sockfd, pthread_t *client_daemon)
 {
@@ -58,45 +77,6 @@ void exit_example(int status, int sockfd, pthread_t *client_daemon)
     if (client_daemon != NULL) pthread_cancel(*client_daemon);
     exit(status);
 }
-
-void publish_callback(void** unused, struct mqtt_response_publish *published) 
-{
-    /* note that published->topic_name is NOT null-terminated (here we'll change it to a c-string) */
-    char* topic_name = (char*) malloc(published->topic_name_size + 1);
-    memcpy(topic_name, published->topic_name, published->topic_name_size);
-    topic_name[published->topic_name_size] = '\0';
-
-    printf("Received publish('%s'): %s\n", topic_name, (const char*) published->application_message);
-
-    // printf("Mensagem recebida! \n\rTopico: %s Mensagem: %s\n", topicName, payload);
-	// the message should be like IP;PORT localhost;5001
-	char payload[100] = "";
-
-	strcpy(payload, (char*) published->application_message);
-	printf("%s", payload);
-	char host[100] = "";
-	char port[100] = ""; 
-	int i = 0;
-	for(i = 0; payload[i] != '\0';i++) {
-		if (payload[i] == ';') {
-			break;
-		}
-		host[i] = payload[i];
-	}
-
-	int k = 0;
-	for(int j = i+1; payload[i] != '\0';j++) {
-		port[k] = payload[j];
-		k++;
-		i++;
-	}
-
-    free(topic_name);
-}
-	// printf("\n - %s",host);
-	// printf("\n - %s\n",port);
-	// addQueue(host, atoi(port));
-
 
 void* client_refresher(void* client)
 {
@@ -129,6 +109,8 @@ static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer da
       if (!gst_structure_get_clock_time (s, "endtime", &endtime))
         g_warning ("Could not parse endtime");
 
+      //printf("\n%f\n",endtime);
+
       /* the values are packed into GValueArrays with the value per channel */
       array_val = gst_structure_get_value (s, "rms");
       rms_arr = (GValueArray *) g_value_get_boxed (array_val);
@@ -159,14 +141,44 @@ static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer da
         /* converting from dB to normal gives us a value between 0.0 and 1.0 */
         rms = pow (10, rms_dB / 20);
         if (rms > sensitiveness) {
-            char str[10];
-            snprintf(str, 10, "%f", rms);
-            // snprintf(str, 8, "%d", rms);
-            //ftoa(rms,&str,6);
-            g_print("\n Data published");
-            g_print("\n %s %s",id_topic, str);
-            mqtt_publish(&client, id_topic, str, strlen(str)+1, MQTT_PUBLISH_QOS_0);
-            // g_print (" ->   normalized rms value: %f\n", rms);
+          char str[10];
+          snprintf(str, 10, "%f", rms);
+          // snprintf(str, 8, "%d", rms);
+          //ftoa(rms,&str,6);
+          g_print("\n Data published");
+          g_print("\n %s %s",id_topic, str);
+          //mqtt_publish(&client, id_topic, str, strlen(str)+1, MQTT_PUBLISH_QOS_0);
+
+          /////////////////////////////////////////////  
+          mqtt_publish(&client, id_topic, str, strlen(str) + 1, MQTT_PUBLISH_QOS_0);
+          if (client.error != MQTT_OK) {
+              fprintf(stderr, "error a: %s\n", mqtt_error_str(client.error));
+
+              // MQTT client
+              int sockfd = open_nb_socket(mqtt_server_addr, mqtt_server_port);
+              if (sockfd == -1) {
+                  perror("Failed to open socket: ");
+                  exit_example(EXIT_FAILURE, sockfd, NULL);
+              }
+              uint8_t sendbuf[2048]; 
+              uint8_t recvbuf[1024]; 
+              mqtt_init(&client, sockfd, sendbuf, sizeof(sendbuf), recvbuf, sizeof(recvbuf), NULL);              
+              mqtt_connect(&client, c_name, NULL, NULL, 0, NULL, NULL, 0, 400);
+              if (client.error != MQTT_OK) {
+                  fprintf(stderr, "error b: %s\n", mqtt_error_str(client.error));
+                  exit_example(EXIT_FAILURE, sockfd, NULL);
+              }
+              pthread_t client_daemon;
+              if(pthread_create(&client_daemon, NULL, client_refresher, &client)) {
+                  fprintf(stderr, "Failed to start client daemon.\n");
+                  exit_example(EXIT_FAILURE, sockfd, NULL);
+              }           
+              // tenta novamente
+              mqtt_publish(&client, id_topic, str, strlen(str) + 1, MQTT_PUBLISH_QOS_0);   
+          }
+          // close(sockfd);
+          // pthread_cancel(client_daemon);
+          /////////////////////////////////////////////
         }
       }
     }
@@ -176,9 +188,10 @@ static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer da
   return TRUE;
 }
 
-int
 main (int argc, char *argv[])
 {
+
+  c_name = client_name(5);
 
 	if (argc != 5) {
       g_printerr ("Usage: Sensitiveness Topic MQTT_SERVER_IP MQTT_SERVER_PORT \n");
@@ -189,42 +202,29 @@ main (int argc, char *argv[])
 
     strcpy(id_topic, argv[2]);
 
-    // const char* addr  = "172.17.0.1";
-    // const char* port  = "1883";
+    mqtt_server_addr  = argv[3];
+    mqtt_server_port  = argv[4];
 
-    const char* addr  = argv[3];
-    const char* port  = argv[4];
+  // MQTT client
+  int sockfd = open_nb_socket(mqtt_server_addr, mqtt_server_port);
+  if (sockfd == -1) {
+      perror("Failed to open socket: ");
+      exit_example(EXIT_FAILURE, sockfd, NULL);
+  }
+  uint8_t sendbuf[2048]; 
+  uint8_t recvbuf[1024]; 
 
-    /* open the non-blocking TCP socket (conmqtt/src/mqtt.c mqtt/src/mqtt_pal.c -l pthread necting to the broker) */
-    int sockfd = open_nb_socket(addr, port);
-
-    if (sockfd == -1) {
-        perror("Failed to open socket: ");
-        exit_example(EXIT_FAILURE, sockfd, NULL);
-    }
-
-    uint8_t sendbuf[2048]; /* sendbuf should be large enough to hold multiple whole mqtt messages */
-    uint8_t recvbuf[1024]; /* recvbuf should be large enough any whole mqtt message expected to be received */
-    mqtt_init(&client, sockfd, sendbuf, sizeof(sendbuf), recvbuf, sizeof(recvbuf), publish_callback);
-    mqtt_connect(&client, "subscribing_client", NULL, NULL, 0, NULL, NULL, 0, 400);
-
-    /* check that we don't have any errors */
-    if (client.error != MQTT_OK) {
-        fprintf(stderr, "error: %s\n", mqtt_error_str(client.error));
-        exit_example(EXIT_FAILURE, sockfd, NULL);
-    }
-
-    /* start a thread to refresh the client (handle egress and ingree client traffic) */
-    pthread_t client_daemon;
-    if(pthread_create(&client_daemon, NULL, client_refresher, &client)) {
-        fprintf(stderr, "Failed to start client daemon.\n");
-        exit_example(EXIT_FAILURE, sockfd, NULL);
-    }
-
-    /* subscribe */
-    //mqtt_subscribe(&client, topic, 0);
-
-//    mqtt_publish(&client, topic, "abc", 3, 1);
+  mqtt_init(&client, sockfd, sendbuf, sizeof(sendbuf), recvbuf, sizeof(recvbuf), NULL);
+  mqtt_connect(&client, c_name, NULL, NULL, 0, NULL, NULL, 0, 400);
+  if (client.error != MQTT_OK) {
+      fprintf(stderr, "error c: %s\n", mqtt_error_str(client.error));
+      exit_example(EXIT_FAILURE, sockfd, NULL);
+  }
+  pthread_t client_daemon;
+  if(pthread_create(&client_daemon, NULL, client_refresher, &client)) {
+      fprintf(stderr, "Failed to start client daemon.\n");
+      exit_example(EXIT_FAILURE, sockfd, NULL);
+  }
 
   GstElement *audiotestsrc, *audioconvert, *level, *fakesink;
   GstElement *pipeline;
@@ -289,46 +289,3 @@ main (int argc, char *argv[])
   g_main_loop_unref (loop);
   return 0;
 }
-
-
-
-
-
-
-
-
-/*
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <gst/gst.h>
-#include <glib.h>
-
-int main(int argc, char *argv[]){
-
-    if (argc != 3) {
-      g_printerr ("Usage:IP_DEST PORT \n");
-      return -1;
-    }
-
-    GstElement *pipeline;
-    GError *err = NULL;
-    GMainLoop *loop;
-
-    gst_init(&argc, &argv);
-    loop = g_main_loop_new(NULL, FALSE);
-
-    char* pipeline_string;
-
-    asprintf(&pipeline_string, "udpsrc port=5000 \
-    ! udpsink host=%s port=%d", argv[1], atoi(argv[2]));
-
-    pipeline = gst_parse_launch(pipeline_string, &err);
-
-    gst_element_set_state(pipeline, GST_STATE_PLAYING);
-
-    g_main_loop_run(loop);
-
-    return 0;
-}
-*/

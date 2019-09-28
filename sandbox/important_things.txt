@@ -239,3 +239,6 @@ apk add tcpdump
 apk add ethtool
 
 ethtool -S <interface> | grep -E 'rx_packets|tx_packets|rx_bytes|tx_bytes'
+
+to know if a packet is sent to a host
+ngrep -q '.' host '172.17.0.5'

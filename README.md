@@ -106,14 +106,17 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 ## Types of Suported SRC
 
 * Video Sample Test
-* USB devices
+* Audio Sample Test
+* Local USB cameras devices
 * RTSP devices
+* Local Mic devices
 
 ## Types of Suported VMS
 
 * UDP to UDP
 * Crop video and send to UDP
 * Greyscale and send to UDP
+* Noise Detection
 
 ## Important things to do
 

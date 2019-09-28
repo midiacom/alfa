@@ -12,7 +12,8 @@ RUN apk add --update --no-cache \
     gst-plugins-bad \
     gst-libav \
     pulseaudio \
-    pulseaudio-alsa    
+    pulseaudio-alsa \
+    tcpdump    
 
 # copy my files to the container
 COPY ./mqtt ./mqtt
