@@ -50,8 +50,10 @@ Before using the system you need to build the dockerfiles of SRC and VMS. To do 
 
 ```
 1 - Access the folder alfa
-2 - sudo ./setup.sh
+2 - sudo ./compile_src_and_vms.sh
 ```
+
+**tip:** if you need to kill all the VMS and SRC you can run **./kill_all_running_src_and_plugins.sh** at this folder
 
 ## To run the API
 
