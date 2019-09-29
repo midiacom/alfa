@@ -45,12 +45,16 @@ gst-launch-1.0 \
         striped 
         responsive="sm">
 
-        <template slot="containerId" slot-scope="row">
+        <template v-slot:cell(ipAddress)="row">
+            {{row.item.containerInfo.NetworkSettings.Networks.bridge.IPAddress }}
+        </template>
+
+        <template v-slot:cell(containerId)="row">
             {{row.item.containerId | truncate(12, ' ')}}
         </template>
 
-        <template slot="[Status]" slot-scope="row">
-            {{ row.item.containerInfo.State }}
+        <template v-slot:cell(status)="row">
+            {{ row.item.containerInfo.State }} /
             {{ row.item.containerInfo.Status }}
         </template>
 
@@ -111,10 +115,14 @@ export default {
                 key: 'vmsType',
             },{
                 key: 'startupParameters'
+            },{
+                key: 'ipAddress',
+                label: 'Internal IP'
             },{            
                 key: 'bindedTo'
             },{
-                key: 'Status'
+                key: 'Status',
+                label:'Status / Up Time'
             },{
                 key:'actions',
                 class: 'vmsIndexActions2'
