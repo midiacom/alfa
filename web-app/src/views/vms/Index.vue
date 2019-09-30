@@ -49,13 +49,17 @@ gst-launch-1.0 \
             {{row.item.containerInfo.NetworkSettings.Networks.bridge.IPAddress }}
         </template>
 
-        <template v-slot:cell(containerId)="row">
+        <template v-slot:cell(dockerId)="row">
             {{row.item.containerId | truncate(12, ' ')}}
         </template>
 
+
         <template v-slot:cell(status)="row">
-            {{ row.item.containerInfo.State }} /
-            {{ row.item.containerInfo.Status }}
+                
+            <span style="text-transform: capitalize">
+                {{row.item.containerInfo.State }} /
+            </span>
+                {{ row.item.containerInfo.Status }}
         </template>
 
       <template v-slot:cell(actions)="row">
@@ -114,10 +118,13 @@ export default {
             fields: [{
                 key: 'vmsType',
             },{
+                key: 'dockerId',
+                label: 'Container ID'
+            },{
                 key: 'startupParameters'
             },{
                 key: 'ipAddress',
-                label: 'Internal IP'
+                label: 'IP'
             },{            
                 key: 'bindedTo'
             },{

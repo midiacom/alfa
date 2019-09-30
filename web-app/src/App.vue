@@ -3,8 +3,7 @@
     <b-container fluid class="h-100">
       <b-row id="head">
         <h1>
-          <v-icon style="width: 32px;" name="airplay"></v-icon>
-          Virtual Multimedia Sensor Manager
+          <img src="prism.png"> V-PRISM Manager
         </h1>
       </b-row>
       <b-row>        

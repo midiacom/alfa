@@ -122,10 +122,14 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 
 ## Important things to do
 
-1 - Create a "import" to basic configurations
-2 - Login and password feature
-3 - Create a way do remove gst_bin_remove_many elementos from SRC queue (when stop the VMS)
-4 - Create a VMS that use data from two different SRCs
+* Login and password feature
+* Create a way do remove gst_bin_remove_many elementos from SRC queue (when stop the VMS)
+* Create a VMS that use data from two different SRCs
+* Test if using TCP instead of UDP is a better way to comunicate VMS and SRC. In this scenario VMS will be the client and SRC will be the server and the bind function will call the VMS to start a new TCP comunication with the SRC.
+
+### Done 
+* Create a "import" to basic configurations (ok)
+* Create a mic SRC and noise detector VMS
 
 ## Roadmap
 
@@ -146,7 +150,7 @@ https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be
 * VUEJS https://vuejs.org/
 * Bootstrap VUE https://bootstrap-vue.js.org/
 * Lib icons: https://feathericons.com/
-
+* The logo was created by https://www.flaticon.com/free-icon/refraction_308781#term=prism&page=1&position=33
 # links importantes
 
 * https://embeddedartistry.com/blog/2018/2/22/generating-gstreamer-pipeline-graphs how to plot dot files from gstreamer pipelines

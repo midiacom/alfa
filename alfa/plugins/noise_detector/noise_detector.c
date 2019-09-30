@@ -19,13 +19,22 @@ gst-launch-1.0 alsasrc device=hw:0 \
   ! audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved \
   ! udpsink host=localhost port=5000
 
+gst-launch-1.0 alsasrc device=hw:0 \
+  ! tee name=t \
+  ! queue \
+  ! audioconvert \
+  ! audioresample \
+  ! audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved \
+  ! udpsink host=35.153.160.117 port=5000
+
 ./noise_detector 0.01 altola 172.17.0.1 1883
 ./start.sh 0.01 alto 172.17.0.1 1883
 
-To create de dockerfile
+To create de dockerfile./noise_detector 0.01 altola 172.17.0.1 1883
 docker build . -t alfa/plugin/noise_detector
 
-docker run alfa/plugin/noise_detector 0.1 alert 172.17.0.1 1883
+docker run alfa/plugin/noise_detector 0.02 alert 172.17.0.1 1883
+docker run alfa/plugin/noise_detector 0.02 alert_anselmo test.mosquitto.org 1883
 
 export GST_DEBUG="*:3"
 */
