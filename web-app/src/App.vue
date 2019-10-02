@@ -26,7 +26,7 @@
                   </router-link>
                 </li>
                 <li class="subMenu">
-                  <router-link to="/vms/stopped">- All States</router-link>
+                  <router-link to="/vms/stopped">- All VMSs Started</router-link>
                 </li>
               </ul>
             </li>
@@ -140,6 +140,10 @@ html,body {
 .v-icon,
 .custom-icon {
     width: 20px;
+}
+
+label {
+  font-weight: bold;
 }
 
 </style>

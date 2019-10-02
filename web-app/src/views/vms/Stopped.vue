@@ -4,7 +4,7 @@
         <b-col>            
             <h2>
                 <v-icon style="width: 32px;" name="pause-circle"></v-icon>
-                VMS in All States (Running and Stopped)
+                All VMSs Started (Running and Stopped)
             </h2>
         </b-col>
     </b-row>
@@ -15,25 +15,24 @@
         striped 
         responsive="sm">
 
-        <template slot="vmsType" slot-scope="row">
+        <template v-slot:cell(vmsType)="row">
             {{row.item.vmsType.name}}
         </template>
 
-        <template slot="containerId" slot-scope="row">
+        <template v-slot:cell(dockerId)="row">
             {{row.item.dockerId | truncate(12, ' ')}}
         </template>
 
       <template v-slot:cell(actions)="row">
-            <!--
-            <b-button variant="success" size="sm" @click="detailsVms(row.item)" class="mr-2">
-                <v-icon name="refresh-cw"></v-icon>
-                Restart
-            </b-button>
-            -->
             <b-button variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
                 <v-icon name="trash"></v-icon>
                 Remove
             </b-button>
+
+            <!-- <b-button variant="success" size="sm" @click="restartVms(row.item)" class="mr-2">
+                <v-icon name="play-circle"></v-icon>
+                Restart
+            </b-button> -->
       </template>        
 
         <div slot="table-busy" class="text-center text-danger my-2">
@@ -66,7 +65,9 @@ export default {
         return {
             isBusy: true,
             fields: [{
-                key: 'containerId',
+                key: 'dockerId',
+            }, {
+                key: 'name',
             },{
                 key: 'vmsType'
             },{
@@ -79,6 +80,16 @@ export default {
         }
     },
     methods: {
+        restartVms (vms) {
+            let form = {
+                name: vms.name,
+                vmsType: '',
+                startupParameters: ''
+            };
+
+            console.log(vms)
+        },
+
         detailsVms (vms) {
             this.$router.push(`/vms/${vms.containerId}/details`)
         },
@@ -105,6 +116,7 @@ export default {
             this.isBusy = true
             apiVms.getStoppedVms()
                 .then((data) => {
+                    console.log(data)
                     this.items = data
                     this.isBusy = false
                 })
@@ -122,7 +134,7 @@ export default {
 
 <style>
     .vmsIndexActionsStopped {
-        width: 130px;
+        width: 230px;
         text-align: center;
     }
 </style>

@@ -18,9 +18,10 @@ const vmsController = {
                 container.start()
                 .then((data) => {
                   const vms = new vmsModel({
+                    name: req.body.name,
                     dockerId: data.id,
                     startupParameters: startupParameters,
-                    vmsType: vmsType
+                    vmsType: vmsType,
                   })                
                   
                   vms.save((err,vms) => {
@@ -107,6 +108,7 @@ const vmsController = {
                   if (res) {
                     let vmsInfo = {
                       '_id': res.id,
+                      'name': res.name,
                       'containerId': res.dockerId,
                       'startupParameters': res.startupParameters,
                       'containerInfo': containerInfo,
@@ -180,6 +182,7 @@ const vmsController = {
 
     let vmsId = req.params.vmsId;
     let deviceId = req.params.deviceId;
+    let port = req.params.port;
 
     vmsModel.findById(vmsId)
       .then((vms) => {
@@ -195,7 +198,7 @@ const vmsController = {
               if (!err) {
                 // 2 - Send to MQQT the IP and PORT of this VMS, it will be published 
                 // in a topic with the name of the device ID
-                client.publish(deviceId, `${ipDockerContainer};5000`)
+                client.publish(deviceId, `${ipDockerContainer};${port}`)
                 
                 vms.bindedTo = deviceId;
 

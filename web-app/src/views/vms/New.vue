@@ -31,6 +31,10 @@
             </b-form-group>
             <hr>
 
+            <b-form-group id="input-group-2" label="Name:" label-for="name">
+                <b-form-input id="name" v-model="form.name" type="text"/>
+            </b-form-group>
+
             <b-form-group id="input-group-3" label="Startup Parameters:" label-for="startupParameters">
                 <b-form-input id="startupParameters" v-model="form.startupParameters" type="text"/>
             </b-form-group>
@@ -66,6 +70,7 @@ export default {
                 description: ''
             },
             form: {
+                name: '',
                 vmsType: '',
                 startupParameters: ''
             },
@@ -77,7 +82,7 @@ export default {
         }
     },
     methods: {
-        onSubmit(evt) {
+        onSubmit() {
             this.isLoading = true;
             apiVms.newVms(this.form)
                 .then(() => {
@@ -88,6 +93,7 @@ export default {
                 .catch((e) => {
                     this.msg.text = `Error when creating VMS ${e}`
                     this.msg.type = "danger"
+                    this.isLoading = false;
                 })
         },
         refresh() {

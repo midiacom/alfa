@@ -118,6 +118,8 @@ export default {
             fields: [{
                 key: 'vmsType',
             },{
+                key: 'name'
+            },{
                 key: 'dockerId',
                 label: 'Container ID'
             },{

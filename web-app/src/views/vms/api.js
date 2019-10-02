@@ -22,7 +22,7 @@ export const apiVms = {
       return Promise.reject(new Error('Data not informed'))
     }
     return new Promise((resolve, reject) => {
-      config.api.get(`/vms/bindSrc/${data.vmsId}/${data.deviceId}`)
+      config.api.get(`/vms/bindSrc/${data.vmsId}/${data.deviceId}/${data.port}`)
         .then(resp => {
           resolve(resp.data)
         })

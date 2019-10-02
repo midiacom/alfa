@@ -16,9 +16,13 @@
 
         <b-form @submit="onSubmit">
 
-        <b-form-group id="input-group-3" label="Device With SRC Started:" label-for="deviceId">
+        <b-form-group id="input-group-2" label="Chose the device that will send the data:" label-for="deviceId">
             <b-form-select style="margin-top:0px!important" id="deviceId" v-model="form.deviceId" :options="devices" size="sm" class="mt-3"></b-form-select>
         </b-form-group>
+
+        <b-form-group id="input-group-3" label="In which port the VMS is listening?:" label-for="port">
+            <b-form-input id="port" v-model="form.port" type="text"/>
+        </b-form-group>        
 
         <b-row>
             <b-col>
@@ -44,7 +48,8 @@ export default {
             device: [],
             form: {
                 vmsId: '',
-                deviceId: ''
+                deviceId: '',
+                port: 5000
             },
             msg: {
                 text: false,

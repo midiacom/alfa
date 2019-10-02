@@ -6,6 +6,7 @@ var Schema   = mongoose.Schema;
 
 var vmsSchema = new Schema({
     'startupParameters' : String,
+    'name' : String,
     'dockerId' : String,
     'bindedTo': {
         type: Schema.Types.ObjectId,
