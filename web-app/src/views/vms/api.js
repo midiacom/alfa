@@ -31,6 +31,21 @@ export const apiVms = {
         })
       })
   },  
+
+  getType (data) {
+    if (!data) {
+      return Promise.reject(new Error('Data not informed'))
+    }
+    return new Promise((resolve, reject) => {
+      config.api.get(`/vms/type/${data}`)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch((e) => {
+          reject(new Error(`Error whem geting the VMS type ${e}`))
+        })
+      })
+  },  
   
   removeVms (vmsId) {
     if (!vmsId) {

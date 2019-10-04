@@ -4,6 +4,19 @@ const docker = require("../util/dockerApi")
 var mqtt = require('mqtt')
 
 const vmsController = {
+    getType: (req, res, next) => {
+      var id = req.params.id;
+      vmsModel.findById(id)
+      .populate('vmsType')
+      .exec()
+      .then((result) => {
+          if (!result) {
+              return res.status(404).send()
+          }          
+          return res.status(201).json(result.vmsType);
+      })
+    },
+
     post: (req, res, next) => {
       docker.api()
         .then((api) => {

@@ -58,6 +58,7 @@ const vmsTypeController = {
             description: req.body.description,
             src: req.body.src,
             sdp: req.body.sdp,
+            ports: req.body.ports
         })                
         
         vmsType.save((err,vmsType) => {
@@ -88,6 +89,7 @@ const vmsTypeController = {
             vmsType.description = req.body.description
             vmsType.src = req.body.src
             vmsType.sdp = req.body.sdp
+            vmsType.ports = req.body.ports
 
             vmsType.save(function (err, vmsType) {
                 /* istanbul ignore next */ 

@@ -66,6 +66,7 @@ const bootstrapController = {
             description: 'This will get a UDP video stream and send it in greyscale',
             src: 0,
             sdp: '',
+            ports: '5000'
         }).save();
 
         const vmsTypeVms1 = await new vmsTypeModel({
@@ -75,6 +76,7 @@ const bootstrapController = {
             description: 'This plugin grabs a video and cut it ',
             src: 0,
             sdp: '',
+            ports: '5000'
         }).save();
 
         const vmsTypeVms2 = await new vmsTypeModel({
@@ -84,6 +86,7 @@ const bootstrapController = {
             description: 'This plugin will Forward UDP package',
             src: 0,
             sdp: '',
+            ports: '5000'
         }).save();
 
         const vmsTypeVms3 = await new vmsTypeModel({
@@ -93,6 +96,7 @@ const bootstrapController = {
             description: 'This send to a MQTT server the noise captured',
             src: 0,
             sdp: '',
+            ports: '5000'
         }).save();
 
         // create the devices

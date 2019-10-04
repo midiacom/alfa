@@ -7,7 +7,8 @@ var vmsTypeSchema = new Schema({
 	'description' : String,
 	'startupParameters' : String,
 	'src' : Number,
-	'sdp' : String
+	'sdp' : String,
+	'ports' : String
 },{
   timestamps: true
 });

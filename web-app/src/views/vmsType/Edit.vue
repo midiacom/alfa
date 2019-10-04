@@ -23,9 +23,13 @@
             <b-form-input id="description" v-model="form.description" type="text"/>
         </b-form-group>
 
-        <b-form-group id="input-group-4" label="Type of VMS:" label-for="src">
+        <b-form-group id="input-group-5" label="Type of VMS:" label-for="src">
             <b-form-radio v-model="form.src" name="src" value="0">Plugin</b-form-radio>
             <b-form-radio v-model="form.src" name="src" value="1">SRC</b-form-radio>            
+        </b-form-group>
+
+        <b-form-group v-show="form.src == 0" id="input-group-6" label="Ports (if more than one use ';'):" label-for="ports">
+            <b-form-input id="ports" v-model="form.ports" type="text" style="width: 200px"/>
         </b-form-group>
 
         <b-form-group v-show="form.src == 0" id="input-group-6" label="SDP File:" label-for="sdp">
@@ -59,7 +63,8 @@ export default {
                 startupParameters: '',
                 description: '',
                 src: '',
-                sdp: ''
+                sdp: '',
+                ports: 5000
             },
             msg: {
                 text: false,
@@ -90,6 +95,7 @@ export default {
                     this.form.description = vmsType.description
                     this.form.src = vmsType.src
                     this.form.sdp = vmsType.sdp
+                    this.form.ports = vmsType.ports
                 })
         }
     },

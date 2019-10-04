@@ -20,8 +20,10 @@
             <b-form-select style="margin-top:0px!important" id="deviceId" v-model="form.deviceId" :options="devices" size="sm" class="mt-3"></b-form-select>
         </b-form-group>
 
-        <b-form-group id="input-group-3" label="In which port the VMS is listening?:" label-for="port">
-            <b-form-input id="port" v-model="form.port" type="text"/>
+        <b-form-group id="input-group-3" label="In which port the VMS is listening for this data stream?" label-for="port">
+            <ul style="font-size: 18px; list-style: none">
+                <li v-for="port in ports" :key="port" ><label><input checked type="radio" v-model="form.port" name="port" :value=port>&nbsp;{{port}}</label></li>
+            </ul>
         </b-form-group>        
 
         <b-row>
@@ -46,6 +48,7 @@ export default {
         return {
             devices: [],
             device: [],
+            ports: [],
             form: {
                 vmsId: '',
                 deviceId: '',
@@ -72,10 +75,11 @@ export default {
         },
         refresh() {
             let id = this.$route.params.id;
+            console.log(id)
             this.form.vmsId = id;
-            apiVms.getVms(id)
-                .then(() => {
-                    // console.log(vms)
+            apiVms.getType(id)
+                .then((vmsType) => {
+                    this.ports = vmsType.ports.split(";")
                 })
 
             apiDevice.getDevicesToSelectSRCStarted()

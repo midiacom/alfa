@@ -28,6 +28,10 @@
                 <b-form-radio v-model="form.src" name="src" value="1">SRC</b-form-radio>            
             </b-form-group>
 
+            <b-form-group v-show="form.src == 0" id="input-group-6" label="Ports (if more than one use ';'):" label-for="ports">
+                <b-form-input id="ports" v-model="form.ports" type="text" style="width: 200px"/>
+            </b-form-group>
+
             <b-form-group v-show="form.src == 0" id="input-group-6" label="SDP File:" label-for="sdp">
                 <textarea v-model="form.sdp" name="" id="" cols="90" rows="10">
                 </textarea>
@@ -68,7 +72,8 @@ export default {
                 startupParameters: '',
                 description: '',
                 src: 1,
-                sdp: ''
+                sdp: '',
+                ports: 5000
             },
             msg: {
                 text: false,
