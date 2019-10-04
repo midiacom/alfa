@@ -151,6 +151,7 @@ https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be
 * Bootstrap VUE https://bootstrap-vue.js.org/
 * Lib icons: https://feathericons.com/
 * The logo was created by https://www.flaticon.com/free-icon/refraction_308781#term=prism&page=1&position=33
+
 # links importantes
 
 * https://embeddedartistry.com/blog/2018/2/22/generating-gstreamer-pipeline-graphs how to plot dot files from gstreamer pipelines

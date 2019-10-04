@@ -2,9 +2,10 @@
   <div id="app" class="h-100">
     <b-container fluid class="h-100">
       <b-row id="head">
-        <h1>
-          <img src="prism.png"> V-PRISM Manager
-        </h1>
+        <div>
+          <img style="float:left;" src="prism.png"> 
+          <div style="font-size: 40px; float:left; margin-top:7px;"><em>&nbsp;V-PRISM Manager</em></div>
+        </div>
       </b-row>
       <b-row>        
         <b-col cols="2" id="menu">
