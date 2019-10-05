@@ -273,6 +273,10 @@ int addQueue(char *host, int port)
 	g_object_set(udpsink, "host", host, NULL);
 	g_object_set(udpsink, "port", port, NULL);
 
+	g_object_set(queue, "max-size-bytes", 65536, NULL);
+	g_object_set(queue, "max-size-buffers", 65536, NULL);
+	g_object_set(queue, "max-size-time", 65536, NULL);
+
 	if (!queue || !decodebin || !x264enc || !rtph264pay || !udpsink)
 	{
 		g_printerr("Not all elements could be created.\n");

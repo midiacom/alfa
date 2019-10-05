@@ -296,16 +296,17 @@ int addQueue(char *host, int port)
 	printf("\n%s - %d",host, port);
 	printf("\n -------------- \n");
 	// add a new queue to a tee :)
-	GstElement *queue, *decodebin, *x264enc, *rtph264pay, *udpsink;
-	queue = gst_element_factory_make("queue", NULL);
+	GstElement *queue, *queue2, *decodebin, *x264enc, *rtph264pay, *udpsink;
+	queue = gst_element_factory_make("queue2", NULL);
 	decodebin = gst_element_factory_make("decodebin", NULL);
 	x264enc = gst_element_factory_make("x264enc", NULL);
 	rtph264pay = gst_element_factory_make("rtph264pay", NULL);
+	queue2 = gst_element_factory_make("queue2", NULL);
 	udpsink = gst_element_factory_make("udpsink", NULL);
 
-	g_object_set(x264enc, "speed-preset", 6, NULL);
-	g_object_set(x264enc, "pass", 5, NULL);
-	g_object_set(x264enc, "quantizer", 25, NULL);
+	//g_object_set(x264enc, "speed-preset", 6, NULL);
+	//g_object_set(x264enc, "pass", 5, NULL);
+	//g_object_set(x264enc, "quantizer", 25, NULL);
 
 	g_object_set(udpsink, "host", host, NULL);
 	g_object_set(udpsink, "port", port, NULL);
@@ -316,7 +317,7 @@ int addQueue(char *host, int port)
 		return -1;
 	}
 
-	gst_bin_add_many(GST_BIN(pipeline), queue, decodebin, x264enc, rtph264pay, udpsink, NULL);
+	gst_bin_add_many(GST_BIN(pipeline), queue, decodebin, x264enc, rtph264pay, queue2, udpsink, NULL);
 
 	// link the tee -> queue -> decodebin
 	if (!gst_element_link_many(my_tee, queue, decodebin, NULL))
@@ -326,7 +327,7 @@ int addQueue(char *host, int port)
 	}
 
 	// link the x264 -> rtp -> udpsink
-	if (!gst_element_link_many(x264enc, rtph264pay, udpsink, NULL))
+	if (!gst_element_link_many(x264enc, rtph264pay, queue2, udpsink, NULL))
 	{
 		g_error("Failed to link elements B");
 		return -1;

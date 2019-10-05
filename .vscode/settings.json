@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "gst.h": "c"
+        "gst.h": "c",
+        "limits": "c"
     }
 }
