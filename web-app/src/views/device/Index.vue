@@ -89,8 +89,6 @@ export default {
             isBusy: true,
             isLoading: false,
             fields: [{
-                key: '_id'
-            },{
                 key: 'name',
             },{
                 key:'location'
@@ -164,7 +162,6 @@ export default {
                     this.isBusy = false
                 })
                 .catch(e => {
-                    console.log(e)
                     this.isBusy = false
                 })
         }

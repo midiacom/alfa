@@ -1,5 +1,6 @@
 <template>
     <div>
+        <loading :active.sync="isLoading" :is-full-page="true"></loading>      
         <h2>
             <v-icon style="width: 32px;" name="minimize-2"></v-icon>
             Bind VMS With a Device
@@ -41,11 +42,15 @@
 <script>
 import {apiVms} from './api'
 import {apiDevice} from '../device/api'
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
     name: 'vmsBind',
+    components: {Loading},
     data() {
         return {
+            isLoading: true,
             devices: [],
             device: [],
             ports: [],
@@ -62,28 +67,33 @@ export default {
     },
     methods: {
         onSubmit(evt) {
+            this.isLoading = true
             evt.preventDefault()
             apiVms.bindSrc(this.form)
                 .then(() => {
+                    this.isLoading = false
                     this.msg.text = "VMS binded"
                     this.msg.type = "success"
                 })
                 .catch((e) => {
+                    this.isLoading = false
                     this.msg.text = `Error when binding the VMS ${e}`
                     this.msg.type = "danger"
                 })
         },
         refresh() {
+            this.isLoading = true
             let id = this.$route.params.id;
-            console.log(id)
             this.form.vmsId = id;
             apiVms.getType(id)
                 .then((vmsType) => {
+                    this.isLoading = false
                     this.ports = vmsType.ports.split(";")
                 })
 
             apiDevice.getDevicesToSelectSRCStarted()
                 .then((devices) => {
+                    this.isLoading = false
                     this.devices = devices
                 })
         }

@@ -99,6 +99,17 @@ const bootstrapController = {
             ports: '5000'
         }).save();
 
+        const vmsTypeVms4 = await new vmsTypeModel({
+            name: 'VMS = Video Merge',
+            dockerImage: 'alfa/plugin/video_merge',
+            startupParameters: "IP PORT | Example 172.17.0.1 10001",
+            description: 'Merge two UDP videos and send it via UDP',
+            src: 0,
+            sdp: '',
+            ports: '15000;15001'
+        }).save();
+
+
         // create the devices
         const device0 = await new deviceModel({
             name: 'Video Sample Ball #1',

@@ -5,7 +5,17 @@ It takes the data from a RTSP câmera and send to many VMS
 
 Pipeline: 
 Capture RTSP video and send video 
-gst-launch-1.0  rtspsrc location=rtsp://192.168.0.102:8080/h264_ulaw.sdp \
+gst-launch-1.0  rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp \
+    ! tee name=t \
+    ! queue \
+    ! decodebin \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=localhost port=5000
+
+    ! x264enc pass=5 quantizer=25 speed-preset=6 \
+
+gst-launch-1.0  rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp \
     ! tee name=t \
     ! queue \
     ! decodebin \
@@ -117,7 +127,21 @@ int addQueue(char *host, int port);
 void publish_callback(void **unused, struct mqtt_response_publish *published);
 void *client_refresher(void *client);
 void exit_example(int status, int sockfd, pthread_t *client_daemon);
+char* c_name;
 
+#define ASCII_START 65
+#define ASCII_END 90
+
+char* client_name(int size) {
+    int i;
+    srand(time(0)); 
+    char *res = malloc(size + 1);
+    for(i = 0; i < size; i++) {
+        res[i] = (char) (rand()%(ASCII_END-ASCII_START))+ASCII_START;
+    }
+    res[i] = '\0';
+    return res;
+}
 void exit_example(int status, int sockfd, pthread_t *client_daemon)
 {
 	if (sockfd != -1)
@@ -268,9 +292,9 @@ static void cb_new_pad(GstElement *element, GstPad *pad, gpointer data)
 
 int addQueue(char *host, int port)
 {
-	// printf("\n -------------- \n");
-	// printf("\n%s - %d",host, port);
-	// printf("\n -------------- \n");
+	printf("\n -------------- \n");
+	printf("\n%s - %d",host, port);
+	printf("\n -------------- \n");
 	// add a new queue to a tee :)
 	GstElement *queue, *decodebin, *x264enc, *rtph264pay, *udpsink;
 	queue = gst_element_factory_make("queue", NULL);
@@ -278,6 +302,10 @@ int addQueue(char *host, int port)
 	x264enc = gst_element_factory_make("x264enc", NULL);
 	rtph264pay = gst_element_factory_make("rtph264pay", NULL);
 	udpsink = gst_element_factory_make("udpsink", NULL);
+
+	g_object_set(x264enc, "speed-preset", 6, NULL);
+	g_object_set(x264enc, "pass", 5, NULL);
+	g_object_set(x264enc, "quantizer", 25, NULL);
 
 	g_object_set(udpsink, "host", host, NULL);
 	g_object_set(udpsink, "port", port, NULL);
@@ -330,6 +358,7 @@ static void on_pad_added_rtsc(GstElement *element, GstPad *pad, gpointer data)
 
 int main(int argc, char *argv[])
 {
+	c_name = client_name(5);
 
 	if (argc != 3)
 	{
@@ -355,7 +384,7 @@ int main(int argc, char *argv[])
 	uint8_t sendbuf[2048]; /* sendbuf should be large enough to hold multiple whole mqtt messages */
 	uint8_t recvbuf[1024]; /* recvbuf should be large enough any whole mqtt message expected to be received */
 	mqtt_init(&client, sockfd, sendbuf, sizeof(sendbuf), recvbuf, sizeof(recvbuf), publish_callback);
-	mqtt_connect(&client, "subscribing_client", NULL, NULL, 0, NULL, NULL, 0, 400);
+	mqtt_connect(&client, c_name, NULL, NULL, 0, NULL, NULL, 0, 400);
 
 	/* check that we don't have any errors */
 	if (client.error != MQTT_OK)
