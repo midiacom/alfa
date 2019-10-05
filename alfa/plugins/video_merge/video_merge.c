@@ -15,16 +15,17 @@ Parameters:
 Lauch program
 ./video_merge localhost 5000
 
-Pipeline to send video (simulating SRC)
-gst-launch-1.0  videotestsrc pattern=ball \
-    ! tee name=t \
-    ! queue \
+
+// CAMERA
+gst-launch-1.0 v4l2src device=/dev/video0 \
     ! decodebin \
     ! x264enc \
     ! rtph264pay \
-    ! udpsink host=localhost port=5000
+    ! udpsink port=5000
 
-gst-launch-1.0  videotestsrc pattern=snow \
+///////// THIS FORWARD A UDP VIDEO 
+// get the video and sent via udp
+gst-launch-1.0  videotestsrc pattern=ball \
     ! tee name=t \
     ! queue \
     ! decodebin \
@@ -32,112 +33,53 @@ gst-launch-1.0  videotestsrc pattern=snow \
     ! rtph264pay \
     ! udpsink host=localhost port=5001
 
-
-================
-gst-launch-1.0  videomixer name=mixer ! videoconvert \
-  videotestsrc ! video/x-raw, framerate=10/1 ! mixer. \
-  udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-  ! rtph264depay \
-  ! decodebin \
-  ! videoconvert \
-  ! mixer.
-  
-
-gst-launch-1.0 videomixer name=mixer sink_1::alpha=0.5 sink_1::xpos=50 sink_1::ypos=50 ! \
-  videoconvert ! ximagesink \
-  videotestsrc pattern=snow timestamp-offset=3000000000 ! \
-  "video/x-raw,format=AYUV,width=640,height=480,framerate=(fraction)30/1" ! \
-  queue2 ! mixer. \
-  videotestsrc pattern=smpte ! \
-  "video/x-raw,format=AYUV,width=800,height=600,framerate=(fraction)10/1" ! \
-  queue2 ! mixer.
-Acima funciona 
-
-gst-launch-1.0   \
-    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-    ! rtph264depay \
-    videoscale ! video/x-raw,width=640,height=360 ! \
-    compositor name=mix sink_0::alpha=1 sink_1::alpha=1 sink_1::xpos=50 sink_1::ypos=50 !   \
-    videoconvert ! autovideosink \
-    videotestsrc pattern=ball ! \
-    decodebin ! videoconvert ! \
-    videoscale ! video/x-raw,width=320,height=180! \
-    mix.
-
+// encaminha
 gst-launch-1.0 \
-    compositor name=videomix sink_1::alpha=0.5 sink_1::xpos=50 sink_1::ypos=50 \
-    ! autovideosink \
-    videotestsrc pattern=pinwheel \
-    ! videoscale \
-    ! video/x-raw,width=800 \
-    ! videomix.
-    videotestsrc pattern=bar \
-    ! videoscale \
-    videotestsrc pattern=smpte ! \
-    "video/x-raw,format=AYUV,width=800,height=600,framerate=(fraction)10/1" ! \    
-    ! video/x-raw,width=100 \
-    ! videomix.
-
-
-
-
-gst-launch-1.0 compositor name=videomix sink_0::alpha=0.2 sink_0::xpos=50 sink_0::ypos=50 ! autovideosink \
-    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-        ! rtph264depay \
-        ! decodebin \
-        ! videoconvert \
-        ! videomix.
-    ! videotestsrc \
-        ! videotestsrc \
-        ! video/x-raw,width=1000 \
-        ! videomix. \
-
-gst-launch-1.0 -e videotestsrc pattern="snow" ! video/raw, framerate=10/1, width=200, height=150 ! videomixer name=mix ! \
-    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-        ! rtph264depay \
-        ! decodebin \
-        ! videoconvert \
-        ! mix.
-
-gst-launch-1.0 -v videomixer name=mix ! videoconvert ! autovideosink \
-    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-    ! rtph264depay \
-    ! avdec_h264 \
-    ! videobox left=-642 border-alpha=0.5 \
-    ! mix. \
-    udpsrc port=5001 \
-    ! rtph264depay \
-    ! avdec_h264 \
-    ! videobox left=0 border-alpha=0.5 \
-    ! mix.
-================
-// send video inside a container
-gst-launch-1.0 v4l2src device=/dev/video0 \
-    ! decodebin \
+    videomixer name=m sink_1::xpos=10 sink_1::ypos=10 sink_2::xpos=170 sink_2::ypos=10  \
     ! x264enc \
     ! rtph264pay \
-    ! udpsink host=localhost port=5000
- 
-Pipeline to show video (simulating the application)
+    ! udpsink host=localhost port=10001 \
+    videotestsrc pattern=white \
+    ! video/x-raw, format=I420, framerate=5/1, width=330, height=170 \
+    ! m. \
+    udpsrc port=15000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! videoscale \
+    ! video/x-raw,width=150,height=150 \
+    ! queue \
+    ! m. \
+    udpsrc port=15001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! videoscale \
+    ! video/x-raw,width=150,height=150 \
+    ! queue \
+    ! m.
+
+    videotestsrc pattern=green \
+    ! videobox left=500 \
+    ! video/x-raw, format=I420, framerate=5/1, width=300, height=200 \
+    ! queue \
+    ! m.
+
+// show the video
 gst-launch-1.0 \
-    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    udpsrc port=10001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! queue max-size-bytes=65536 max-size-buffers=65536 max-size-time=10 \
     ! rtph264depay \
     ! decodebin \
     ! videoconvert \
     ! autovideosink
 
-
-gst-launch-1.0 \
-    udpsrc port=5001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-    ! rtph264depay \
-    ! decodebin \
-    ! videoconvert \
-    ! autovideosink
+///////// THIS SEND A UDP VIDEO 
 
 To create de dockerfile
-docker build . -t alfa/plugin/udp_video_crop
+docker build . -t alfa/plugin/video_merge
 
-docker run alfa/plugin/udp_video_crop 100 100 100 100 172.17.0.1 5001
+docker run alfa/plugin/video_merge 172.17.0.1 5000
 
 export GST_DEBUG="*:3"
 */
@@ -149,8 +91,8 @@ export GST_DEBUG="*:3"
 
 int main(int argc, char *argv[]){
 
-    if (argc != 7) {
-      g_printerr ("Usage:TOP LEFT RIGHT BOTTOM IP_DEST PORT \n");
+    if (argc != 3) {
+      g_printerr ("Usage:IP_DEST PORT \n");
       return -1;
     }
 
@@ -163,13 +105,29 @@ int main(int argc, char *argv[]){
 
     char* pipeline_string;
 
-    asprintf(&pipeline_string, "udpsrc port=5000 caps = \"application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96\" \
-    ! rtph264depay \
-    ! decodebin \
-    ! videocrop top=%d left=%d right=%d bottom=%d \
+    asprintf(&pipeline_string, "videomixer name=m sink_1::xpos=10 sink_1::ypos=10 sink_2::xpos=170 sink_2::ypos=10  \
     ! x264enc \
     ! rtph264pay \
-    ! udpsink host=%s port=%d",atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), argv[5], atoi(argv[6]));
+    ! udpsink host=%s port=%d \
+    videotestsrc pattern=white \
+    ! video/x-raw, format=I420, framerate=5/1, width=330, height=170 \
+    ! m. \
+    udpsrc port=15000 caps = \"application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96\" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! videoscale \
+    ! video/x-raw,width=150,height=150 \
+    ! queue \
+    ! m. \
+    udpsrc port=15001 caps = \"application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96\" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! videoscale \
+    ! video/x-raw,width=150,height=150 \
+    ! queue \
+    ! m.",argv[1], atoi(argv[2]));
 
     pipeline = gst_parse_launch(pipeline_string, &err);
 

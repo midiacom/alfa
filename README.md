@@ -126,6 +126,7 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 * Create a way do remove gst_bin_remove_many elementos from SRC queue (when stop the VMS)
 * Create a VMS that use data from two different SRCs
 * Test if using TCP instead of UDP is a better way to comunicate VMS and SRC. In this scenario VMS will be the client and SRC will be the server and the bind function will call the VMS to start a new TCP comunication with the SRC.
+* The binded to column needs to be changed because now a vms can be binded to two or more SRC
 
 ### Done 
 * Create a "import" to basic configurations (ok)

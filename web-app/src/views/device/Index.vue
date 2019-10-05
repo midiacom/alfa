@@ -89,6 +89,8 @@ export default {
             isBusy: true,
             isLoading: false,
             fields: [{
+                key: '_id'
+            },{
                 key: 'name',
             },{
                 key:'location'

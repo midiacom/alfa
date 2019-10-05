@@ -245,3 +245,79 @@ ngrep -q '.' host '172.17.0.5'
 
 
 docker ps --format 'table {{.ID}}\t{{.Image}}\t{{.Command}}\t{{.RunningFor}}'
+
+
+
+
+
+
+
+
+
+
+
+
+
+================ BACKUP
+
+================
+// compact and send
+gst-launch-1.0 \
+    videomixer name=m sink_1::xpos=50 sink_1::ypos=50 sink_2::xpos=400 sink_2::ypos=50  \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=localhost port=5000 \
+    videotestsrc pattern=white \
+    ! video/x-raw, format=I420, framerate=5/1, width=740, height=480 \
+    ! m. \
+    videotestsrc pattern=red \
+    ! videobox left=100 \
+    ! video/x-raw, format=I420, framerate=5/1, width=300, height=200 \
+    ! queue \
+    ! m. \
+    videotestsrc pattern=green \
+    ! videobox left=500 \
+    ! video/x-raw, format=I420, framerate=5/1, width=300, height=200 \
+    ! queue \
+    ! m.
+=================================
+
+
+
+
+gst-launch-1.0 \
+    videomixer name=m sink_1::xpos=50 sink_1::ypos=50 sink_2::xpos=400 sink_2::ypos=50  \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=localhost port=5000 \
+    videotestsrc pattern=white \
+    ! video/x-raw, format=I420, framerate=5/1, width=740, height=480 \
+    ! m. \
+    videotestsrc pattern=blue \
+    ! videobox left=100 \
+    ! video/x-raw, format=I420, framerate=5/1, width=300, height=200 \
+    ! queue \
+    ! m. \
+    videotestsrc pattern=green \
+    ! videobox left=500 \
+    ! video/x-raw, format=I420, framerate=5/1, width=300, height=200 \
+    ! queue \
+    ! m.
+
+// show the video
+gst-launch-1.0 \
+    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! queue max-size-bytes=65536 max-size-buffers=65536 max-size-time=10 \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
+
+gst-launch-1.0 \
+    udpsrc port=10001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! queue max-size-bytes=65536 max-size-buffers=65536 max-size-time=10 \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
+

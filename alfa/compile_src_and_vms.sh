@@ -85,6 +85,13 @@ cecho "GREEN"
 cd ../../plugins/noise_detector
 docker build . -t alfa/plugin/noise_detector
 
+cecho "GREEN" 
+cecho "GREEN" ----------------------
+cecho "GREEN" "Build Plugin Video Merge Plugin"
+cecho "GREEN" ----------------------
+cecho "GREEN" 
+cd ../../plugins/video_merge
+docker build . -t alfa/plugin/video_merge
 
 cecho "GREEN" "-----------------------------"
 cecho "GREEN" "The installation was completed"
