@@ -107,18 +107,19 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 
 ## Types of Suported SRC
 
-* Video Sample Test
-* Audio Sample Test
-* Local USB cameras devices
-* RTSP devices
-* Local Mic devices
+* Video Sample Test: you can create a device that generate the "samples" videos like bars, running balls, snow;
+* Audio Sample Test: send a stream of a classical music to test audio;
+* Local USB cameras devices: conect to a USB local câmera
+* RTSP devices: connect to a device that uses RTSP protocol
+* Local Mic devices: connect to a mic device
 
 ## Types of Suported VMS
 
-* UDP to UDP
-* Crop video and send to UDP
-* Greyscale and send to UDP
-* Noise Detection
+* UDP to UDP: forward UDP packages, independently of its content
+* Crop video and send to UDP: cut (top, middle, right and left of a video)
+* Greyscale and send to UDP: convert a color video into a grayscale one
+* Noise Detection: you can define the noise level and the result will be sent to an mqtt server
+* Video Merge: grab two videos and convert it into only one video stream
 
 ## Important things to do
 
