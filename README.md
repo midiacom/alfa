@@ -119,7 +119,7 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 * Crop video and send to UDP: cut (top, middle, right and left of a video)
 * Greyscale and send to UDP: convert a color video into a grayscale one
 * Noise Detection: you can define the noise level and the result will be sent to an mqtt server
-* Video Merge: grab two videos and convert it into only one video stream
+* Video Merge: grab two video streams and convert it into only one video stream
 
 ## Important things to do
 
