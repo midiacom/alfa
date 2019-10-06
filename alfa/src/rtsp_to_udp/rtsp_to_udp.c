@@ -5,9 +5,26 @@ It takes the data from a RTSP câmera and send to many VMS
 
 Pipeline: 
 Capture RTSP video and send video 
+
 gst-launch-1.0  rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp \
     ! tee name=t \
     ! queue \
+    ! decodebin \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=localhost port=5000 \
+
+gst-launch-1.0  rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp \
+    ! tee name=t \
+    ! queue \
+	! rtpjitterbuffer \
+    ! decodebin \
+    ! autovideosink
+
+gst-launch-1.0  rtspsrc location=rtsp://192.168.0.100:8080/h264_ulaw.sdp \
+    ! tee name=t \
+    ! queue \
+	! rtpjitterbuffer \
     ! decodebin \
     ! x264enc \
     ! rtph264pay \
@@ -84,18 +101,20 @@ gst-launch-1.0 \
 
 Second stream 
 gst-launch-1.0 \
-    udpsrc port=5001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    udpsrc port=10001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
     ! rtph264depay \
     ! decodebin \
     ! videoconvert \
-    ! autovideosink
+    ! glimagesink
+
+192.168.0.104 10001
 
 Parameters:
 	- id of the device
     - path to rtsp 
 
 Lauch program
-./rtsp_to_udp 123456 rtsp://192.168.0.102:8080/h264_ulaw.sdp
+./rtsp_to_udp 123456 rtsp://192.168.0.100:8080/h264_ulaw.sdp
 
 To create de dockerfile
 
@@ -296,8 +315,9 @@ int addQueue(char *host, int port)
 	printf("\n%s - %d",host, port);
 	printf("\n -------------- \n");
 	// add a new queue to a tee :)
-	GstElement *queue, *queue2, *decodebin, *x264enc, *rtph264pay, *udpsink;
+	GstElement *queue, *queue2, *rtpjitterbuffer, *decodebin, *x264enc, *rtph264pay, *udpsink;
 	queue = gst_element_factory_make("queue2", NULL);
+	rtpjitterbuffer = gst_element_factory_make("rtpjitterbuffer", NULL);
 	decodebin = gst_element_factory_make("decodebin", NULL);
 	x264enc = gst_element_factory_make("x264enc", NULL);
 	rtph264pay = gst_element_factory_make("rtph264pay", NULL);
@@ -307,20 +327,23 @@ int addQueue(char *host, int port)
 	//g_object_set(x264enc, "speed-preset", 6, NULL);
 	//g_object_set(x264enc, "pass", 5, NULL);
 	//g_object_set(x264enc, "quantizer", 25, NULL);
+	
+	g_object_set(x264enc, "tune", "zerolatency", NULL);
+	g_object_set(rtpjitterbuffer, "latency", 1000, NULL);
 
 	g_object_set(udpsink, "host", host, NULL);
 	g_object_set(udpsink, "port", port, NULL);
 
-	if (!queue || !decodebin || !x264enc || !rtph264pay || !udpsink)
+	if (!queue || !rtpjitterbuffer || !decodebin || !x264enc || !rtph264pay || !udpsink)
 	{
 		g_printerr("Not all elements could be created.\n");
 		return -1;
 	}
 
-	gst_bin_add_many(GST_BIN(pipeline), queue, decodebin, x264enc, rtph264pay, queue2, udpsink, NULL);
+	gst_bin_add_many(GST_BIN(pipeline), queue, rtpjitterbuffer, decodebin, x264enc, rtph264pay, queue2, udpsink, NULL);
 
 	// link the tee -> queue -> decodebin
-	if (!gst_element_link_many(my_tee, queue, decodebin, NULL))
+	if (!gst_element_link_many(my_tee, queue, rtpjitterbuffer, decodebin, NULL))
 	{
 		g_error("Failed to link elements A");
 		return -1;

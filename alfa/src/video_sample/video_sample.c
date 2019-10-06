@@ -93,11 +93,10 @@ int addQueue(char *host, int port);
 void publish_callback(void **unused, struct mqtt_response_publish *published);
 void *client_refresher(void *client);
 void exit_example(int status, int sockfd, pthread_t *client_daemon);
-char* c_name;
 
+char* c_name;
 #define ASCII_START 65
 #define ASCII_END 90
-
 char* client_name(int size) {
     int i;
     srand(time(0)); 
@@ -366,6 +365,7 @@ int main(int argc, char *argv[])
 	my_tee = gst_element_factory_make("tee", "tee");
 
 	g_object_set(src, "pattern", atoi(argv[2]), NULL);
+	g_object_set(src, "horizontal-speed", 2, NULL);
 
 	if (!pipeline || !src || !my_tee)
 	{

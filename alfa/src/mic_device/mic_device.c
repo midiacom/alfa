@@ -71,6 +71,20 @@ void publish_callback(void** unused, struct mqtt_response_publish *published);
 void* client_refresher(void* client);
 void exit_example(int status, int sockfd, pthread_t *client_daemon);
 
+char* c_name;
+#define ASCII_START 65
+#define ASCII_END 90
+char* client_name(int size) {
+    int i;
+    srand(time(0)); 
+    char *res = malloc(size + 1);
+    for(i = 0; i < size; i++) {
+        res[i] = (char) (rand()%(ASCII_END-ASCII_START))+ASCII_START;
+    }
+    res[i] = '\0';
+    return res;
+}
+
 void exit_example(int status, int sockfd, pthread_t *client_daemon)
 {
     if (sockfd != -1) close(sockfd);
@@ -191,7 +205,6 @@ int sigintHandler(int unused) {
 }
 
 int addQueue(char* host, int port) {
-	printf("aaaaaaaaaaaa");
 	GstElement *queue, *audioconvert, *audioresample, *udpsink;
 	GstCaps *caps = gst_caps_from_string ("audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved");	
 	GstElement *capsfilter2 = gst_element_factory_make("capsfilter", NULL);
@@ -227,6 +240,8 @@ int addQueue(char* host, int port) {
 int main(int argc, char *argv[])
 {
 
+	c_name = client_name(10);
+
 	if (argc != 3) {
       g_printerr ("Usage: deviceId devicePath\n");
       return -1;
@@ -249,7 +264,7 @@ int main(int argc, char *argv[])
     uint8_t sendbuf[2048]; /* sendbuf should be large enough to hold multiple whole mqtt messages */
     uint8_t recvbuf[1024]; /* recvbuf should be large enough any whole mqtt message expected to be received */
     mqtt_init(&client, sockfd, sendbuf, sizeof(sendbuf), recvbuf, sizeof(recvbuf), publish_callback);
-    mqtt_connect(&client, "subscribing_client", NULL, NULL, 0, NULL, NULL, 0, 400);
+    mqtt_connect(&client, c_name, NULL, NULL, 0, NULL, NULL, 0, 400);
 
     /* check that we don't have any errors */
     if (client.error != MQTT_OK) {
