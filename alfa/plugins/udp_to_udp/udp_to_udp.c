@@ -106,7 +106,8 @@ int main(int argc, char *argv[]){
     gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
 	// this is to create the dot file
-	GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_VERBOSE, "pipeline");
+    // https://github.com/anselmobattisti/alfa/wiki/Debug-a-gst-pipeline
+	// GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_VERBOSE, "pipeline");
 
     g_main_loop_run(loop);
 
