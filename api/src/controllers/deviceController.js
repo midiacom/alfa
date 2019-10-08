@@ -107,7 +107,7 @@ const deviceController = {
 
     list: (req, res, next) => {
         deviceModel.find() 
-            .select('name type location dockerId')
+            .select('name type location connectionType dockerId')
             .populate('location')
             .exec()
             .then(devices => {

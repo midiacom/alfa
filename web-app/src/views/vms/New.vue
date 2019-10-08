@@ -82,7 +82,8 @@ export default {
         }
     },
     methods: {
-        onSubmit() {
+        onSubmit(evt) {
+            evt.preventDefault()
             this.isLoading = true;
             apiVms.newVms(this.form)
                 .then(() => {

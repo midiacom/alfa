@@ -49,15 +49,16 @@ gst-launch-1.0 \
 
 gst-launch-1.0 \
     udpsrc port=5001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-    ! rtph264depay \
+    ! queue2 \
     ! decodebin \
-    ! videoconvert \
-    ! autovideosink
+    ! glimagesink
 
 To create de dockerfile
 docker build . -t alfa/plugin/udp_video_crop
 
 docker run alfa/plugin/udp_video_crop 100 100 100 100 172.17.0.1 5001
+
+./udp_video_crop 100 100 100 100 172.17.0.1 10001
 
 export GST_DEBUG="*:3"
 */

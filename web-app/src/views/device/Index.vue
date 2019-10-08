@@ -91,6 +91,8 @@ export default {
             fields: [{
                 key: 'name',
             },{
+                key: 'connectionType'
+            },{
                 key:'location'
             },{
                 key:'actions',
@@ -159,6 +161,7 @@ export default {
             apiDevice.getDevices()
                 .then((data) => {
                     this.items = data
+                    console.log(data)
                     this.isBusy = false
                 })
                 .catch(e => {

@@ -36,6 +36,14 @@ gst-launch-1.0 \
     ! videoconvert \
     ! autovideosink
         </pre>
+
+        <pre>
+gst-launch-1.0 \
+    udpsrc port=10010 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! decodebin \
+    ! queue2 \
+    ! autovideosink
+    </pre>
     </b-modal>
 
     <b-table

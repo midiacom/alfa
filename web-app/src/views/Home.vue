@@ -14,9 +14,9 @@
       <strong>This button will gerenate the above data.</strong>
       <ul>
         <li>One Location</li>
-        <li>4 SRC Types</li>
-        <li>3 VMS Types</li>
-        <li>4 Devices</li>
+        <li>5 SRC Types</li>
+        <li>4 VMS Types</li>
+        <li>6 Devices</li>
       </ul>
 
       <b-button variant="warning" @click="bootstrap()" size="lg">Import Data</b-button>
@@ -25,7 +25,7 @@
 
     <b-alert :show="showMsg" variant="danger">
       <h3>Important!</h3>
-      <strong>Before using this system you need to build the docker images from SRC and VMS. The easy way to do it is running ./setup at the alfa folder .</strong>
+      <strong>Before using this system you need to build the docker images from SRC and VMS. The easy way to do it is running ./compile_src_and_vms.sh at the alfa/alfa folder .</strong>
     </b-alert>
 
 
