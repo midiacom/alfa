@@ -70,6 +70,57 @@ int main(int argc, char *argv[]){
       return -1;
     }
 
+    GstElement *pipeline, *udpsrc, *tee, *queue, *udpsink;
+    GError *err = NULL;
+    GMainLoop *loop;
+
+    gst_init(&argc, &argv);
+    loop = g_main_loop_new(NULL, FALSE);
+
+    pipeline = gst_pipeline_new(NULL);
+    udpsrc = gst_element_factory_make("udpsrc", NULL);
+    queue = gst_element_factory_make("queue", NULL);
+    udpsink = gst_element_factory_make("udpsink", NULL);
+
+	g_object_set(udpsrc, "port", 5000, NULL);
+	
+    g_object_set(udpsink, "host", argv[1], NULL);
+    g_object_set(udpsink, "port", atoi(argv[2]), NULL);
+
+	if (!udpsrc || !queue || !udpsink)
+	{
+		g_printerr("Not all elements could be created.\n");
+		return -1;
+	}
+
+	gst_bin_add_many(GST_BIN(pipeline), udpsrc, queue, udpsink, NULL);
+
+	// link the tee -> queue -> decodebin
+	if (!gst_element_link_many(udpsrc, queue, udpsink, NULL))
+	{
+		g_error("Failed to link elements");
+		return -1;
+	}
+
+
+    gst_element_set_state(pipeline, GST_STATE_PLAYING);
+
+	// this is to create the dot file
+	GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_VERBOSE, "pipeline");
+
+    g_main_loop_run(loop);
+
+    return 0;
+}
+
+/*
+int main(int argc, char *argv[]){
+
+    if (argc != 3) {
+      g_printerr ("Usage:IP_DEST PORT \n");
+      return -1;
+    }
+
     GstElement *pipeline;
     GError *err = NULL;
     GMainLoop *loop;
@@ -90,3 +141,4 @@ int main(int argc, char *argv[]){
 
     return 0;
 }
+*/
