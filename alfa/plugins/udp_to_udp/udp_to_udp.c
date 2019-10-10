@@ -79,7 +79,7 @@ int main(int argc, char *argv[]){
 
     pipeline = gst_pipeline_new(NULL);
     udpsrc = gst_element_factory_make("udpsrc", NULL);
-    queue = gst_element_factory_make("queue", NULL);
+    queue = gst_element_factory_make("queue2", NULL);
     udpsink = gst_element_factory_make("udpsink", NULL);
 
 	g_object_set(udpsrc, "port", 5000, NULL);
