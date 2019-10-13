@@ -1,5 +1,7 @@
 # Alfa
 
+<img src="docs/logo.png">
+
 This is the main project of the Alfa-DVMS. Alfa-DVMS is a manager tool for creating a infrastructere to virtualize câmeras and microphones. The ideas behind this tool is: a single camera can be source of a variaty of plugins that process, manipulate and extract data from the multimedia stream and delivery it for an application that started this plugins remotly via FIWARE.
 
 The final result of this project can be seen at the above images.
