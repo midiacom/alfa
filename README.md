@@ -159,10 +159,6 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 * Test if using TCP instead of UDP is a better way to communicate VMS and SRC. In this scenario VMS will be the client and SRC will be the server and the bind function will call the VMS to start a new TCP communication with the SRC.
 * The binded to column needs to be changed because now a vms can be binded to two or more SRC
 
-### Done 
-* Create a "import" to basic configurations (ok)
-* Create a mic SRC and noise detector VMS
-
 ## Roadmap
 
 * API
