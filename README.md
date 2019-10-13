@@ -4,7 +4,7 @@
   <img src="docs/logo_vprism.png" width="50%" alt="Logo V-PRISM">
 </p>
 
-This is the main project of the Alfa-DVMS. Alfa-DVMS is a manager tool for creating a infrastructere to virtualize câmeras and microphones. The ideas behind this tool is: a single camera can be source of a variaty of plugins that process, manipulate and extract data from the multimedia stream and delivery it for an application that started this plugins remotly via FIWARE.
+This is the main project of the ALFA V-PRISM. ALFA V-PRISM is a manager tool to creating a infrastructure to virtualize cameras and microphones. The ideas behind this tool is: a single camera can be source of a variety of plugins that process, manipulate and extract data from the multimedia stream and delivery it for an application that started this plugins remotely via FIWARE.
 
 The final result of this project can be seen at the above images.
 
@@ -77,7 +77,7 @@ npm run build
 
 ## Build the API
 
-You need the docker and docker-compose instaled in your machine.
+You need the docker and docker-compose installed in your machine.
 
 access the folder api and run 
 
@@ -138,7 +138,7 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 
 * Video Sample Test: you can create a device that generate the "samples" videos like bars, running balls, snow;
 * Audio Sample Test: send a stream of a classical music to test audio;
-* Local USB cameras devices: conect to a USB local câmera
+* Local USB cameras devices: connect to a USB local câmera
 * RTSP devices: connect to a device that uses RTSP protocol
 * Local Mic devices: connect to a mic device
 
@@ -146,16 +146,16 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 
 * UDP to UDP: forward UDP packages, independently of its content
 * Crop video and send to UDP: cut (top, middle, right and left of a video)
-* Greyscale and send to UDP: convert a color video into a grayscale one
+* Greyscale and send to UDP: convert a color video into a greyscale one
 * Noise Detection: you can define the noise level and the result will be sent to an mqtt server
 * Video Merge: grab two video streams and convert it into only one video stream
 
 ## Important things to do
 
 * Login and password feature
-* Create a way do remove gst_bin_remove_many elementos from SRC queue (when stop the VMS)
+* Create a way do remove gst_bin_remove_many elements from SRC queue (when stop the VMS)
 * Create a VMS that use data from two different SRCs
-* Test if using TCP instead of UDP is a better way to comunicate VMS and SRC. In this scenario VMS will be the client and SRC will be the server and the bind function will call the VMS to start a new TCP comunication with the SRC.
+* Test if using TCP instead of UDP is a better way to communicate VMS and SRC. In this scenario VMS will be the client and SRC will be the server and the bind function will call the VMS to start a new TCP comunication with the SRC.
 * The binded to column needs to be changed because now a vms can be binded to two or more SRC
 
 ### Done 
