@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./api/MongoDB:/data/db
+    networks:
+      - express-mongo-network
+    logging:
+      driver: none      
+  mosquitto:
+    image: eclipse-mosquitto
+    hostname: mosquitto_alfa
+    container_name: mosquitto_alfa
+    expose:
+      - "1883"
+      - "9001"
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    networks:
+      - express-mongo-network
+  rest-api:
+    depends_on: ["mongo"]
+    restart: always
+    build: ./api
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./api/:/usr/app
+    networks:
+      - express-mongo-network
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://mongo:27017"]
+        interval: 30s
+        timeout: 10s
+        retries: 5           
+  web-client:
+    depends_on: ["rest-api"]
+    restart: always
+    build: ./web-app
+    ports:
+      - "8080:80"
+    networks:
+      - express-mongo-network      
+networks: 
+    express-mongo-network:
+      driver: bridge      
