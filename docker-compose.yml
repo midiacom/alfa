@@ -3,6 +3,8 @@ version: "3"
 services:
   mongo:
     image: mongo
+    hostname: mongo
+    container_name: mongo
     ports:
       - "27017:27017"
     volumes:
@@ -12,9 +14,11 @@ services:
     logging:
       driver: none
   mosquitto:
+    logging:
+      driver: none    
     image: eclipse-mosquitto
-    hostname: mosquitto_alfa
-    container_name: mosquitto_alfa
+    hostname: mosquitto
+    container_name: mosquitto
     expose:
       - "1883"
       - "9001"
@@ -24,6 +28,8 @@ services:
     networks:
       - express-mongo-network
   rest-api:
+    hostname: rest-api
+    container_name: rest-api
     depends_on: ["mongo"]
     restart: always
     build: ./api
@@ -40,6 +46,8 @@ services:
         timeout: 10s
         retries: 5           
   web-client:
+    hostname: web-client
+    container_name: web-client
     depends_on: ["rest-api"]
     logging:
       driver: none    
