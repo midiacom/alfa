@@ -129,12 +129,12 @@ Run the following command:
 
 apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio gstreamer1.0-libav
 
-More detais here 
+More details here 
 https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-language=c
 
-# Undertanding ALFA
+# Understanding ALFA
 
-## Types of Suported SRC
+## Supported SRC Types
 
 * Video Sample Test: you can create a device that generate the "samples" videos like bars, running balls, snow;
 * Audio Sample Test: send a stream of a classical music to test audio;
@@ -142,7 +142,7 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 * RTSP devices: connect to a device that uses RTSP protocol
 * Local Mic devices: connect to a mic device
 
-## Types of Suported VMS
+## Supported VMS Types
 
 * UDP to UDP: forward UDP packages, independently of its content
 * Crop video and send to UDP: cut (top, middle, right and left of a video)
@@ -155,7 +155,7 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 * Login and password feature
 * Create a way do remove gst_bin_remove_many elements from SRC queue (when stop the VMS)
 * Create a VMS that use data from two different SRCs
-* Test if using TCP instead of UDP is a better way to communicate VMS and SRC. In this scenario VMS will be the client and SRC will be the server and the bind function will call the VMS to start a new TCP comunication with the SRC.
+* Test if using TCP instead of UDP is a better way to communicate VMS and SRC. In this scenario VMS will be the client and SRC will be the server and the bind function will call the VMS to start a new TCP communication with the SRC.
 * The binded to column needs to be changed because now a vms can be binded to two or more SRC
 
 ### Done 
@@ -169,7 +169,7 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 * Plugins: here are some basic plugins that can be used as as template to your own plugins
 * FIWARE Integration
 
-# Video Tutoriais (in portuguese)
+# Video Tutorials (in portuguese)
 
 ## Introdução ao gsteramer
 https://www.youtube.com/watch?v=KLhZmEGeqHk&t=331s
