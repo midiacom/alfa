@@ -10,7 +10,7 @@ services:
     networks:
       - express-mongo-network
     logging:
-      driver: none      
+      driver: none
   mosquitto:
     image: eclipse-mosquitto
     hostname: mosquitto_alfa
@@ -41,6 +41,8 @@ services:
         retries: 5           
   web-client:
     depends_on: ["rest-api"]
+    logging:
+      driver: none    
     restart: always
     build: ./web-app
     ports:

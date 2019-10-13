@@ -8,15 +8,11 @@ The final result of this project can be seen at the above images.
 
 # Installation
 
-## Download the repository 
-
-git clone git@github.com:anselmobattisti/alfa.git
-
 ## Docker and Docker Compose
 
 ### Docker 
 
-You need a host with docker installed AND the API MUST BE enabled! 
+You need a host with docker and docker-composed installed AND the Docker <strong>API MUST BE </strong> enabled! 
 
 To install docker follow this steps:
 
@@ -44,29 +40,60 @@ To install docker compose follow this steps
 
 https://docs.docker.com/compose/install/
 
+
+## Download the repository 
+
+* Create a new folder to host all the ALFA files;
+* Inside this folder run 
+```
+git clone git@github.com:midiacom/alfa.git .
+```
+
 ## Build de SRC and the VMS
 
-Before using the system you need to build the dockerfiles of SRC and VMS. To do it follow the above steps.
+Before using the system you need to build the Dockerfiles of all SRC and VMS. To do it follow the above steps.
+
+* Access the folder alfa
+* Run the command 
 
 ```
-1 - Access the folder alfa
-2 - sudo ./compile_src_and_vms.sh
+sudo ./compile_src_and_vms.sh
 ```
 
 **tip:** if you need to kill all the VMS and SRC you can run **./kill_all_running_src_and_plugins.sh** at this folder
 
-## To run the API
+## Build the Web Client
+
+* Install the nodejs packages in web-app and api folder
+```
+cd web-api
+sudo npm install
+npm run build
+```
+
+## Build the API
 
 You need the docker and docker-compose instaled in your machine.
 
 access the folder api and run 
 
 ```
+cd api
 sudo npm install
+```
+
+## Run (API, Web Client, Mosquito MQTT and MongoDB)
+
+To run all the ALFA requirements at the root folder run 
+
+```
+sudo docker-compose build
 sudo docker-compose up
 ```
 
-## Run the WEB APP
+## To Developers 
+
+## Run the Web Client as a Dev
 
 If you are running at development mode you will need nodejs and npm
 
@@ -76,8 +103,6 @@ To run the web interface access the folder web-app then run
 npm install
 npm run serve
 ``` 
-
-## To Developers 
 
 ### View Videos in VLC
 
