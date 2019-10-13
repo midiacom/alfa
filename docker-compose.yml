@@ -46,7 +46,7 @@ services:
     restart: always
     build: ./web-app
     ports:
-      - "8080:80"
+      - "8081:80"
     networks:
       - express-mongo-network      
 networks: 

@@ -95,6 +95,8 @@ sudo docker-compose build
 sudo docker-compose up
 ```
 
+Now access the url http://localhost:8081 and import the basic data for start using.
+
 ## To Developers 
 
 ## Run the Web Client as a Dev

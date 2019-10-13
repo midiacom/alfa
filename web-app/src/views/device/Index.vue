@@ -161,10 +161,10 @@ export default {
             apiDevice.getDevices()
                 .then((data) => {
                     this.items = data
-                    console.log(data)
                     this.isBusy = false
                 })
                 .catch(e => {
+                    console.log(e)
                     this.isBusy = false
                 })
         }

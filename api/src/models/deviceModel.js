@@ -17,7 +17,10 @@ var devicesSchema = new Schema({
     ref: 'location',
     required: true        
   },
-  'dockerId' : String 
+  'dockerId' : { // define which container docker is access this device, if null it means that the device is stopped 
+    type: String,
+    default: ""
+  }
 },{
   timestamps: true
 });

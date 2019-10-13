@@ -29,6 +29,46 @@
     </b-alert>
 
 
+  <div :show="!showMsg" style="font-size:18px">
+    <b-card-group deck>
+      <b-card bg-variant="light" text-variant="black" title="Devices">
+        <b-card-text>
+          <ul>
+            <li>
+              <strong>Created:</strong> {{ devices.total }}
+            </li>
+            <li>
+              <strong>Started:</strong> {{ devices.started }}
+            </li>
+          </ul>
+        </b-card-text>
+        <b-button to="/device" variant="success" class="mr-2">
+          List Devices
+        </b-button>
+      </b-card>
+
+      <b-card bg-variant="light" text-variant="black" title="VMS">
+        <b-card-text>
+          <ul>
+            <li>
+              <strong>Created:</strong> {{ vms.total }}
+            </li>
+            <li>
+              <strong>Started:</strong> {{ vms.started }}
+            </li>
+          </ul>
+        </b-card-text>
+        <b-button to="/vms" variant="success" class="mr-2">
+          List VMS
+        </b-button>
+      </b-card>
+
+   </b-card-group>
+
+
+
+  </div>
+    
     <!-- <b-card-group deck>
       <b-card header="Location" class="text-center">
         <b-card-text>
@@ -47,14 +87,24 @@
 <script>
 
 import {apiLocation} from './location/api'
-import { config } from '../config'
+import {apiDevice} from './device/api'
+import {apiVms} from './vms/api'
+import {config} from '../config'
 
 export default {
   name: 'home',
   data() {
       return {
           items: [],
-          showMsg: false
+          showMsg: false,
+          devices: {
+            total: 0,
+            started: 0
+          },
+          vms: {
+            total: 0,
+            started: 0
+          }
       }
   },  
   methods: {
@@ -69,6 +119,26 @@ export default {
         })
     },
     refresh() {
+      apiDevice.getDevices()
+        .then((data) => {
+          this.devices.total = data.length
+          data.forEach((value) => {
+            if (value.dockerId != "") {
+              this.devices.started++;
+            }
+          });
+        })
+
+      apiVms.getAllVms()
+        .then((data) => {
+          this.vms.started = data.length
+        })
+
+      apiVms.getStoppedVms()
+        .then((data) => {
+          this.vms.total = data.length
+        })
+
       apiLocation.getLocations()
           .then((data) => {
               if (data.length == 0) {

@@ -12,7 +12,7 @@ export const apiVms = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem creating a new VMS ${e}`))
+          reject(new Error(`Error when creating a new VMS ${e}`))
         })
       })
   },  
@@ -27,7 +27,22 @@ export const apiVms = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem creating a new VMS ${e}`))
+          reject(new Error(`Error when creating a new VMS ${e}`))
+        })
+      })
+  },  
+
+  stopVms (data) {
+    if (!data) {
+      return Promise.reject(new Error('Data not informed'))
+    }
+    return new Promise((resolve, reject) => {
+      config.api.get(`/vms/stop/${data}`)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch((e) => {
+          reject(new Error(`Error when stopping the VMS ${e}`))
         })
       })
   },  
@@ -42,7 +57,7 @@ export const apiVms = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem geting the VMS type ${e}`))
+          reject(new Error(`Error when getting the VMS type ${e}`))
         })
       })
   },  
@@ -57,7 +72,7 @@ export const apiVms = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem removing a new vmsType ${e}`))
+          reject(new Error(`Error when removing a new vmsType ${e}`))
         })
     })
   },  

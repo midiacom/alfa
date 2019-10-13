@@ -1,5 +1,6 @@
 <template>
   <div>
+    <loading :active.sync="isLoading" :is-full-page="true"></loading>
     <b-row>
         <b-col>            
             <h2>
@@ -82,7 +83,7 @@ gst-launch-1.0 \
                 Details
             </b-button>
 
-            <b-button variant="danger" size="sm" @click="removeVms(row.item)" class="mr-2">
+            <b-button variant="danger" size="sm" @click="stopVms(row.item)" class="mr-2">
                 <v-icon name="stop-circle"></v-icon>
                 Stop
             </b-button>
@@ -116,12 +117,16 @@ gst-launch-1.0 \
 
 <script>
 import {apiVms} from './api'
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
     name: 'vmsIndex',
+    components: {Loading},
     data() {
         return {
             isBusy: true,
+            isLoading: false,
             sdp: '',
             fields: [{
                 key: 'vmsType',
@@ -158,16 +163,18 @@ export default {
         detailsVms (vms) {
             this.$router.push(`/vms/${vms.containerId}/details`)
         },
-        removeVms(vms) {
+        stopVms(vms) {
+            let that = this;
             this.$swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Yes, stop it!'
-            }).then((result) => {
+            }).then((result) => {                
                 if (result.value) {
-                    apiVms.removeVms(vms._id)
+                    that.isLoading = true
+                    apiVms.stopVms(vms._id)
                         .then(() => {
                             this.refresh()
                         })
@@ -178,15 +185,17 @@ export default {
             })
         },
         refresh() {
-            this.isBusy = true
+            this.isBusy = true            
             apiVms.getAllVms()
                 .then((data) => {
                     this.items = data
                     this.isBusy = false
+                    this.isLoading = false
                 })
                 .catch(e => {
                     console.log(e)
                     this.isBusy = false
+                    this.isLoading = false
                 })
         }
     },

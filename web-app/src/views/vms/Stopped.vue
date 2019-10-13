@@ -1,13 +1,20 @@
 <template>
   <div>
+    <loading :active.sync="isLoading" :is-full-page="true"></loading>
+
     <b-row>
         <b-col>            
             <h2>
                 <v-icon style="width: 32px;" name="pause-circle"></v-icon>
                 All VMSs Started (Running and Stopped)
             </h2>
+
+            <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
+                {{ msg.text }}
+            </b-alert>
         </b-col>
     </b-row>
+    
     <b-table
         :busy="isBusy"
         :items="items" 
@@ -24,15 +31,15 @@
         </template>
 
       <template v-slot:cell(actions)="row">
+            <b-button variant="success" size="sm" @click="restartVms(row.item)" class="mr-2">
+                <v-icon name="play-circle"></v-icon>
+                Restart
+            </b-button>
+
             <b-button variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
                 <v-icon name="trash"></v-icon>
                 Remove
             </b-button>
-
-            <!-- <b-button variant="success" size="sm" @click="restartVms(row.item)" class="mr-2">
-                <v-icon name="play-circle"></v-icon>
-                Restart
-            </b-button> -->
       </template>        
 
         <div slot="table-busy" class="text-center text-danger my-2">
@@ -58,15 +65,21 @@
 
 <script>
 import {apiVms} from './api'
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
     name: 'vmsStopped',
+    components: {Loading},
     data() {
         return {
             isBusy: true,
+            isLoading: false,
+            msg: {
+                text: false,
+                type: ''
+            },            
             fields: [{
-                key: 'dockerId',
-            }, {
                 key: 'name',
             },{
                 key: 'vmsType'
@@ -81,13 +94,28 @@ export default {
     },
     methods: {
         restartVms (vms) {
+            this.isLoading = true
+
             let form = {
                 name: vms.name,
-                vmsType: '',
-                startupParameters: ''
+                vmsType: vms.vmsType._id,
+                startupParameters: vms.startupParameters,
+                id: vms._id
             };
 
-            console.log(vms)
+            apiVms.newVms(form)
+                .then(() => {
+                    this.refresh()
+                    this.msg.text = "VMS started"
+                    this.msg.type = "success"
+                    this.isLoading = false;
+                })
+                .catch((e) => {
+                    this.refresh()
+                    this.msg.text = `Error when starting the VMS ${e}`
+                    this.msg.type = "danger"
+                    this.isLoading = false;
+                })
         },
 
         detailsVms (vms) {
@@ -116,7 +144,6 @@ export default {
             this.isBusy = true
             apiVms.getStoppedVms()
                 .then((data) => {
-                    console.log(data)
                     this.items = data
                     this.isBusy = false
                 })

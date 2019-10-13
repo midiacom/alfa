@@ -28,7 +28,7 @@ export const apiDevice = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem creating a new device ${e}`))
+          reject(new Error(`Error when creating a new device ${e}`))
         })
     })
   },  
@@ -42,7 +42,7 @@ export const apiDevice = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem updating  adevice ${e}`))
+          reject(new Error(`Error when updating a device ${e}`))
         })
     })
   },  
@@ -56,7 +56,7 @@ export const apiDevice = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem starting the SRC for the device ${e}`))
+          reject(new Error(`Error when starting the SRC for the device ${e}`))
         })
     })
   },  
@@ -70,7 +70,7 @@ export const apiDevice = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem stopping the SRC for the device ${e}`))
+          reject(new Error(`Error when stopping the SRC for the device ${e}`))
         })
     })
   },  
@@ -85,7 +85,7 @@ export const apiDevice = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem removing a new device ${e}`))
+          reject(new Error(`Error when removing a new device ${e}`))
         })
     })
   },  

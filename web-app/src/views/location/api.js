@@ -11,7 +11,7 @@ export const apiLocation = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem creating a new location ${e}`))
+          reject(new Error(`Error when creating a new location ${e}`))
         })
     })
   },  
@@ -25,7 +25,7 @@ export const apiLocation = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem updating  alocation ${e}`))
+          reject(new Error(`Error when updating a location ${e}`))
         })
     })
   },  
@@ -39,7 +39,7 @@ export const apiLocation = {
           resolve(resp.data)
         })
         .catch((e) => {
-          reject(new Error(`Error whem removing a new location ${e}`))
+          reject(new Error(`Error when removing a new location ${e}`))
         })
     })
   },  

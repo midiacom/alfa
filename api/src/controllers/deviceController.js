@@ -29,7 +29,7 @@ const deviceController = {
                           });
                         }
                     }
-                    device.dockerId = null;
+                    device.dockerId = "";
                     const d = device.save()
                     return res.status(201).json(d)
                   });

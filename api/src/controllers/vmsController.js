@@ -22,6 +22,8 @@ const vmsController = {
         .then((api) => {
           let vmsType = req.body.vmsType;
           let startupParameters = req.body.startupParameters;
+          let id = req.body.id;
+
           vmsTypeModel.findById(vmsType)
             .then((result) => {
               api.createContainer({
@@ -29,15 +31,18 @@ const vmsController = {
                 Cmd: [startupParameters],
               }).then(function(container) {
                 container.start()
-                .then((data) => {
-                  const vms = new vmsModel({
-                    name: req.body.name,
-                    dockerId: data.id,
-                    startupParameters: startupParameters,
-                    vmsType: vmsType,
-                  })                
-                  
-                  vms.save((err,vms) => {
+                .then((data) => { 
+                  // create a new VMS      
+                  if (!id) {
+                    let vms = new vmsModel({
+                      name: req.body.name,
+                      dockerId: data.id,
+                      startupParameters: startupParameters,
+                      vmsType: vmsType,
+                    })                  
+
+                    // save
+                    vms.save((err,vms) => {
                       /* istanbul ignore next */ 
                       if (err) {
                           return res.status(500).json({
@@ -46,8 +51,31 @@ const vmsController = {
                           });
                       }
                       return res.status(201).json(vms)
-                  })                  
-                  // return res.status(201).json(data);
+                    })
+                  } else {
+                    // restart and update the dockerId
+                    vmsModel.findById(id)
+                    .then((vms) => {
+                      vms.dockerId = data.id
+                      // update
+                      vms.save((err,vms) => {
+                        /* istanbul ignore next */ 
+                        if (err) {
+                            return res.status(500).json({
+                                message: 'Error when creating vmsType',
+                                error: err
+                            });
+                        }
+                        return res.status(201).json(vms)
+                      })                                 
+                    })
+                    .catch(err => {
+                      /* istanbul ignore next */ 
+                      console.log(err)
+                      return res.status(422).send(err.errors);
+                    });
+                  }
+       
                 }).catch(function(err) {
                   /* istanbul ignore next */ 
                   console.log('1')
@@ -155,6 +183,37 @@ const vmsController = {
           });
         })
     },
+
+    stopVms: (req, res, next) => {
+      let id = req.params.id;
+      vmsModel.findById(id)
+        .then((vms) => {
+          if (!vms) {
+            return res.status(422).send(`VMS with id ${id} not found!`);
+          }
+          docker.api()
+            .then((api) => {
+              let container = api.getContainer(vms.dockerId);
+
+              container.inspect(function (err, data) {
+                // if the container is running then stop it
+                if (data) {
+                  if (data.State.Running) {
+                    container.stop(function (err, data) {
+                      container.remove()
+                      return res.status(201).json(vms);
+                    });
+                  }
+                }
+              });
+            })
+      })
+      .catch(err => {
+        /* istanbul ignore next */ 
+        return res.status(422).send(err.errors);
+      });
+    },
+
     delete: (req, res, next) => {
       let id = req.params.id;
       vmsModel.findById(id)
