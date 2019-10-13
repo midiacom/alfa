@@ -79,9 +79,9 @@ export default new Router({
       component: () => import(/* webpackChunkName: "vmsIndex" */ './views/vms/Index.vue')
     },
     {
-      path: '/vms/stopped',
-      name: 'vmsStopped',
-      component: () => import(/* webpackChunkName: "vmsStopped" */ './views/vms/Stopped.vue')
+      path: '/vms/allvms',
+      name: 'allVms',
+      component: () => import(/* webpackChunkName: "vmsStopped" */ './views/vms/AllVms.vue')
     },
     {
       path: '/vms/new/:id',

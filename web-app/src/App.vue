@@ -27,7 +27,7 @@
                   </router-link>
                 </li>
                 <li class="subMenu">
-                  <router-link to="/vms/stopped">- VMS</router-link>
+                  <router-link to="/vms/allvms">- VMS</router-link>
                 </li>
               </ul>
             </li>

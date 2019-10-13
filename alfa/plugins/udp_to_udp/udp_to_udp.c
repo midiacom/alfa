@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
       return -1;
     }
 
-    GstElement *pipeline, *udpsrc, *tee, *queue, *udpsink;
+    GstElement *pipeline, *udpsrc, *queue, *udpsink;
     GError *err = NULL;
     GMainLoop *loop;
 

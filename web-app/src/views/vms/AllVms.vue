@@ -33,7 +33,7 @@
       <template v-slot:cell(actions)="row">
             <b-button variant="success" size="sm" @click="restartVms(row.item)" class="mr-2">
                 <v-icon name="play-circle"></v-icon>
-                Restart
+                Recreate
             </b-button>
 
             <b-button variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
@@ -69,7 +69,7 @@ import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
-    name: 'vmsStopped',
+    name: 'allVms',
     components: {Loading},
     data() {
         return {
@@ -161,7 +161,7 @@ export default {
 
 <style>
     .vmsIndexActionsStopped {
-        width: 230px;
+        width: 240px;
         text-align: center;
     }
 </style>

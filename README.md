@@ -156,7 +156,6 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 
 * Login and password feature
 * Create a way do remove gst_bin_remove_many elements from SRC queue (when stop the VMS)
-* Create a VMS that use data from two different SRCs
 * Test if using TCP instead of UDP is a better way to communicate VMS and SRC. In this scenario VMS will be the client and SRC will be the server and the bind function will call the VMS to start a new TCP communication with the SRC.
 * The binded to column needs to be changed because now a vms can be binded to two or more SRC
 
@@ -170,6 +169,7 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 * Web Interface
 * Plugins: here are some basic plugins that can be used as as template to your own plugins
 * FIWARE Integration
+* Cli
 
 # Video Tutorials (in portuguese)
 
