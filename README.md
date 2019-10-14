@@ -1,24 +1,12 @@
 # Alfa
+n"ao é assim que pregui
 
-<table>
-  <tr>
-    <td>
-        <img src="https://img.shields.io/github/license/midiacom/alfa">
-    </td>
-    <td>
-      <img src="https://img.shields.io/badge/Made%20With-Vuejs-brightgreen">
-    </td>
-    <td>
-      <img src="https://img.shields.io/badge/Made%20With-Nodejs-brightgreen">
-    </td>
-    <td>
-      <img src="https://img.shields.io/badge/Made%20With-Nodejs-brightgreen">
-    </td>
-    <td>
-      <img src="https://img.shields.io/badge/Version-Alfa-brightgreen">
-    </td>    
-  </tr>
-</table>
+<p align="center">
+  <img src="https://img.shields.io/github/license/midiacom/alfa">
+  <img src="https://img.shields.io/badge/Made%20With-Vuejs-brightgreen">
+  <img src="https://img.shields.io/badge/Made%20With-Nodejs-brightgreen">
+  <img src="https://img.shields.io/badge/Version-Alfa-brightgreen">
+</p>
 
 <p align="center">
   <img src="docs/logo_vprism.png" width="30%" alt="Logo V-PRISM">
