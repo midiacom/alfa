@@ -207,7 +207,7 @@ export default {
 
 <style>
     .vmsIndexActions2 {
-        width: 420px;
+        width: 480px;
         text-align: center;
     }
 </style>

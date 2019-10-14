@@ -122,7 +122,7 @@ export default {
 
 <style>
     .locationIndexActions {
-        width: 350px;
+        width: 380px;
         text-align: center;
     }
 </style>

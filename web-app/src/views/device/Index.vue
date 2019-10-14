@@ -177,7 +177,7 @@ export default {
 
 <style>
     .deviceIndexActions {
-        width: 320px;
+        width: 390px;
         text-align: center;
     }
 </style>

@@ -123,7 +123,7 @@ export default {
 
 <style>
     .vmsTypeSrcIndexActions {
-        width: 210px;
+        width: 250px;
         text-align: center;
     }
 </style>

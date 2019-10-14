@@ -31,7 +31,16 @@
 
   <div :show="!showMsg" style="font-size:18px">
     <b-card-group deck>
-      <b-card bg-variant="light" text-variant="black" title="Devices">
+      <b-card 
+        bg-variant="light" 
+        text-variant="black">
+        <b-card-title>            
+            <strong>
+              <v-icon name="cast"></v-icon>
+              Devices
+            </strong>
+        </b-card-title>
+        <hr/>
         <b-card-text>
           <ul>
             <li>
@@ -47,7 +56,13 @@
         </b-button>
       </b-card>
 
-      <b-card bg-variant="light" text-variant="black" title="VMS">
+      <b-card bg-variant="light" text-variant="black">
+        <b-card-title>            
+            <strong>
+              <v-icon name="command"></v-icon>
+              VMS
+            </strong>
+        </b-card-title>
         <b-card-text>
           <ul>
             <li>

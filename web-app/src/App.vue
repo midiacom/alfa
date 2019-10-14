@@ -75,6 +75,7 @@
 <style>
 html,body {
   height: 100%;
+  font-size: 130%;
 }
 
 #content {
@@ -106,6 +107,8 @@ html,body {
   background-color: #e5e5e5;
   min-height: 1024px;
   height: 100%; 
+  min-width: 280px;  
+  max-width: 280px;  
 }
 
 #app #menu ul {
