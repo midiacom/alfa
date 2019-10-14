@@ -1,14 +1,24 @@
 # Alfa
 
 <p align="center">
-  <img src="docs/logo_vprism.png" width="50%" alt="Logo V-PRISM">
+  <img src="docs/logo_vprism.png" width="30%" alt="Logo V-PRISM">
 </p>
 
 
-<img src="https://img.shields.io/github/license/midiacom/alfa?style=for-the-badge">
-<img src="https://img.shields.io/github/license/midiacom/alfa?style=for-the-badge">
-<img src="https://img.shields.io/github/license/midiacom/alfa?style=for-the-badge">
-<img src="https://img.shields.io/github/license/midiacom/alfa?style=for-the-badge">
+<table>
+  <tr>
+    <td>
+        <img src="https://img.shields.io/github/license/midiacom/alfa?style=for-the-badge">
+    </td>
+    <td>
+      <img src="https://img.shields.io/badge/Made%20With-Vuejs-brightgreen">
+    </td>
+    <td>
+      <img src="https://img.shields.io/badge/Made%20With-Nodejs-brightgreen">
+    </td>
+
+  </tr>
+</table>
 
 This is the main project of the ALFA V-PRISM. ALFA V-PRISM is a manager tool to creating a infrastructure to virtualize cameras and microphones. The ideas behind this tool is: a single camera can be source of a variety of plugins that process, manipulate and extract data from the multimedia stream and delivery it for an application that started this plugins remotely via FIWARE.
 
