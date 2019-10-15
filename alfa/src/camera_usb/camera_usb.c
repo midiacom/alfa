@@ -88,7 +88,6 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 
     printf("Received publish('%s'): %s\n", topic_name, (const char*) published->application_message);
 
-    // printf("Mensagem recebida! \n\rTopico: %s Mensagem: %s\n", topicName, payload);
 	// the message should be like IP;PORT localhost;5001
 	char payload[100] = "";
 
@@ -106,15 +105,31 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 
 	int k = 0;
 	for(int j = i+1; payload[i] != '\0';j++) {
+		if (payload[i+1] == ';') {
+			break;
+		}
 		port[k] = payload[j];
 		k++;
 		i++;
 	}
 
-	// printf("\n - %s",host);
-	// printf("\n - %s\n",port);
+	printf("\n---)%c(----------",payload[i+2]);
 
-	addQueue(host, atoi(port));
+	if ((char) payload[i+2] == 'r') {
+		g_printerr("\n\n\n ->:      remove");
+		GstElement *aux = gst_bin_get_by_name(GST_BIN(pipeline), host);
+		// gst_element_set_state(GST_ELEMENT(aux), GST_STATE_NULL);
+		gst_element_set_state (pipeline, GST_STATE_PAUSED);
+		gst_bin_remove(GST_BIN(pipeline),aux);
+		gst_element_set_state (pipeline, GST_STATE_PLAYING);
+		
+		// gst_element_set_state(pipeline, GST_STATE_);		
+		// gst_element_set_state(aux, GST_STATE_CHANGE_PLAYING_TO_PAUSED);
+		// g_print(" \n ---- %s: \n",gst_element_get_name(aux));
+		// gst_bin_remove(GST_BIN(pipeline), aux );
+	} else {
+		addQueue(host, atoi(port));
+	}
 
     free(topic_name);
 }
@@ -214,6 +229,8 @@ int addQueue(char* host, int port) {
 	x264enc = gst_element_factory_make("x264enc", NULL);
 	rtph264pay = gst_element_factory_make("rtph264pay", NULL);
 	udpsink = gst_element_factory_make("udpsink", NULL);
+
+	g_object_set(queue, "name", host, NULL);
 
 	g_object_set(udpsink, "host", host, NULL);
 	g_object_set(udpsink, "port", port, NULL);
