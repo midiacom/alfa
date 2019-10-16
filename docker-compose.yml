@@ -31,7 +31,6 @@ services:
     hostname: rest-api
     container_name: rest-api
     depends_on: ["mongo"]
-    restart: always
     build: ./api
     command: npm run dev
     ports:
@@ -51,7 +50,6 @@ services:
     depends_on: ["rest-api"]
     logging:
       driver: none    
-    restart: always
     build: ./web-app
     ports:
       - "8081:80"

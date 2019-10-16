@@ -48,6 +48,7 @@ gst-launch-1.0 \
     </b-modal>
 
     <b-table
+        small
         :busy="isBusy"
         :items="items" 
         :fields="fields" 
@@ -59,7 +60,9 @@ gst-launch-1.0 \
         </template>
 
         <template v-slot:cell(dockerId)="row">
-            {{row.item.containerId | truncate(12, ' ')}}
+            <a href="#" @click="detailsVms(row.item)">
+                {{row.item.containerId | truncate(12, ' ')}}
+            </a>
         </template>
 
 
@@ -75,14 +78,15 @@ gst-launch-1.0 \
             
             <b-button variant="success" size="sm" @click="bindSrc(row.item)" class="mr-2">
                 <v-icon name="minimize-2"></v-icon>
-                Bind SRC
+                Bind
             </b-button>
 
+<!--
             <b-button variant="primary" size="sm" @click="detailsVms(row.item)" class="mr-2">
                 <v-icon name="code"></v-icon>
                 Details
             </b-button>
-
+-->
             <b-button variant="danger" size="sm" @click="stopVms(row.item)" class="mr-2">
                 <v-icon name="stop-circle"></v-icon>
                 Stop
@@ -129,22 +133,24 @@ export default {
             isLoading: false,
             sdp: '',
             fields: [{
+                key: 'dockerId',
+                label: 'Container ID'
+            },{
                 key: 'vmsType',
             },{
                 key: 'name'
             },{
-                key: 'dockerId',
-                label: 'Container ID'
-            },{
-                key: 'startupParameters'
+                key: 'startupParameters',
+                label: 'Parameters'
             },{
                 key: 'ipAddress',
                 label: 'IP'
             },{            
-                key: 'bindedTo'
+                key: 'bindedTo',
+                label: 'Binded'
             },{
                 key: 'Status',
-                label:'Status / Up Time'
+                label:'Up Time'
             },{
                 key:'actions',
                 class: 'vmsIndexActions2'
@@ -207,7 +213,7 @@ export default {
 
 <style>
     .vmsIndexActions2 {
-        width: 480px;
+        width: 320px;
         text-align: center;
     }
 </style>

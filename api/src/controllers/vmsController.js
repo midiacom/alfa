@@ -138,6 +138,7 @@ const vmsController = {
       docker.api()
         .then((api) => {
           api.listContainers(async function (err, containers) {
+            console.log(containers)
             const promises = containers.map(async function (containerInfo) {
                 await vmsModel.findOne({
                   'dockerId': containerInfo.Id
@@ -164,6 +165,10 @@ const vmsController = {
                     cont.push(vmsInfo)
                   }
                 })
+                .catch(err => {
+                  /* istanbul ignore next */ 
+                  return res.status(422).send(err.errors);
+                });
               });              
               await Promise.all(promises);
               return res.status(201).json(cont);
