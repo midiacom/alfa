@@ -64,10 +64,11 @@ sudo service docker restart
 
 * Rest if it is working by using this command, if everything is fine below command should return a JSON
 
+```
 curl http://localhost:2375/images/json
 ```
 
-Important!
+## Important!
 Be default the docker API to port: 2375 if you need another port then change the configuration at api/config/dev.env
 
 ### Docker Compose
