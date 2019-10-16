@@ -138,7 +138,6 @@ const vmsController = {
       docker.api()
         .then((api) => {
           api.listContainers(async function (err, containers) {
-            console.log(containers)
             const promises = containers.map(async function (containerInfo) {
                 await vmsModel.findOne({
                   'dockerId': containerInfo.Id
