@@ -39,26 +39,26 @@ To install docker follow this steps:
 
 https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
-To enable the API do it
+### To enable the API do it
 
-- Navigate to /lib/systemd/system in your terminal and open docker.service file 
+- 1 - Navigate to /lib/systemd/system in your terminal and open docker.service file 
 ```
 sudo vi /lib/systemd/system/docker.service
 ```
-- Find the line which starts with  ExecStart and replace to 
+- 2 - Find the line which starts with  ExecStart and replace to 
 ```
 ExecStart=/usr/bin/dockerd -H=fd:// -H=tcp://0.0.0.0:2375
 ```
-- Save the Modified File
-- Reload the docker daemon: 
+- 3 - Save the Modified File
+- 4 - Reload the docker daemon: 
 ```
 sudo systemctl daemon-reload
 ```
-- Restart the container: 
+- 5 - Restart the container: 
 ```
 sudo service docker restart
 ```
-- Rest if it is working by using this command, if everything is fine below command should return a JSON
+- 6 - Rest if it is working by using this command, if everything is fine below command should return a JSON
 ```
 curl http://localhost:2375/images/json
 ```
