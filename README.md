@@ -54,7 +54,7 @@ ExecStart=/usr/bin/dockerd -H=fd:// -H=tcp://0.0.0.0:2375
 ```
 sudo systemctl daemon-reload
 ```
--Restart the container: 
+- Restart the container: 
 ```
 sudo service docker restart
 ```
