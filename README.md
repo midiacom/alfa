@@ -43,7 +43,7 @@ To enable the API do it
 
 * Navigate to /lib/systemd/system in your terminal and open docker.service file 
 ```
-vi /lib/systemd/system/docker.service
+sudo vi /lib/systemd/system/docker.service
 ```
 * Find the line which starts with  ExecStart and replace to 
 
@@ -54,7 +54,7 @@ ExecStart=/usr/bin/dockerd -H=fd:// -H=tcp://0.0.0.0:2375
 * Save the Modified File
 * Reload the docker daemon: 
 ```
-systemctl daemon-reload
+sudo systemctl daemon-reload
 ```
 
 * Restart the container: 
