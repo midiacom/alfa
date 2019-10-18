@@ -17,6 +17,8 @@ const vmsController = {
       })
     },
 
+    // start and recreate a VMS
+    // here we unbind a SRC if it was binded
     post: (req, res, next) => {
       docker.api()
         .then((api) => {
@@ -58,6 +60,7 @@ const vmsController = {
                     vmsModel.findById(id)
                     .then((vms) => {
                       vms.dockerId = data.id
+                      vms.bindedTo = []
                       // update
                       vms.save((err,vms) => {
                         /* istanbul ignore next */ 
@@ -268,13 +271,60 @@ const vmsController = {
 
   
   unbindSrc: (req, res, next) => {
+
     let vmsId = req.params.vmsId;
     let deviceId = req.params.deviceId;
     let port = req.params.port;
 
-    console.log(vmsId)
-    console.log(deviceId)
-    console.log(port)
+    vmsModel.findById(vmsId)
+      .populate('bindedTo.device')
+      .then(vms => {
+        // console.log(vms.bindedTo[0].device)
+        // return;
+        var client  = mqtt.connect(process.env.MQTT_SERVER) 
+        client.on('connect', function () {
+          client.subscribe(deviceId, function (err) {
+            if (!err) {
+              // the ip is fixed because it is independent in this situation, to remove we need only
+              // the deviceId to MQTT topic 
+              // the port is unecessary to 
+              // the id of VMS was used as name of the queue and it will be removes 
+              let aux_name = vms.dockerId.substring(0,11)
+              client.publish(deviceId, `192.168.0.1;5000;${aux_name};R`)
+
+              // remove from the binded list in mongoDB
+              vms.bindedTo = vms.bindedTo.filter(function(el){
+                return el.port != port
+              })
+
+              vms.save((err,vms) => {
+                /* istanbul ignore next */
+                if (err) {
+                  console.log(err)
+                    return res.status(500).json({
+                        message: 'Error when creating vmsType',
+                        error: err
+                    });
+                }
+                return res.status(201).json({"ok":"ok"});
+              })
+            } else {
+              console.log(err)
+              return res.status(422).send(err);
+            }
+          })
+        })        
+        // console.log(vms)
+        // return res.status(201).json(vms);
+      })
+      .catch(err => {
+          /* istanbul ignore next */ 
+          return res.status(422).send(err.errors);
+      });    
+
+    // console.log(vmsId)
+    // console.log(deviceId)
+    // console.log(port)
   },
 
   bindSrc: (req, res, next) => {
@@ -300,7 +350,8 @@ const vmsController = {
                 // the letter A is used to identify if it is to insert or R to remove the elemente
                 // from the pipeline
                 // in a topic with the name of the device ID
-                client.publish(deviceId, `${ipDockerContainer};${port};${vms.dockerId};A`)
+                let aux_name = vms.dockerId.substring(0,11)
+                client.publish(deviceId, `${ipDockerContainer};${port};${aux_name};A`)
                 
                 vms.bindedTo.push({
                   device: deviceId,

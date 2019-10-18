@@ -56,9 +56,11 @@ To get the specification of a specifica camera
 v4l2-ctl --all -d /dev/video0
 
 MQQT Message
+
 172.17.0.1;5000
 
 172.17.0.1;5000;123;A
+172.17.0.1;15001;046a3d3bdaa;A
 */
 
 #include <string.h>
@@ -104,7 +106,7 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 	printf("%s", payload);
 	char host[100] = "";
 	char port[100] = ""; 
-	char dockerId[10] = ""; // used to identify the pipeline to add and remove
+	char dockerId[12] = ""; // used to identify the pipeline to add and remove
 
 	int i = 0;
 	for(i = 0; payload[i] != '\0';i++) {
@@ -134,12 +136,14 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 
 	char action = payload[i+1];
 
-	// printf("\n(%s) \n(%s) \n(%s) \n(%c)",host, port, dockerId, action);
+	printf("\n(%s) \n(%s) \n(%s) \n(%c)",host, port, dockerId, action);
 
 	// R means stop and remove
-	if ( action == 'R') {
-		g_printerr("\n\n\n ->:      remove");
+	if ( (char) action == 'R') {
+		g_printerr("\n Unbinding SRC from VMS %s ... \n",dockerId);
 		GstElement *aux = gst_bin_get_by_name(GST_BIN(pipeline), dockerId);
+
+		g_printerr("\n Executing unbind \n");
 		// gst_element_set_state(GST_ELEMENT(aux), GST_STATE_NULL);
 		gst_element_set_state (pipeline, GST_STATE_PAUSED);
 		gst_bin_remove(GST_BIN(pipeline),aux);
@@ -149,6 +153,8 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 		// gst_element_set_state(aux, GST_STATE_CHANGE_PLAYING_TO_PAUSED);
 		// g_print(" \n ---- %s: \n",gst_element_get_name(aux));
 		// gst_bin_remove(GST_BIN(pipeline), aux );
+	
+
 	} else {
 		addQueue(host, atoi(port), dockerId);
 	}
