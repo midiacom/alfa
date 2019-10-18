@@ -21,6 +21,13 @@ gst-launch-1.0 v4l2src device=/dev/video0 \
 
 Show the video
 gst-launch-1.0 \
+    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
+
+gst-launch-1.0 \
     udpsrc port=5001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
     ! rtph264depay \
     ! decodebin \
@@ -50,6 +57,8 @@ v4l2-ctl --all -d /dev/video0
 
 MQQT Message
 172.17.0.1;5000
+
+172.17.0.1;5000;123;A
 */
 
 #include <string.h>
@@ -67,7 +76,7 @@ static GstBus *bus;
 
 static GstElement *pipeline, *src, *my_tee;
 
-int addQueue(char* host, int port);
+int addQueue(char* host, int port, char* dockerId);
 void publish_callback(void** unused, struct mqtt_response_publish *published);
 void* client_refresher(void* client);
 void exit_example(int status, int sockfd, pthread_t *client_daemon);
@@ -95,6 +104,8 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 	printf("%s", payload);
 	char host[100] = "";
 	char port[100] = ""; 
+	char dockerId[10] = ""; // used to identify the pipeline to add and remove
+
 	int i = 0;
 	for(i = 0; payload[i] != '\0';i++) {
 		if (payload[i] == ';') {
@@ -104,20 +115,31 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 	}
 
 	int k = 0;
-	for(int j = i+1; payload[i] != '\0';j++) {
-		if (payload[i+1] == ';') {
+	for(i = i+1; payload[i] != '\0';i++) {
+		if (payload[i] == ';') {
 			break;
 		}
-		port[k] = payload[j];
+		port[k] = payload[i];
 		k++;
-		i++;
 	}
 
-	printf("\n---)%c(----------",payload[i+2]);
+	k = 0;
+	for(i = i+1; payload[i] != '\0';i++) {
+		if (payload[i] == ';') {
+			break;
+		}
+		dockerId[k] = payload[i];
+		k++;
+	}
 
-	if ((char) payload[i+2] == 'r') {
+	char action = payload[i+1];
+
+	// printf("\n(%s) \n(%s) \n(%s) \n(%c)",host, port, dockerId, action);
+
+	// R means stop and remove
+	if ( action == 'R') {
 		g_printerr("\n\n\n ->:      remove");
-		GstElement *aux = gst_bin_get_by_name(GST_BIN(pipeline), host);
+		GstElement *aux = gst_bin_get_by_name(GST_BIN(pipeline), dockerId);
 		// gst_element_set_state(GST_ELEMENT(aux), GST_STATE_NULL);
 		gst_element_set_state (pipeline, GST_STATE_PAUSED);
 		gst_bin_remove(GST_BIN(pipeline),aux);
@@ -128,7 +150,7 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 		// g_print(" \n ---- %s: \n",gst_element_get_name(aux));
 		// gst_bin_remove(GST_BIN(pipeline), aux );
 	} else {
-		addQueue(host, atoi(port));
+		addQueue(host, atoi(port), dockerId);
 	}
 
     free(topic_name);
@@ -218,7 +240,14 @@ static void cb_new_pad (GstElement *element, GstPad *pad, gpointer data){
   gst_element_link(element, other);
 }
 
-int addQueue(char* host, int port) {
+int addQueue(char* host, int port, char* dockerId) {
+
+	GstElement *aux = gst_bin_get_by_name(GST_BIN(pipeline), dockerId);
+	if (aux != NULL) {
+		g_printerr("\nThere is another element with the name %s\n", dockerId);
+		return 0;
+	}
+
 	// printf("\n -------------- \n");
 	// printf("\n%s - %d",host, port);
 	// printf("\n -------------- \n");
@@ -230,7 +259,7 @@ int addQueue(char* host, int port) {
 	rtph264pay = gst_element_factory_make("rtph264pay", NULL);
 	udpsink = gst_element_factory_make("udpsink", NULL);
 
-	g_object_set(queue, "name", host, NULL);
+	g_object_set(queue, "name", dockerId, NULL);
 
 	g_object_set(udpsink, "host", host, NULL);
 	g_object_set(udpsink, "port", port, NULL);
@@ -260,6 +289,7 @@ int addQueue(char* host, int port) {
 	// only start playing when the pad was add
 	gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
+	// GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_VERBOSE, "pipeline");
 	return 1;
 }
 

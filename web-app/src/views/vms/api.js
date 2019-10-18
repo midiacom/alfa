@@ -32,6 +32,21 @@ export const apiVms = {
       })
   },  
 
+  unbindSrc (data) {
+    if (!data) {
+      return Promise.reject(new Error('Data not informed'))
+    }
+    return new Promise((resolve, reject) => {
+      config.api.get(`/vms/unbindSrc/${data.vmsId}/${data.deviceId}/${data.port}`)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch((e) => {
+          reject(new Error(`Error when creating a new VMS ${e}`))
+        })
+      })
+  },  
+
   stopVms (data) {
     if (!data) {
       return Promise.reject(new Error('Data not informed'))
@@ -104,6 +119,18 @@ export const apiVms = {
   getVms (vmsId) {
     return new Promise((resolve, reject) => {
       config.api.get(`/vms/${vmsId}`)
+        .then(resp => {
+            resolve(resp.data)
+        })
+        .catch(e => {
+            reject(e)
+        })
+    })
+  },
+
+  getContainerDetails (vmsId) {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/vms/getContainerDetails/${vmsId}`)
         .then(resp => {
           resolve(resp.data)
         })

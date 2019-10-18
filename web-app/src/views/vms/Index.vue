@@ -59,6 +59,11 @@ gst-launch-1.0 \
             {{row.item.containerInfo.NetworkSettings.Networks.bridge.IPAddress }}
         </template>
 
+        <template v-slot:cell(bindedTo)="row">
+            {{ row.item.bindedTo | showPorts }}
+            
+        </template>
+
         <template v-slot:cell(dockerId)="row">
             <a href="#" @click="detailsVms(row.item)">
                 {{row.item.containerId | truncate(12, ' ')}}
@@ -78,10 +83,15 @@ gst-launch-1.0 \
             
             <b-button variant="success" size="sm" @click="bindSrc(row.item)" class="mr-2">
                 <v-icon name="minimize-2"></v-icon>
-                Bind
+                Bind / Unbind
             </b-button>
 
 <!--
+            <b-button v-show=row.item.bindedTo variant="secondary" size="sm" @click="unbindSrc(row.item)" class="mr-2">
+                <v-icon name="maximize-2"></v-icon>
+                Unbind
+            </b-button>
+
             <b-button variant="primary" size="sm" @click="detailsVms(row.item)" class="mr-2">
                 <v-icon name="code"></v-icon>
                 Details
@@ -92,7 +102,7 @@ gst-launch-1.0 \
                 Stop
             </b-button>
 
-            <b-button variant="secondary" size="sm" @click="showSdp(row.item)" class="mr-2">
+            <b-button variant="primary" size="sm" @click="showSdp(row.item)" class="mr-2">
                 <v-icon name="eye"></v-icon>
                 View
             </b-button>
@@ -207,13 +217,14 @@ export default {
     },
     created() {
         this.refresh()
-    }
+    },
+
 }
 </script>
 
 <style>
     .vmsIndexActions2 {
-        width: 320px;
+        width: 380px;
         text-align: center;
     }
 </style>

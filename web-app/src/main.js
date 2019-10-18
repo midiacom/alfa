@@ -38,7 +38,16 @@ var filter = function(text, length, clamp){
   return content.length > length ? content.slice(0, length) + clamp : content;
 };
 
+var showPorts = function (text) {
+  let ret = "";
+  text.forEach(function(e) {
+    ret += `${e.port}; `
+  })
+  return ret;
+}
+
 Vue.filter('truncate', filter);
+Vue.filter('showPorts', showPorts);
 
 new Vue({
   router,

@@ -8,10 +8,15 @@ var vmsSchema = new Schema({
     'startupParameters' : String,
     'name' : String,
     'dockerId' : String,
-    'bindedTo': {
-        type: Schema.Types.ObjectId,
-        ref: 'device'
-    },
+    'bindedTo': [
+        {
+            device: {
+                type: Schema.Types.ObjectId,
+                ref: 'device'
+            },
+            port: Number
+        }
+    ],
     'vmsType': {
         type: Schema.Types.ObjectId,
         ref: 'vmsType',

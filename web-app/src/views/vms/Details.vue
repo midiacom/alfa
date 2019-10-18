@@ -44,7 +44,7 @@ export default {
     methods: {  
         refresh() {
             this.isBusy = true
-            apiVms.getVms(this.$route.params.id)
+            apiVms.getContainerDetails(this.$route.params.id)
                 .then((data) => {
                     this.vms = data
                 })

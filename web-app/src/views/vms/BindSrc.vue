@@ -23,7 +23,12 @@
 
         <b-form-group id="input-group-3" label="In which port the VMS is listening for this data stream?" label-for="port">
             <ul style="font-size: 18px; list-style: none">
-                <li v-for="port in ports" :key="port" ><label><input checked type="radio" v-model="form.port" name="port" :value=port>&nbsp;{{port}}</label></li>
+                <li v-for="port in ports" :key="port" >
+                    <label><input type="radio" v-model="form.port" name="port" :value=port :disabled=isBinded(port)>
+                        &nbsp;{{port}}
+                    </label> &nbsp;
+                    <a href="#" @click="unbind(port)" v-show="isBinded(port)">Unbind</a>
+                </li>
             </ul>
         </b-form-group>        
 
@@ -36,6 +41,7 @@
             </b-col>
         </b-row>
     </b-form>
+
   </div>
 </template>
 
@@ -51,6 +57,9 @@ export default {
     data() {
         return {
             isLoading: true,
+            vms: {
+                bindedTo: []
+            },
             devices: [],
             device: [],
             ports: [],
@@ -66,6 +75,41 @@ export default {
         }
     },
     methods: {
+        unbind(port) {            
+            let data = {
+                vmsId: this.vms._id,
+                deviceId: '',
+                port: port
+            }
+
+            this.vms.bindedTo.forEach(function(e) {
+                console.log(e)
+                if (e.port == port) {
+                    data.deviceId = e.device
+                }
+            })
+
+            apiVms.unbindSrc(data)
+                .then(() => {
+                    this.isLoading = false
+                    this.msg.text = "VMS unbinded"
+                    this.msg.type = "success"
+                })
+                .catch((e) => {
+                    this.isLoading = false
+                    this.msg.text = `Error when binding the VMS ${e}`
+                    this.msg.type = "danger"
+                })
+        },
+
+        isBinded(port) {
+            let ret = false
+            this.vms.bindedTo.forEach(function(e) {
+                if (e.port == port) ret = true
+            })
+            return ret
+        },
+
         onSubmit(evt) {
             this.isLoading = true
             evt.preventDefault()
@@ -74,11 +118,13 @@ export default {
                     this.isLoading = false
                     this.msg.text = "VMS binded"
                     this.msg.type = "success"
+                    this.refresh
                 })
                 .catch((e) => {
                     this.isLoading = false
                     this.msg.text = `Error when binding the VMS ${e}`
                     this.msg.type = "danger"
+                    this.refresh
                 })
         },
         refresh() {
@@ -89,6 +135,12 @@ export default {
                 .then((vmsType) => {
                     this.isLoading = false
                     this.ports = vmsType.ports.split(";")
+                })
+
+            apiVms.getVms(id)
+                .then((vms) => {
+                    this.isLoading = false
+                    this.vms = vms
                 })
 
             apiDevice.getDevicesToSelectSRCStarted()

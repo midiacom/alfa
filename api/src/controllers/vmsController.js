@@ -39,7 +39,8 @@ const vmsController = {
                       dockerId: data.id,
                       startupParameters: startupParameters,
                       vmsType: vmsType,
-                    })                  
+                      bindedTo: []
+                    })      
 
                     // save
                     vms.save((err,vms) => {
@@ -143,7 +144,6 @@ const vmsController = {
                   'dockerId': containerInfo.Id
                 })
                 .populate('vmsType')
-                .populate('bindedTo')
                 .exec()
                 .then((res) => {
                   if (res) {
@@ -154,12 +154,11 @@ const vmsController = {
                       'startupParameters': res.startupParameters,
                       'containerInfo': containerInfo,
                       'vmsType': res.vmsType.name,
-                      'sdp': res.vmsType.sdp
+                      'sdp': res.vmsType.sdp,
+                      'bindedTo': res.bindedTo
                     }
 
-                    if (res.bindedTo) {
-                      vmsInfo.bindedTo = res.bindedTo.name
-                    }
+                    // console.log(res.bindedTo)
                     
                     cont.push(vmsInfo)
                   }
@@ -174,7 +173,20 @@ const vmsController = {
         });
       })        
     },
+          
     get: (req, res, next) => {
+      let id = req.params.id;
+      vmsModel.findById(id)
+          .then(vms => {
+              return res.status(201).json(vms);
+          })
+          .catch(err => {
+              /* istanbul ignore next */ 
+              return res.status(422).send(err.errors);
+          });                    
+    },
+
+    getContainerDetails: (req, res, next) => {
       let id = req.params.id;
       docker.api()
         .then((api) => {
@@ -254,6 +266,17 @@ const vmsController = {
         })
   },
 
+  
+  unbindSrc: (req, res, next) => {
+    let vmsId = req.params.vmsId;
+    let deviceId = req.params.deviceId;
+    let port = req.params.port;
+
+    console.log(vmsId)
+    console.log(deviceId)
+    console.log(port)
+  },
+
   bindSrc: (req, res, next) => {
 
     let vmsId = req.params.vmsId;
@@ -273,10 +296,16 @@ const vmsController = {
             client.subscribe(deviceId, function (err) {
               if (!err) {
                 // 2 - Send to MQQT the IP and PORT of this VMS, it will be published 
+                // the dockerId is used to identify the gstremaer pipeline 
+                // the letter A is used to identify if it is to insert or R to remove the elemente
+                // from the pipeline
                 // in a topic with the name of the device ID
-                client.publish(deviceId, `${ipDockerContainer};${port}`)
+                client.publish(deviceId, `${ipDockerContainer};${port};${vms.dockerId};A`)
                 
-                vms.bindedTo = deviceId;
+                vms.bindedTo.push({
+                  device: deviceId,
+                  port: port
+                });
 
                 vms.save((err,vms) => {
                   /* istanbul ignore next */                   
