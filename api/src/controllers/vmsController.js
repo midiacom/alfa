@@ -289,7 +289,7 @@ const vmsController = {
               // the deviceId to MQTT topic 
               // the port is unecessary to 
               // the id of VMS was used as name of the queue and it will be removes 
-              let aux_name = vms.dockerId.substring(0,11)
+              let aux_name = vms.dockerId.substring(0,11).replace(/[a-z]/g, '').concat(port)
               client.publish(deviceId, `192.168.0.1;5000;${aux_name};R`)
 
               // remove from the binded list in mongoDB
@@ -350,7 +350,9 @@ const vmsController = {
                 // the letter A is used to identify if it is to insert or R to remove the elemente
                 // from the pipeline
                 // in a topic with the name of the device ID
-                let aux_name = vms.dockerId.substring(0,11)
+                // it's to remove the letters from the id because the gstreamer cant use letters and numbers as
+                // name os an element, furthermore
+                let aux_name = vms.dockerId.substring(0,11).replace(/[a-z]/g, '').concat(port)
                 client.publish(deviceId, `${ipDockerContainer};${port};${aux_name};A`)
                 
                 vms.bindedTo.push({
