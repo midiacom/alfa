@@ -58,9 +58,15 @@ v4l2-ctl --all -d /dev/video0
 MQQT Message
 
 172.17.0.1;5000
-
 172.17.0.1;5000;123;A
+
 172.17.0.1;15001;046a3d3bdaa;A
+172.17.0.1;15002;046a3d3bdac;A
+
+172.17.0.1;15001;046a3d3bdaa;R
+172.17.0.1;15002;046a3d3bdac;R
+
+./camera_usb 046a3d3bdaa /dev/video0
 */
 
 #include <string.h>
@@ -89,6 +95,19 @@ void exit_example(int status, int sockfd, pthread_t *client_daemon)
     if (client_daemon != NULL) pthread_cancel(*client_daemon);
     exit(status);
 }
+
+static void cb_new_pad (GstElement *element, GstPad *pad, gpointer data){
+  gchar *name;
+  GstElement *other = data;
+  name = gst_pad_get_name (pad);
+  g_print ("A new pad %s was created for %s\n", name, gst_element_get_name(element));
+  g_free (name);
+  g_print ("element %s will be linked to %s\n",
+           gst_element_get_name(element),
+           gst_element_get_name(other));
+  gst_element_link(element, other);
+}
+
 
 void publish_callback(void** unused, struct mqtt_response_publish *published) 
 {
@@ -136,30 +155,99 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 
 	char action = payload[i+1];
 
-	printf("\n(%s) \n(%s) \n(%s) \n(%c)",host, port, dockerId, action);
+	printf("\n(%s) \n(%s) \n(%s) \n(%c)\n",host, port, dockerId, action);
 
 	// R means stop and remove
 	if ( (char) action == 'R') {
 		g_printerr("\n Unbinding SRC from VMS %s ... \n",dockerId);
 		GstElement *aux = gst_bin_get_by_name(GST_BIN(pipeline), dockerId);
+		g_printerr("\n Executing the unbind \n");
+		// the valve element can be setted drop to true, it will stop the 
+		// processing of the stream, setting it to false and the process 
+		// will start again
+		g_object_set(aux, "drop", TRUE, NULL);
 
-		g_printerr("\n Executing unbind \n");
+		// ---------------------------------------------
+		// don't try to stop the pipeline, it's not work!
+		// ---------------------------------------------
 		// gst_element_set_state(GST_ELEMENT(aux), GST_STATE_NULL);
-		gst_element_set_state (pipeline, GST_STATE_PAUSED);
-		gst_bin_remove(GST_BIN(pipeline),aux);
-		gst_element_set_state (pipeline, GST_STATE_PLAYING);
-		
+		// gst_element_set_state (pipeline, GST_STATE_PAUSED);
+		// gst_element_set_state (aux, GST_STATE_CHANGE_PLAYING_TO_PAUSED);
+		// g_object_set(aux, "host", "255.255.255.255", NULL);
+		// gst_element_set_state (pipeline, GST_STATE_PLAYING);		
+		// gst_bin_remove(GST_BIN(pipeline),aux);
+		/* if (totalVMsConnected > 0) {
+			g_printerr("\n Play .. \n");
+			gst_element_set_state (pipeline, GST_STATE_PLAYING);
+			totalVMsConnected--;
+		} */
 		// gst_element_set_state(pipeline, GST_STATE_);		
 		// gst_element_set_state(aux, GST_STATE_CHANGE_PLAYING_TO_PAUSED);
 		// g_print(" \n ---- %s: \n",gst_element_get_name(aux));
 		// gst_bin_remove(GST_BIN(pipeline), aux );
-	
-
 	} else {
+		g_printerr("\n Executing binding \n");
 		addQueue(host, atoi(port), dockerId);
 	}
 
     free(topic_name);
+}
+
+
+int addQueue(char* host, int port, char* dockerId) {
+
+	GstElement *queue, *valve, *decodebin, *x264enc, *rtph264pay, *udpsink;
+	GstElement *aux = gst_bin_get_by_name(GST_BIN(pipeline), dockerId);
+	// if there is a element with the same name it means that it was 'paused'
+	if (aux != NULL) {
+		// set drop to FALSE will start to sending the stream again
+		g_object_set(aux, "drop", FALSE, NULL);
+		return 0;
+	}
+	// printf("\n -------------- \n");
+	// printf("\n%s - %d",host, port);
+	// printf("\n -------------- \n");
+	// add a new queue to a tee :)
+	valve = gst_element_factory_make("valve", NULL);
+	queue = gst_element_factory_make("queue", NULL);
+	decodebin = gst_element_factory_make("decodebin", NULL);
+	x264enc = gst_element_factory_make("x264enc", NULL);
+	rtph264pay = gst_element_factory_make("rtph264pay", NULL);
+	udpsink = gst_element_factory_make("udpsink", NULL);
+
+	g_object_set(valve, "name", dockerId, NULL);
+	g_object_set(valve, "drop", FALSE, NULL);
+
+	g_object_set(udpsink, "host", host, NULL);
+	g_object_set(udpsink, "port", port, NULL);
+
+	if (!valve || !queue || !decodebin || !x264enc || !rtph264pay || !udpsink) {
+		g_printerr ("Not all elements could be created.\n");
+		return -1;
+	}
+	
+	gst_bin_add_many(GST_BIN(pipeline), valve, queue, decodebin, x264enc, rtph264pay, udpsink, NULL);
+
+	// link the tee -> queue -> decodebin
+	if (!gst_element_link_many(my_tee, valve, queue, decodebin, NULL)) {
+		g_error("Failed to link elements A");
+		return -1;
+	}
+	
+	// link the x264 -> rtp -> udpsink
+	if (!gst_element_link_many(x264enc, rtph264pay, udpsink, NULL)) {
+		g_error("Failed to link elements B");
+		return -1;
+	}
+
+	// quen de decodebin has something to play the pad will be linked betewen decodebin and x264
+	g_signal_connect (decodebin, "pad-added", G_CALLBACK (cb_new_pad), x264enc);
+
+	// only start playing when the pad was add
+	gst_element_set_state(pipeline, GST_STATE_PLAYING);
+
+	// GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_VERBOSE, "pipeline");
+	return 1;
 }
 
 void* client_refresher(void* client)
@@ -234,70 +322,7 @@ int sigintHandler(int unused) {
 	return 0;
 }
 
-static void cb_new_pad (GstElement *element, GstPad *pad, gpointer data){
-  gchar *name;
-  GstElement *other = data;
-  name = gst_pad_get_name (pad);
-  g_print ("A new pad %s was created for %s\n", name, gst_element_get_name(element));
-  g_free (name);
-  g_print ("element %s will be linked to %s\n",
-           gst_element_get_name(element),
-           gst_element_get_name(other));
-  gst_element_link(element, other);
-}
 
-int addQueue(char* host, int port, char* dockerId) {
-
-	GstElement *aux = gst_bin_get_by_name(GST_BIN(pipeline), dockerId);
-	if (aux != NULL) {
-		g_printerr("\nThere is another element with the name %s\n", dockerId);
-		return 0;
-	}
-
-	// printf("\n -------------- \n");
-	// printf("\n%s - %d",host, port);
-	// printf("\n -------------- \n");
-	// add a new queue to a tee :)
-	GstElement *queue, *decodebin, *x264enc, *rtph264pay, *udpsink;
-	queue = gst_element_factory_make("queue", NULL);
-	decodebin = gst_element_factory_make("decodebin", NULL);
-	x264enc = gst_element_factory_make("x264enc", NULL);
-	rtph264pay = gst_element_factory_make("rtph264pay", NULL);
-	udpsink = gst_element_factory_make("udpsink", NULL);
-
-	g_object_set(queue, "name", dockerId, NULL);
-
-	g_object_set(udpsink, "host", host, NULL);
-	g_object_set(udpsink, "port", port, NULL);
-
-	if (!queue || !decodebin || !x264enc || !rtph264pay || !udpsink) {
-		g_printerr ("Not all elements could be created.\n");
-		return -1;
-	}
-	
-	gst_bin_add_many(GST_BIN(pipeline), queue, decodebin, x264enc, rtph264pay, udpsink, NULL);
-
-	// link the tee -> queue -> decodebin
-	if (!gst_element_link_many(my_tee, queue, decodebin, NULL)) {
-		g_error("Failed to link elements A");
-		return -1;
-	}
-	
-	// link the x264 -> rtp -> udpsink
-	if (!gst_element_link_many(x264enc, rtph264pay, udpsink, NULL)) {
-		g_error("Failed to link elements B");
-		return -1;
-	}
-
-	// quen de decodebin has something to play the pad will be linked betewen decodebin and x264
-	g_signal_connect (decodebin, "pad-added", G_CALLBACK (cb_new_pad), x264enc);
-
-	// only start playing when the pad was add
-	gst_element_set_state(pipeline, GST_STATE_PLAYING);
-
-	// GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_VERBOSE, "pipeline");
-	return 1;
-}
 
 int main(int argc, char *argv[])
 {
@@ -385,6 +410,4 @@ int main(int argc, char *argv[])
 
 	/* block */
     while(fgetc(stdin) != EOF); 
-
-	return 0;
 }
