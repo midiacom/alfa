@@ -124,7 +124,7 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 
 	char action = payload[i+1];
 
-	printf("\n(%s) \n(%s) \n(%s) \n(%c)\n",host, port, dockerId, action);
+	g_printerr("\n(%s) \n(%s) \n(%s) \n(%c)\n",host, port, dockerId, action);
 
 	// R means stop and remove
 	if ( (char) action == 'R') {
@@ -220,11 +220,12 @@ int addQueue(char* host, int port, char* dockerId) {
 	GstElement *aux = gst_bin_get_by_name(GST_BIN(pipeline), dockerId);
 	// if there is a element with the same name it means that it was 'paused'
 	if (aux != NULL) {
+		g_printerr("\n allready exist, only open the vale");
 		// set drop to FALSE will start to sending the stream again
 		g_object_set(aux, "drop", FALSE, NULL);
 		return 0;
 	}
-
+	printf("\n New connection");
 	GstElement *valve, *queue, *audioconvert, *audioresample, *udpsink;
 	GstCaps *caps = gst_caps_from_string ("audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved");	
 	GstElement *capsfilter2 = gst_element_factory_make("capsfilter", NULL);
@@ -256,6 +257,8 @@ int addQueue(char* host, int port, char* dockerId) {
 
 	// only start playing when the pad was add
 	gst_element_set_state(pipeline, GST_STATE_PLAYING);
+
+	GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline");
 
 	return 1;
 }
@@ -345,6 +348,4 @@ int main(int argc, char *argv[])
 
 	/* block */
     while(fgetc(stdin) != EOF); 
-
-	return 0;
 }
