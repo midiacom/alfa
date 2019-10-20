@@ -264,25 +264,6 @@ void publish_callback(void **unused, struct mqtt_response_publish *published)
 		// processing of the stream, setting it to false and the process 
 		// will start again
 		g_object_set(aux, "drop", TRUE, NULL);
-
-		// ---------------------------------------------
-		// don't try to stop the pipeline, it's not work!
-		// ---------------------------------------------
-		// gst_element_set_state(GST_ELEMENT(aux), GST_STATE_NULL);
-		// gst_element_set_state (pipeline, GST_STATE_PAUSED);
-		// gst_element_set_state (aux, GST_STATE_CHANGE_PLAYING_TO_PAUSED);
-		// g_object_set(aux, "host", "255.255.255.255", NULL);
-		// gst_element_set_state (pipeline, GST_STATE_PLAYING);		
-		// gst_bin_remove(GST_BIN(pipeline),aux);
-		/* if (totalVMsConnected > 0) {
-			g_printerr("\n Play .. \n");
-			gst_element_set_state (pipeline, GST_STATE_PLAYING);
-			totalVMsConnected--;
-		} */
-		// gst_element_set_state(pipeline, GST_STATE_);		
-		// gst_element_set_state(aux, GST_STATE_CHANGE_PLAYING_TO_PAUSED);
-		// g_print(" \n ---- %s: \n",gst_element_get_name(aux));
-		// gst_bin_remove(GST_BIN(pipeline), aux );
 	} else {
 		g_printerr("\n Executing binding \n");
 		addQueue(host, atoi(port), dockerId);
