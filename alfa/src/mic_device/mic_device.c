@@ -25,7 +25,7 @@ gst-launch-1.0 \
     ! udpsink host=localhost port=10001
 
 Show the audio 
-gst-launch-1.0 udpsrc port=10001 \
+gst-launch-1.0 udpsrc port=15001 \
 	! audio/x-raw,format=S16LE,channels=2,layout=interleaved,rate=48000 \
 	! autoaudiosink
 
@@ -66,24 +66,10 @@ static GstBus *bus;
 
 static GstElement *pipeline, *src, *my_tee;
 
-int addQueue(char* host, int port);
+int addQueue(char* host, int port, char* dockerId);
 void publish_callback(void** unused, struct mqtt_response_publish *published);
 void* client_refresher(void* client);
 void exit_example(int status, int sockfd, pthread_t *client_daemon);
-
-char* c_name;
-#define ASCII_START 65
-#define ASCII_END 90
-char* client_name(int size) {
-    int i;
-    srand(time(0)); 
-    char *res = malloc(size + 1);
-    for(i = 0; i < size; i++) {
-        res[i] = (char) (rand()%(ASCII_END-ASCII_START))+ASCII_START;
-    }
-    res[i] = '\0';
-    return res;
-}
 
 void exit_example(int status, int sockfd, pthread_t *client_daemon)
 {
@@ -94,14 +80,13 @@ void exit_example(int status, int sockfd, pthread_t *client_daemon)
 
 void publish_callback(void** unused, struct mqtt_response_publish *published) 
 {
-    /* note that published->topic_name is NOT null-terminated (here we'll change it to a c-string) */
+  /* note that published->topic_name is NOT null-terminated (here we'll change it to a c-string) */
     char* topic_name = (char*) malloc(published->topic_name_size + 1);
     memcpy(topic_name, published->topic_name, published->topic_name_size);
     topic_name[published->topic_name_size] = '\0';
 
     printf("Received publish('%s'): %s\n", topic_name, (const char*) published->application_message);
 
-    // printf("Mensagem recebida! \n\rTopico: %s Mensagem: %s\n", topicName, payload);
 	// the message should be like IP;PORT localhost;5001
 	char payload[100] = "";
 
@@ -109,6 +94,8 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 	printf("%s", payload);
 	char host[100] = "";
 	char port[100] = ""; 
+	char dockerId[12] = ""; // used to identify the pipeline to add and remove
+
 	int i = 0;
 	for(i = 0; payload[i] != '\0';i++) {
 		if (payload[i] == ';') {
@@ -118,16 +105,40 @@ void publish_callback(void** unused, struct mqtt_response_publish *published)
 	}
 
 	int k = 0;
-	for(int j = i+1; payload[i] != '\0';j++) {
-		port[k] = payload[j];
+	for(i = i+1; payload[i] != '\0';i++) {
+		if (payload[i] == ';') {
+			break;
+		}
+		port[k] = payload[i];
 		k++;
-		i++;
 	}
 
-	// printf("\n - %s",host);
-	// printf("\n - %s\n",port);
+	k = 0;
+	for(i = i+1; payload[i] != '\0';i++) {
+		if (payload[i] == ';') {
+			break;
+		}
+		dockerId[k] = payload[i];
+		k++;
+	}
 
-	addQueue(host, atoi(port));
+	char action = payload[i+1];
+
+	printf("\n(%s) \n(%s) \n(%s) \n(%c)\n",host, port, dockerId, action);
+
+	// R means stop and remove
+	if ( (char) action == 'R') {
+		g_printerr("\n Unbinding SRC from VMS %s ... \n",dockerId);
+		GstElement *aux = gst_bin_get_by_name(GST_BIN(pipeline), dockerId);
+		g_printerr("\n Executing the unbind \n");
+		// the valve element can be setted drop to true, it will stop the 
+		// processing of the stream, setting it to false and the process 
+		// will start again
+		g_object_set(aux, "drop", TRUE, NULL);
+	} else {
+		g_printerr("\n Executing binding \n");
+		addQueue(host, atoi(port), dockerId);
+	}
 
     free(topic_name);
 }
@@ -204,29 +215,41 @@ int sigintHandler(int unused) {
 	return 0;
 }
 
-int addQueue(char* host, int port) {
-	GstElement *queue, *audioconvert, *audioresample, *udpsink;
+int addQueue(char* host, int port, char* dockerId) {
+
+	GstElement *aux = gst_bin_get_by_name(GST_BIN(pipeline), dockerId);
+	// if there is a element with the same name it means that it was 'paused'
+	if (aux != NULL) {
+		// set drop to FALSE will start to sending the stream again
+		g_object_set(aux, "drop", FALSE, NULL);
+		return 0;
+	}
+
+	GstElement *valve, *queue, *audioconvert, *audioresample, *udpsink;
 	GstCaps *caps = gst_caps_from_string ("audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved");	
 	GstElement *capsfilter2 = gst_element_factory_make("capsfilter", NULL);
 	g_object_set(capsfilter2, "caps", caps, NULL);
 
+	valve = gst_element_factory_make("valve", NULL);
 	queue = gst_element_factory_make("queue", NULL);
 	audioconvert = gst_element_factory_make("audioconvert", NULL);
 	audioresample = gst_element_factory_make("audioresample", NULL);
 	udpsink = gst_element_factory_make("udpsink", NULL);
 
+	gst_object_set_name(GST_OBJECT(valve), dockerId);
+
 	g_object_set(udpsink, "host", host, NULL);
 	g_object_set(udpsink, "port", port, NULL);
 
-	if (!queue || !audioconvert || !capsfilter2 || !audioresample || !udpsink) {
+	if (!valve || !queue || !audioconvert || !capsfilter2 || !audioresample || !udpsink) {
 		g_printerr ("Not all elements could be created.\n");
 		return -1;
 	}
 	
-	gst_bin_add_many(GST_BIN(pipeline), queue, audioconvert, capsfilter2, audioresample, udpsink, NULL);
+	gst_bin_add_many(GST_BIN(pipeline), valve, queue, audioconvert, capsfilter2, audioresample, udpsink, NULL);
 
 	// link the tee -> queue -> decodebin
-	if (!gst_element_link_many(my_tee, queue, audioconvert, capsfilter2, audioresample, udpsink, NULL)) {
+	if (!gst_element_link_many(my_tee, valve, queue, audioconvert, capsfilter2, audioresample, udpsink, NULL)) {
 		g_error("Failed to link elements A");
 		return -1;
 	}
@@ -239,9 +262,6 @@ int addQueue(char* host, int port) {
 
 int main(int argc, char *argv[])
 {
-
-	c_name = client_name(10);
-
 	if (argc != 3) {
       g_printerr ("Usage: deviceId devicePath\n");
       return -1;
@@ -264,7 +284,7 @@ int main(int argc, char *argv[])
     uint8_t sendbuf[2048]; /* sendbuf should be large enough to hold multiple whole mqtt messages */
     uint8_t recvbuf[1024]; /* recvbuf should be large enough any whole mqtt message expected to be received */
     mqtt_init(&client, sockfd, sendbuf, sizeof(sendbuf), recvbuf, sizeof(recvbuf), publish_callback);
-    mqtt_connect(&client, c_name, NULL, NULL, 0, NULL, NULL, 0, 400);
+    mqtt_connect(&client, argv[1], NULL, NULL, 0, NULL, NULL, 0, 400);
 
     /* check that we don't have any errors */
     if (client.error != MQTT_OK) {
