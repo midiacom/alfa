@@ -46,13 +46,13 @@
             <li>
               <router-link to="/vmsType">
                 <v-icon name="command"></v-icon>
-                VMS Types Plugins
+                VMS Types
               </router-link>
             </li>
             <li>
               <router-link to="/vmsType/indexSrc">
                 <v-icon name="move"></v-icon>
-                VMS Types SRC
+                SRC Types
               </router-link>
             </li>
             <hr/>

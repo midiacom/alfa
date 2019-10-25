@@ -72,13 +72,13 @@ MQQT Message
 172.17.0.1;5000 send data do host machine at port 5000
 172.17.0.1;5001 send data do host machine at port 5001
 
-172.17.0.1;15001;046a3d3bdaa;A
-172.17.0.1;15002;046a3d3bdac;A
+172.17.0.1;15001;0463315001;A
+172.17.0.1;15002;0463315000;A
 
-172.17.0.1;15001;046a3d3bdaa;R
-172.17.0.1;15002;046a3d3bdac;R
+172.17.0.1;15001;0463315001;R
+172.17.0.1;15002;0463315000;R
 
-./video_sample 046a3d3bdaa 1
+./video_sample 046a3d3bdaa 18
 
 */
 

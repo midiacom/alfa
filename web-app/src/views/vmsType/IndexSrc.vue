@@ -4,7 +4,7 @@
         <b-col>            
             <h2>
                 <v-icon style="width: 32px;" name="move"></v-icon>
-                VMS Types SRC
+                SRC Types
             </h2>
         </b-col>
         <b-col class="text-right">
@@ -45,7 +45,7 @@
         variant="secondary" 
         class="text-center" 
         :show=!items.length>
-        There are no VMS Types SRC yet!
+        There are no SRC Types yet!
     </b-alert>
 
     <b-row>

@@ -44,12 +44,12 @@ services:
         interval: 30s
         timeout: 10s
         retries: 5           
-  web-client:
-    hostname: web-client
-    container_name: web-client
+  web-app:
+    hostname: web-app
+    container_name: web-app
     depends_on: ["rest-api"]
     logging:
-      driver: none    
+      driver: none
     build: ./web-app
     ports:
       - "8081:80"
@@ -57,4 +57,4 @@ services:
       - express-mongo-network      
 networks: 
     express-mongo-network:
-      driver: bridge      
+      driver: bridge
