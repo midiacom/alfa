@@ -29,6 +29,15 @@ The final result of this project can be seen at the above images.
 
 # Installation
 
+## NPM
+You will need to install NPM in the machine that will run the api.
+
+In a ubuntu environment only run 
+
+```
+sudo npm install
+```
+
 ## Docker and Docker Compose
 
 ### Docker 
@@ -98,7 +107,7 @@ sudo ./compile_src_and_vms.sh
 
 * Install the nodejs packages in web-app and api folder
 ```
-cd web-api
+cd api
 sudo npm install
 npm run build
 ```

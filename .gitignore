@@ -3,7 +3,6 @@ api/MongoDB
 api/coverage
 api/npm-debug.log
 web-app/node_modules
-web-app/dist
 
 # local env files
 .env.local
