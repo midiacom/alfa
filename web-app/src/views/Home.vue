@@ -6,6 +6,11 @@
       Dashboard
     </h2>
 
+    <b-alert :show="showMsg" variant="danger">
+      <h3>Important!</h3>
+      <strong>Before using this system you need to build the docker images from SRC and VMS. The easy way to do it is running ./compile_src_and_vms.sh at the alfa/alfa folder .</strong>
+    </b-alert>
+
     <!-- This is the part of the system that imports the basic data -->
     <b-alert :show="showMsg" >
       <h3>It seems that is the first time you are here!</h3>
@@ -21,11 +26,6 @@
 
       <b-button variant="warning" @click="bootstrap()" size="lg">Import Data</b-button>
 
-    </b-alert>
-
-    <b-alert :show="showMsg" variant="danger">
-      <h3>Important!</h3>
-      <strong>Before using this system you need to build the docker images from SRC and VMS. The easy way to do it is running ./compile_src_and_vms.sh at the alfa/alfa folder .</strong>
     </b-alert>
 
 

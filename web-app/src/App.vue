@@ -32,12 +32,6 @@
               </ul>
             </li>
             <li>
-              <router-link to="/location">
-                <v-icon name="map-pin"></v-icon>
-                Locations
-              </router-link>
-            </li>
-            <li>
               <router-link to="/device">
                 <v-icon name="cast"></v-icon>
                 Devices
@@ -53,6 +47,12 @@
               <router-link to="/vmsType/indexSrc">
                 <v-icon name="move"></v-icon>
                 SRC Types
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/location">
+                <v-icon name="map-pin"></v-icon>
+                Locations
               </router-link>
             </li>
             <hr/>
