@@ -1,8 +1,0 @@
-version: '2.1'
-
-services:
-  alfa:
-    image: audio_sample
-    build: .
-    ports:
-      - 8080:8080
