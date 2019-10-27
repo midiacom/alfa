@@ -43,6 +43,12 @@ after that you need to rebuild the image running inside the web-app folder
 docker build .
 ```
 
+OR
+
+```
+docker build . -t alfa_web-app
+```
+
 If alfa_web-app container persists to don't update you need to remove the imagem
 
 ```
