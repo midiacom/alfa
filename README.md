@@ -29,6 +29,8 @@ The final result of this project can be seen at the above images.
 
 # Installation
 
+*Note:*  If you are installing ALFA inside a Raspberry you will need to do some changes in environments variables. Follow this steps https://github.com/midiacom/alfa/wiki/Install-in-a-Raspberry-3
+
 ## NPM
 You will need to install NPM in the machine that will run the api.
 
