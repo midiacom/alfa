@@ -27,5 +27,36 @@ npm run test
 npm run lint
 ```
 
+## To Recreate the web-app Image 
+
+After make the modifications in vue pages you need to run
+
+```
+npm run build
+```
+
+to generate the files to run inside the docker container
+
+after that you need to rebuild the image running inside the web-app folder
+
+```
+docker build .
+```
+
+If alfa_web-app container persists to don't update you need to remove the imagem
+
+```
+docker rmi alfa_web-app
+```
+
+and run 
+
+```
+docker-compose build
+docker-compose up 
+```
+
+again
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
