@@ -1,3 +1,6 @@
+Copy file from container to host
+docker cp cool_bhaskara:/tmp/pipeline.dot .
+
 # remove all stopped containers
 docker rm  $(docker ps -q -a)
 
@@ -7,11 +10,30 @@ docker rmi $(docker images -q -f dangling=true)
 # all images (caution)
 ############### docker rmi $(docker images -q)
 
-35.153.160.117 5001
-
-rtsp://179.206.150.80:8080/h264_ulaw.sdp
-
-
 docker stop $(docker ps | egrep alfa | awk '{print $1}')
 
 docker stop $(docker ps | egrep alfa | awk '{print $1}'); docker container prune --force
+
+Show de container ID without trunc 
+
+#get id
+docker ps --no-trunc
+export CONTAINER_ID=container_id_long
+
+export CONTAINER_ID=$(docker inspect --format="{{.Id}}" vigorous_elbakyan)
+
+#cpu
+cat /sys/fs/cgroup/cpuacct/docker/$CONTAINER_ID/cpuacct.stat
+
+#mem 
+cat /sys/fs/cgroup/memory/docker/$CONTAINER_ID/memory.stat
+
+#network
+cat /proc/$CONTAINER_PID/net/dev
+
+get the amount of data processed 
+cat /proc/$CONTAINER_PID/net/dev | egrep eth0
+
+get only the bytes processed (USE TO TEST) 
+cat /proc/$CONTAINER_PID/net/dev | egrep eth0 | awk '{print $2}'
+cat /sys/fs/cgroup/cpuacct/docker/$CONTAINER_ID/cpuacct.stat | egrep user | awk '{print $2}'

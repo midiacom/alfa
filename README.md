@@ -208,8 +208,15 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 
 # Video Tutorials (in portuguese)
 
+## Quick demo
+
+https://www.youtube.com/watch?v=GeKvoEdtYDM
+
+## More detailed demo 
+https://www.youtube.com/watch?v=dxg4b4nKwgo
+
 ## Introdução ao gsteramer
-https://www.youtube.com/watch?v=KLhZmEGeqHk&t=331s
+https://www.youtube.com/watch?v=KLhZmEGeqHk
 
 ## Criando um programa em C usando gstreamer e rodando em um docker container
 https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be

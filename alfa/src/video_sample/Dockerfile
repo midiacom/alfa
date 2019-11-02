@@ -13,7 +13,8 @@ RUN apk add --update --no-cache \
     gst-libav \
     x264-dev \
     x264-libs \
-    libressl
+    libressl \
+    tcpdump
     
 # copy my files to the container
 COPY ./mqtt ./mqtt

@@ -253,7 +253,7 @@ void publish_callback(void **unused, struct mqtt_response_publish *published)
 
 	char action = payload[i+1];
 
-	printf("\n(%s) \n(%s) \n(%s) \n(%c)\n",host, port, dockerId, action);
+	g_printerr("\n(%s) \n(%s) \n(%s) \n(%c)\n",host, port, dockerId, action);
 
 	// R means stop and remove
 	if ( (char) action == 'R') {
@@ -334,7 +334,7 @@ int addQueue(char *host, int port, char* dockerId)
 	// only start playing when the pad was add
 	gst_element_set_state(pipeline, GST_STATE_PLAYING);
 
-	// GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline");
+	GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline");
 
 	return 1;
 }
