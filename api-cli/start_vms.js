@@ -5,7 +5,7 @@ var fs = require('fs');
 
 let dest = 10000;
 
-for (i = 1; i <= 1; i++) {
+for (i = 1; i <= 5; i++) {
     dest = 10000+i;
     // 5db37abe5cd8660024efb355 it is the udp to udp vms
     var postData = querystring.stringify({

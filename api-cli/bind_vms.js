@@ -7,7 +7,8 @@ var request = require('request');
 var request_sync = require('sync-request');
 
 let url_api = "http://localhost:3000/vms"
-let device_id = '5db37abe5cd8660024efb35c'
+// let device_id = '5db37abe5cd8660024efb35c'
+let device_id = '5dbdfc2e3129d1002fad19d8'
 
 function unbind(vmsid) {
     // unbind after n minutes
@@ -33,7 +34,7 @@ request(url_api, function (error, response, body) {
         console.log(res.getBody());
 
         unbind(parsedBody[i]._id)
-        waitfor(2000);
+        waitfor(5000);
     }
 });
 

@@ -169,6 +169,8 @@ export default {
                 .then((vmsType) => {
                     this.isLoading = false
                     this.ports = vmsType.ports.split(";")
+                    this.form.port = this.ports[0]
+
                 })
 
             apiVms.getVms(id)
@@ -181,6 +183,18 @@ export default {
                 .then((devices) => {
                     this.isLoading = false
                     this.devices = devices
+
+                    if (this.devices.length == 0) {
+                        this.$swal.fire({
+                            title: 'No Device Started!',
+                            text: "You need at least one started device to bind!",
+                            type: 'warning',
+                        }).then(() => {                
+                            this.$router.push(`/device/`)
+                        })
+                    }
+
+                    this.form.deviceId = this.devices[0].value
                 })
         }
     },
