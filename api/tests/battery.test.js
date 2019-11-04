@@ -41,7 +41,7 @@ beforeEach(async () => {
 })
 
 test('Start test one to one', async () => {    
-    // starta o SRC
+    // start the SRC
     console.log(`Start Device 1`)
     response = await request(app)
     .get(`/device/${id_device}/startSrc`)

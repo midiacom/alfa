@@ -60,6 +60,7 @@ const vmsController = {
                     vmsModel.findById(id)
                     .then((vms) => {
                       vms.dockerId = data.id
+                      vms.startupParameters = req.body.startupParameters
                       vms.bindedTo = []
                       // update
                       vms.save((err,vms) => {
@@ -220,8 +221,8 @@ const vmsController = {
                   if (data.State.Running) {
                     container.stop(function (err, data) {
                       container.remove()
-                      return res.status(201).json(vms);
                     });
+                    return res.status(201).json(vms);
                   }
                 }
               });
