@@ -147,6 +147,7 @@ export default {
                 label: 'Container ID'
             },{
                 key: 'vmsType',
+                label: 'VMS Type'
             },{
                 key: 'name'
             },{

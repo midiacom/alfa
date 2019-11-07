@@ -26,7 +26,6 @@ cat /sys/fs/cgroup/cpuacct/docker/$CONTAINER_ID/cpuacct.stat | egrep user | awk 
 export CONTAINER_ID=$(docker inspect --format="{{.Id}}" sharp_greider)
 cat /sys/fs/cgroup/cpuacct/docker/$CONTAINER_ID/cpuacct.stat | egrep user | awk '{print $2}'
 
-
 #cpu
 cat /sys/fs/cgroup/cpuacct/docker/$CONTAINER_ID/cpuacct.stat
 

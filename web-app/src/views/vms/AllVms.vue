@@ -82,7 +82,8 @@ export default {
             fields: [{
                 key: 'name',
             },{
-                key: 'vmsType'
+                key: 'vmsType',
+                label: 'VMS Type'
             },{
                 key: 'startupParameters'
             },{
