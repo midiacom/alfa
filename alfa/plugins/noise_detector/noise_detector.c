@@ -46,6 +46,7 @@ export GST_DEBUG="*:3"
 #include <string.h>
 #include <math.h>
 #include <gst/gst.h>
+#include <sys/time.h>
 
 #include "./mqtt/src/mqtt.h"
 #include "./mqtt/include/posix_sockets.h"
@@ -95,6 +96,14 @@ void* client_refresher(void* client)
         usleep(100000U);
     }
     return NULL;
+}
+
+long long current_timestamp() {
+    struct timeval te; 
+    gettimeofday(&te, NULL); // get current time
+    long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
+    // printf("milliseconds: %lld\n", milliseconds);
+    return milliseconds;
 }
 
 static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer data)
@@ -156,11 +165,12 @@ static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer da
           //ftoa(rms,&str,6);
           g_print("\n Data published");
           g_print("\n %s %s",id_topic, str);
+          g_print("Mil: %03ld",current_timestamp());
           //mqtt_publish(&client, id_topic, str, strlen(str)+1, MQTT_PUBLISH_QOS_0);
 
           /////////////////////////////////////////////  
           mqtt_publish(&client, id_topic, str, strlen(str) + 1, MQTT_PUBLISH_QOS_0);
-          if (client.error != MQTT_OK) {
+          if (client.error != MQTT_OK) {              
               fprintf(stderr, "error a: %s\n", mqtt_error_str(client.error));
 
               // MQTT client
