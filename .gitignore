@@ -24,3 +24,4 @@ yarn-error.log*
 *.sw?
 
 .vscode/*
+alfa/plugins/noise_detector/noise_detector

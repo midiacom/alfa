@@ -27,14 +27,14 @@ gst-launch-1.0 alsasrc device=hw:0 \
   ! audio/x-raw,format=S16LE,channels=2,rate=48000,layout=interleaved \
   ! udpsink host=35.153.160.117 port=5000
 
-./noise_detector 0.01 altola 172.17.0.1 1883
+./noise_detector 0.05 altola 172.17.0.1 1883
 ./start.sh 0.01 alto 172.17.0.1 1883
 
 To create de dockerfile./noise_detector 0.01 altola 172.17.0.1 1883
 docker build . -t alfa/plugin/noise_detector
 
-docker run alfa/plugin/noise_detector 0.02 alert 172.17.0.1 1883
-docker run alfa/plugin/noise_detector 0.02 alert_anselmo test.mosquitto.org 1883
+docker run alfa/plugin/noise_detector 0.05 alert 172.17.0.1 1883
+docker run --net=host alfa/plugin/noise_detector 0.03 aaa test.mosquitto.org 1883
 
 export GST_DEBUG="*:3"
 */
@@ -58,6 +58,8 @@ export GST_DEBUG="*:3"
 struct mqtt_client client;
 float sensitiveness;
 char id_topic[50];
+int num_det = 0;
+long long int start_time = 0LL;
 
 char* mqtt_server_addr;
 char* mqtt_server_port;
@@ -99,11 +101,9 @@ void* client_refresher(void* client)
 }
 
 long long current_timestamp() {
-    struct timeval te; 
-    gettimeofday(&te, NULL); // get current time
-    long long milliseconds = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
-    // printf("milliseconds: %lld\n", milliseconds);
-    return milliseconds;
+	struct timeval currentTime;
+	gettimeofday(&currentTime, NULL);
+	return currentTime.tv_sec * (int)1e6 + currentTime.tv_usec;
 }
 
 static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer data)
@@ -160,12 +160,19 @@ static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer da
         rms = pow (10, rms_dB / 20);
         if (rms > sensitiveness) {
           char str[10];
-          snprintf(str, 10, "%f", rms);
+          // snprintf(str, 10, "%f", rms);
           // snprintf(str, 8, "%d", rms);
           //ftoa(rms,&str,6);
-          g_print("\n Data published");
-          g_print("\n %s %s",id_topic, str);
-          g_print("Mil: %03ld",current_timestamp());
+          // g_print("\n Data published");
+          // g_print("\n %s %s",id_topic, str);
+          long long int now = current_timestamp();
+          long long int diff = now - start_time;
+          if (diff > 600000) {
+            num_det++;
+            // g_print("\n%d \t %03lld",num_det,diff);
+            start_time = current_timestamp();
+          }
+          
           //mqtt_publish(&client, id_topic, str, strlen(str)+1, MQTT_PUBLISH_QOS_0);
 
           /////////////////////////////////////////////  
@@ -209,6 +216,9 @@ static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer da
 
 main (int argc, char *argv[])
 {
+  start_time = current_timestamp();
+  g_print("\n Start Time: %03ld", start_time);
+  g_print("\n-----------------\n");
 
   c_name = client_name(5);
 
