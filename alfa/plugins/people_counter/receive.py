@@ -1,10 +1,10 @@
 import cv2
 import gi
 import numpy as np
+import face_recognition
 
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
-
 
 class Video():
     """BlueRov video capture class constructor
@@ -138,6 +138,14 @@ if __name__ == '__main__':
             continue
 
         frame = video.frame()
+
+        # Find all the faces in the image using the default HOG-based model.
+        # This method is fairly accurate, but not as accurate as the CNN model and not GPU accelerated.
+        # See also: find_faces_in_picture_cnn.py
+        face_locations = face_recognition.face_locations(frame)
+
+        print("I found {} face(s) in this photograph.".format(len(face_locations)))
+
         cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
