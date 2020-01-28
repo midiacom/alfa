@@ -73,6 +73,4 @@ RUN apt-get install -y --fix-missing \
 
 COPY . /root/face_counter
 
-# start python server python3 -m http.server 80
-# CMD python3 /root/face_recognition/face_counter.py
-# python /root/face_counter/face_counter.py
+ENTRYPOINT ["./root/face_counter/start.sh"]

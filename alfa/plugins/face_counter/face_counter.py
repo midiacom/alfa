@@ -32,9 +32,15 @@ docker run -it alfa/plugin/face_counter sh
 
 docker run alfa/plugin/face_counter 172.17.0.1 5000
 
-python /root/face_counter/face_counter.py 10001 172.17.0.1 1883 xyz
+python /root/face_counter/face_counter.py xyz 172.17.0.1 1883
 
-python3 face_counter.py 10001 172.17.0.1 1883 xyz
+python3 face_counter.py tx 172.17.0.1 1883
+
+
+# start python server python3 -m http.server 80
+# CMD python3 /root/face_recognition/face_counter.py
+# python /root/face_counter/face_counter.py
+
 '''
 
 import cv2
@@ -59,7 +65,7 @@ class Video():
         video_source (string): Udp source ip and port
     """
 
-    def __init__(self, port=10001):
+    def __init__(self, port=5000):
         """Summary
         Args:
             port (int, optional): UDP port
@@ -172,13 +178,11 @@ class Video():
 if __name__ == '__main__':
     # Create the video object
     # Add port= if is necessary to use a different one
-    video = Video(sys.argv[1])
+    video = Video()
 
+    mqtt_topic = sys.argv[1]
     mqtt_hostname = sys.argv[2]
-    mqtt_port = sys.argv[3]
-    mqtt_topic = sys.argv[4]
-
-    print("a")
+    mqtt_port = sys.argv[3]    
 
     while True:
         # Wait for the next frame
