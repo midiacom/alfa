@@ -109,6 +109,15 @@ const bootstrapController = {
             ports: '15000;15001'
         }).save();
 
+        const vmsTypeVms5 = await new vmsTypeModel({
+            name: 'VMS = Video Face Counter',
+            dockerImage: 'alfa/plugin/face_counter',
+            startupParameters: "TOPIC IP PORT | Example ABC 172.17.0.1 1883",
+            description: 'Count how many faces are in a video stream and send the value to a MQTT server',
+            src: 0,
+            sdp: '',
+            ports: '5000'
+        }).save();
 
         // create the devices
         const device0 = await new deviceModel({
