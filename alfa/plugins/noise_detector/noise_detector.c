@@ -160,9 +160,7 @@ static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer da
         rms = pow (10, rms_dB / 20);
         if (rms > sensitiveness) {
           char str[10];
-          // snprintf(str, 10, "%f", rms);
-          // snprintf(str, 8, "%d", rms);
-          //ftoa(rms,&str,6);
+          snprintf(str, 10, "%f", rms);
           // g_print("\n Data published");
           // g_print("\n %s %s",id_topic, str);
           long long int now = current_timestamp();
@@ -217,8 +215,8 @@ static gboolean message_handler (GstBus * bus, GstMessage * message, gpointer da
 main (int argc, char *argv[])
 {
   start_time = current_timestamp();
-  g_print("\n Start Time: %03ld", start_time);
-  g_print("\n-----------------\n");
+  // g_print("\n Start Time: %03ld", start_time);
+  // g_print("\n-----------------\n");
 
   c_name = client_name(5);
 

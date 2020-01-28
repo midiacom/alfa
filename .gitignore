@@ -4,6 +4,7 @@ api/coverage
 api/npm-debug.log
 web-app/node_modules
 api-cli/node_modules
+api-cli/node_modules/*
 
 # local env files
 .env.local
