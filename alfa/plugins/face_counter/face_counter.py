@@ -32,7 +32,9 @@ docker run -it alfa/plugin/face_counter sh
 
 docker run alfa/plugin/face_counter 172.17.0.1 5000
 
-python /root/face_counter/face_counter.py
+python /root/face_counter/face_counter.py 10001 172.17.0.1 1883 xyz
+
+python3 face_counter.py 10001 172.17.0.1 1883 xyz
 '''
 
 import cv2
@@ -40,6 +42,7 @@ import numpy as np
 import face_recognition
 import paho.mqtt.publish as publish
 import gi
+import sys
 
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
@@ -56,7 +59,7 @@ class Video():
         video_source (string): Udp source ip and port
     """
 
-    def __init__(self, port=10001, mqtt_hostname="172.17.0.1", mqtt_port=1883, mqtt_topic = "faces"):
+    def __init__(self, port=10001):
         """Summary
         Args:
             port (int, optional): UDP port
@@ -65,14 +68,8 @@ class Video():
         Gst.init(None)
 
         self.port = port
-        self.mqtt_hostname = mqtt_hostname
-        self.mqtt_port = mqtt_port
-        self.mqtt_topic = mqtt_topic
         self._frame = None
 
-        print(self.mqtt_hostname)
-        print(self.mqtt_port)
-        print(self.mqtt_topic)
 
         # [Software component diagram](https://www.ardusub.com/software/components.html)
         # UDP video stream (:5600)
@@ -175,7 +172,11 @@ class Video():
 if __name__ == '__main__':
     # Create the video object
     # Add port= if is necessary to use a different one
-    video = Video()
+    video = Video(sys.argv[1])
+
+    mqtt_hostname = sys.argv[2]
+    mqtt_port = sys.argv[3]
+    mqtt_topic = sys.argv[4]
 
     print("a")
 
@@ -195,7 +196,7 @@ if __name__ == '__main__':
         
         print("I found {} face(s) in this photograph.".format(len(face_locations)))
 
-        publish.single(self.mqtt_topic, str(len(face_locations)), hostname=self.mqtt_hostname, port=self.mqtt_port)
+        publish.single(mqtt_topic, str(len(face_locations)), hostname=mqtt_hostname, port=int(mqtt_port))
 
         # cv2.imshow('frame', frame)
         # if cv2.waitKey(1) & 0xFF == ord('q'):
