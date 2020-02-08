@@ -1,8 +1,10 @@
-api/node_modules
+**api/node_modules
 api/MongoDB
 api/coverage
 api/npm-debug.log
 web-app/node_modules
+web-app/dist
+web-app/dist/*
 api-cli/node_modules
 api-cli/node_modules/*
 
