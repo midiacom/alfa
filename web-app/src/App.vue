@@ -55,6 +55,12 @@
                 Locations
               </router-link>
             </li>
+            <li>
+              <router-link to="/node">
+                <v-icon name="git-commit"></v-icon>
+                Edge Nodes
+              </router-link>
+            </li>                        
             <hr/>
             <li>
               <a target="_blank" href="https://github.com/anselmobattisti/alfa">

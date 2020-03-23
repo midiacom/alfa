@@ -97,6 +97,23 @@ export default new Router({
       path: '/vms/:id/bindSrc',
       name: 'vmsBindSrc',
       component: () => import(/* webpackChunkName: "vmsBindSrc" */ './views/vms/BindSrc.vue')
-    }
+    },
+
+    // Nodes ROUTES
+    {
+      path: '/node',
+      name: 'nodeIndex',
+      component: () => import(/* webpackChunkName: "nodeIndex" */ './views/node/Index.vue')
+    },
+    {
+      path: '/node/new',
+      name: 'nodeNew',
+      component: () => import(/* webpackChunkName: "nodeNew" */ './views/node/New.vue')
+    },        
+    {
+      path: '/node/:id/edit',
+      name: 'nodeEdit',
+      component: () => import(/* webpackChunkName: "nodeEdit" */ './views/node/Edit.vue')
+    },        
   ]
 })
