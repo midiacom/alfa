@@ -3,7 +3,7 @@ const nodeModel = require("../models/nodeModel")
 const nodeController = {
     list: (req, res, next) => {
         nodeModel.find() 
-            .select('name')
+            .select(['name','ip'])
             .then(nodes => {
                 return res.status(201).json(nodes);
             })
@@ -28,6 +28,7 @@ const nodeController = {
     post: (req, res, next) => {
         const node = new nodeModel({
             name: req.body.name,
+            ip: req.body.ip,
             description: req.body.description
         })                
         
@@ -54,6 +55,7 @@ const nodeController = {
             }
 
             node.name = req.body.name
+            node.ip = req.body.ip
             node.description = req.body.description
 
             node.save(function (err, node) {

@@ -4,8 +4,8 @@
     <b-row>
         <b-col>            
             <h2>
-                <v-icon style="width: 32px;" name="cast"></v-icon>
-                Nodes
+                <v-icon style="width: 32px;" name="git-commit"></v-icon>
+                Edge Nodes
             </h2>
         </b-col>
         <b-col class="text-right">
@@ -28,10 +28,6 @@
         :fields="fields" 
         striped 
         responsive="sm">
-
-      <template v-slot:cell(location)="data">
-          {{ data.item.location.name }}
-      </template>
 
       <template v-slot:cell(actions)="row">
         
@@ -80,7 +76,10 @@ export default {
             isBusy: true,
             isLoading: false,
             fields: [{
-                key: 'name',
+                key: 'name'
+            },{
+                key: 'ip',
+                label: 'IP'
             },
             {
                 key:'actions',

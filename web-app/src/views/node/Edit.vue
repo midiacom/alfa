@@ -11,8 +11,12 @@
             <b-form-input id="name" v-model="form.name" type="text" required/>
         </b-form-group>
 
+        <b-form-group id="input-group-1" label="IP:" label-for="name">
+            <b-form-input id="ip" v-model="form.ip" type="text" required/>
+        </b-form-group>
+
         <b-form-group id="input-group-2" label="Description:" label-for="description">
-            <b-form-input id="description" v-model="form.description" type="text"/>
+            <b-form-textarea id="description" v-model="form.description" type="text"/>
         </b-form-group>
 
         <b-row>
@@ -39,6 +43,7 @@ export default {
             form: {
                 id: '',
                 name: '',
+                ip: '',
                 description: ''
             },
             msg: {
@@ -65,6 +70,7 @@ export default {
                 .then((node) => {
                     this.form.id = node._id
                     this.form.name = node.name                    
+                    this.form.ip = node.ip                    
                     this.form.description = node.description
                 })
         }

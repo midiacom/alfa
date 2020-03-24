@@ -11,6 +11,10 @@
                 <b-form-input id="name" v-model="form.name" type="text" required/>
             </b-form-group>
 
+            <b-form-group id="input-group-1" label="IP:" label-for="name">
+                <b-form-input id="ip" v-model="form.ip" type="text" required/>
+            </b-form-group>
+
             <b-form-group id="input-group-2" label="Description:" label-for="description">
                 <b-form-textarea id="description" v-model="form.description" type="text"/>
             </b-form-group>
@@ -38,6 +42,7 @@ export default {
             locations: [],
             form: {
                 name: '',     
+                ip: '',
                 description: ''
             },
             msg: {
