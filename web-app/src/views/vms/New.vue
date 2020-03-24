@@ -26,6 +26,10 @@
                 <strong>Description:</strong> {{ vmsType.description }}
             </b-form-group>
 
+            <b-form-group id="input-group-3" label="Edge Node:" label-for="node">
+                <b-form-select style="margin-top:0px!important" id="node" v-model="form.node" :options="nodes" size="sm" class="mt-3"></b-form-select>
+            </b-form-group>
+            
             <b-form-group>
                 <strong>Startup Parameters Example:</strong> {{ vmsType.startupParameters }}
             </b-form-group>
@@ -54,6 +58,7 @@
 <script>
 import {apiVms} from './api'
 import {apiVmsType} from '../vmsType/api'
+import {apiNode} from '../node/api'
 
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
@@ -63,6 +68,7 @@ export default {
     components: {Loading},    
     data() {
         return {            
+            nodes: [],
             vmsType: {
                 name: '',
                 dockerImage: '',
@@ -72,7 +78,8 @@ export default {
             form: {
                 name: '',
                 vmsType: '',
-                startupParameters: ''
+                startupParameters: '',
+                node: ''
             },
             msg: {
                 text: false,
@@ -103,6 +110,11 @@ export default {
                 .then((vmsType) => {
                     this.form.vmsType = vmsType._id
                     this.vmsType = vmsType
+                })
+
+            apiNode.getNodesForSelect()
+                .then((nodes) => {
+                    this.nodes = nodes
                 })
         }
     },

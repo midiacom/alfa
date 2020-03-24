@@ -1,7 +1,17 @@
 var Docker = require('dockerode');
-var getDockerHost = require('get-docker-host');
+// var getDockerHost = require('get-docker-host');
 
 const d = {
+
+    api (node_ip) {
+        return new Promise((resolve, reject) => {
+            var dockerApi = new Docker({host: node_ip, port: process.env.DOCKER_PORT_API});                    
+            resolve(dockerApi);                            
+        })        
+    }
+
+    /*
+    Old Method
     api () {
         return new Promise((resolve, reject) => {
             getDockerHost((error, ipHost) => {
@@ -15,6 +25,7 @@ const d = {
             })
         })
     }
+    */
 }
 
 module.exports = d

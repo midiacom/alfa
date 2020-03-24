@@ -20,7 +20,10 @@ const vmsController = {
     // start and recreate a VMS
     // here we unbind a SRC if it was binded
     post: (req, res, next) => {
-      docker.api()
+
+      let nodeIp = req.body.node;
+
+      docker.api(nodeIp)
         .then((api) => {
           let vmsType = req.body.vmsType;
           let startupParameters = req.body.startupParameters;
@@ -41,6 +44,7 @@ const vmsController = {
                       dockerId: data.id,
                       startupParameters: startupParameters,
                       vmsType: vmsType,
+                      nodeIp: node_ip,
                       bindedTo: []
                     })      
 

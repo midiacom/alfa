@@ -67,5 +67,27 @@ export const apiNode = {
           reject(e)
         })
     })
-  }
+  },
+
+  /**
+   * This will be used for the combobox that demands a diferente return format
+   */
+  getNodesForSelect () {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/node/`)
+        .then(resp => {
+            let ret = []
+            resp.data.forEach(element => {
+              ret.push({
+                value: element.ip,
+                text: `${element.name} ${element.ip}`
+              })
+            });
+            resolve(ret)
+        })
+        .catch(e => {
+            reject(e)
+        })
+    })
+  },  
 }

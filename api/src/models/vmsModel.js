@@ -8,6 +8,7 @@ var vmsSchema = new Schema({
     'startupParameters' : String,
     'name' : String,
     'dockerId' : String,
+    'nodeIp': String,
     'bindedTo': [
         {
             device: {
