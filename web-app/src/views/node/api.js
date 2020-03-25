@@ -80,7 +80,8 @@ export const apiNode = {
             resp.data.forEach(element => {
               ret.push({
                 value: element.ip,
-                text: `${element.name} ${element.ip}`
+                text: `${element.name} ${element.ip}`,
+                id: element._id
               })
             });
             resolve(ret)

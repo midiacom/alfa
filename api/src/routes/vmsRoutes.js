@@ -12,8 +12,6 @@ router.get('/type/:id', vmsController.getType);
 
 router.get('/', vmsController.list);
 
-router.get('/stopped', vmsController.listStoppedVms);
-
 router.get('/stop/:id', vmsController.stopVms);
 
 router.get('/:id', vmsController.get);

@@ -27,7 +27,7 @@
             </b-form-group>
 
             <b-form-group id="input-group-3" label="Edge Node:" label-for="node">
-                <b-form-select style="margin-top:0px!important" id="node" v-model="form.node" :options="nodes" size="sm" class="mt-3"></b-form-select>
+                <b-form-select style="margin-top:0px!important" id="nodeIp" v-model="form.nodeIp" :options="nodes" size="sm" class="mt-3"></b-form-select>
             </b-form-group>
             
             <b-form-group>
@@ -79,6 +79,7 @@ export default {
                 name: '',
                 vmsType: '',
                 startupParameters: '',
+                nodeIp: '',
                 node: ''
             },
             msg: {
@@ -90,6 +91,13 @@ export default {
     },
     methods: {
         onSubmit(evt) {
+            // find the node with the ip
+            for(let i = 0; i < this.nodes.length; i++) {
+                if (this.nodes[i].value == this.form.nodeIp) {
+                    this.form.node = this.nodes[i].id
+                }
+            }
+
             evt.preventDefault()
             this.isLoading = true;
             apiVms.newVms(this.form)

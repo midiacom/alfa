@@ -21,7 +21,7 @@ const vmsController = {
     // here we unbind a SRC if it was binded
     post: (req, res, next) => {
 
-      let nodeIp = req.body.node;
+      let nodeIp = req.body.nodeIp; // retrive the actual ip
 
       docker.api(nodeIp)
         .then((api) => {
@@ -44,7 +44,7 @@ const vmsController = {
                       dockerId: data.id,
                       startupParameters: startupParameters,
                       vmsType: vmsType,
-                      nodeIp: node_ip,
+                      node: req.body.node,
                       bindedTo: []
                     })      
 
@@ -52,6 +52,7 @@ const vmsController = {
                     vms.save((err,vms) => {
                       /* istanbul ignore next */ 
                       if (err) {
+                        console.log(err)
                           return res.status(500).json({
                               message: 'Error when creating vmsType',
                               error: err
@@ -93,6 +94,7 @@ const vmsController = {
               }).catch(function(err) {
                 /* istanbul ignore next */ 
                 console.log('2')
+                console.log(err)
                 return res.status(422).send(err);
               });
             })
@@ -104,37 +106,14 @@ const vmsController = {
             });
         });
     },
-    async listStoppedVms (req, res, next) {
+
+    async list (req, res, next) {
       let cont = [];
       await vmsModel.find()
       .populate('vmsType')
+      .populate('node')
       .then((vmss) => {
-        return res.status(201).json(vmss);          
-        /*
-        docker.api()
-        .then(async (api) => {
-          const promises = vmss.map(async function (vms) {
-            let container = api.getContainer(vms.dockerId);
-            await container.inspect()
-            .then(async (data) => {
-              if (!data.State.Running) {
-                let vmsInfo = {
-                  '_id': vms.id,
-                  'containerId': vms.dockerId,
-                  'startupParameters': vms.startupParameters,
-                  'containerInfo': data,
-                  'vmsType': vms.vmsType.name
-                }
-                cont.push(vmsInfo)
-              }
-            });
-          });
-          await Promise.all(promises);
-          return res.status(201).json(cont);          
-          
-        })
-        //return res.status(201).json(vmss);
-        */
+        return res.status(201).json(vmss);         
       })
       .catch(err => {
           /* istanbul ignore next */ 
@@ -142,6 +121,7 @@ const vmsController = {
       });
     },
     
+    /*
     async list (req, res, next) {
       let cont = []
       docker.api()
@@ -172,7 +152,6 @@ const vmsController = {
                   }
                 })
                 .catch(err => {
-                  /* istanbul ignore next */ 
                   return res.status(422).send(err.errors);
                 });
               });              
@@ -181,6 +160,7 @@ const vmsController = {
         });
       })        
     },
+    */
           
     get: (req, res, next) => {
       let id = req.params.id;

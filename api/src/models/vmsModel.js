@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var vmsTypeModel = require('./vmsTypeModel')
 var deviceModel = require('./deviceModel')
+var nodeModel = require('./nodeModel')
 
 var Schema   = mongoose.Schema;
 
@@ -8,7 +9,11 @@ var vmsSchema = new Schema({
     'startupParameters' : String,
     'name' : String,
     'dockerId' : String,
-    'nodeIp': String,
+    'node': {
+        type: Schema.Types.ObjectId,
+        ref: 'node',
+        required: true
+    },
     'bindedTo': [
         {
             device: {

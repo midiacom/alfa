@@ -27,8 +27,15 @@
         </template>
 
         <template v-slot:cell(dockerId)="row">
-            {{row.item.dockerId | truncate(12, ' ')}}
+            <a href="#" @click="detailsVms(row.item)">
+                {{row.item.dockerId | truncate(12, ' ')}}
+            </a>
         </template>
+
+        <template v-slot:cell(node)="row">
+            {{ row.item.node.name }} / {{ row.item.node.ip }}
+        </template>
+
 
       <template v-slot:cell(actions)="row">
             <b-button variant="success" size="sm" @click="restartVms(row.item)" class="mr-2">
@@ -80,7 +87,13 @@ export default {
                 type: ''
             },            
             fields: [{
+                key: 'dockerId',
+                label: '#'
+            },{
                 key: 'name',
+            },{
+                key: 'node',
+                label: 'Edge Node'                
             },{
                 key: 'vmsType',
                 label: 'VMS Type'
@@ -94,6 +107,11 @@ export default {
         }
     },
     methods: {
+
+        detailsVms (vms) {
+            this.$router.push(`/vms/${vms.containerId}/details`)
+        },
+
         restartVms (vms) {
             this.isLoading = true
 
@@ -119,9 +137,7 @@ export default {
                 })
         },
 
-        detailsVms (vms) {
-            this.$router.push(`/vms/${vms.containerId}/details`)
-        },
+
         removeStoppedVms(vms) {
             this.$swal.fire({
                 title: 'Are you sure?',
@@ -141,9 +157,10 @@ export default {
                 }
             })
         },
+
         refresh() {
             this.isBusy = true
-            apiVms.getStoppedVms()
+            apiVms.getAllVms()
                 .then((data) => {
                     this.items = data
                     this.isBusy = false
