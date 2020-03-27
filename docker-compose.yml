@@ -10,7 +10,7 @@ services:
     volumes:
       - ./api/MongoDB:/data/db
     networks:
-      - swarm_network
+      - swarm_overlay
     logging:
       driver: none
   mosquitto:
@@ -26,7 +26,7 @@ services:
       - "1883:1883"
       - "9001:9001"
     networks:
-      - swarm_network
+      - swarm_overlay
   rest-api:
     hostname: rest-api
     container_name: rest-api
@@ -38,7 +38,7 @@ services:
     volumes:
       - ./api/:/usr/app
     networks:
-      - swarm_network
+      - swarm_overlay
     healthcheck:
         test: ["CMD", "curl", "-f", "http://mongo:27017"]
         interval: 30s
@@ -54,7 +54,7 @@ services:
     ports:
       - "8081:80"
     networks:
-      - swarm_network
+      - swarm_overlay
 networks: 
-  swarm_network:
+  swarm_overlay:
       driver: overlay

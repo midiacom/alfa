@@ -61,6 +61,9 @@ const deviceController = {
                 let createParameters = {}
                 createParameters.Image = device.connectionType
                 createParameters.Cmd = [`${device.id} ${device.connectionParameters}`]
+                createParameters.HostConfig = {
+                    NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
+                }
 
                 // if there is a physicalPath then add it to Devices options
                 // it will mapp the local device inside the container
@@ -68,7 +71,7 @@ const deviceController = {
                     createParameters.Devices = [{
                       PathOnHost: device.physicalPath,
                       PathInContainer: device.physicalPath,
-                      CgroupPermissions: "rwm" 
+                      CgroupPermissions: "rwm"
                     }]
                 }
 

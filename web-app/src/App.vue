@@ -16,7 +16,15 @@
                 Home
               </router-link>
             </li>
+
             <li>
+              <router-link to="/vms/allvms">
+                <v-icon name="layers"></v-icon>
+                VMS
+              </router-link>
+            </li>
+
+            <!-- <li>
               <v-icon name="layers"></v-icon>
               VMS
               <ul>
@@ -31,6 +39,8 @@
                 </li>
               </ul>
             </li>
+             -->
+
             <li>
               <router-link to="/device">
                 <v-icon name="cast"></v-icon>

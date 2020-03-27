@@ -35,7 +35,7 @@ const vmsController = {
                 Image: result.dockerImage,
                 Cmd: [startupParameters],
                 HostConfig: {
-                  NetworkMode: "swarm_network"
+                  NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
                 }
               }).then(function(container) {
                 container.start()
@@ -342,7 +342,8 @@ const vmsController = {
       .then((api) => {
         let container = api.getContainer(vms.dockerId);
         container.inspect(function (err, data) {
-          let ipDockerContainer = data.NetworkSettings.IPAddress;
+          // console.log(data.NetworkSettings.Networks[process.env.DOCKER_OVERLAY_NETWORK].IPAddress)
+          let ipDockerContainer = data.NetworkSettings.Networks[process.env.DOCKER_OVERLAY_NETWORK].IPAddress;
           var client  = mqtt.connect(process.env.MQTT_SERVER) 
           client.on('connect', function () {
             client.subscribe(deviceId, function (err) {

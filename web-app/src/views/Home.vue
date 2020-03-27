@@ -149,10 +149,10 @@ export default {
           this.vms.started = data.length
         })
 
-      apiVms.getStoppedVms()
+      /*apiVms.getStoppedVms()
         .then((data) => {
           this.vms.total = data.length
-        })
+        })*/
 
       apiLocation.getLocations()
           .then((data) => {

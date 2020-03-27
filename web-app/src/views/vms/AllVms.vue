@@ -36,8 +36,8 @@ gst-launch-1.0 \
     <b-row>
         <b-col>            
             <h2>
-                <v-icon style="width: 32px;" name="pause-circle"></v-icon>
-                All VMSs Started (Running and Stopped)
+                <v-icon style="width: 32px;" name="layers"></v-icon>
+                VMS
             </h2>
 
             <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
@@ -58,8 +58,14 @@ gst-launch-1.0 \
         </template>
 
         <template v-slot:cell(dockerId)="row">
-            <a href="#" @click="detailsVms(row.item)">
-                {{row.item.dockerId | truncate(12, ' ')}}
+            <a href="#" @click="isRunning(row.item)">
+                Status
+            </a>
+        </template>
+
+        <template v-slot:cell(name)="row">
+            <a href="#" @click="detailsVms(row.item)" title="VMS Details">
+                {{row.item.name }}
             </a>
         </template>
 
@@ -79,11 +85,6 @@ gst-launch-1.0 \
                 Recreate
             </b-button>
 
-            <b-button variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
-                <v-icon name="trash"></v-icon>
-                Remove
-            </b-button>
-
             <b-button variant="secondary" size="sm" @click="stopVms(row.item)" class="mr-2">
                 <v-icon name="stop-circle"></v-icon>
                 Stop
@@ -92,6 +93,11 @@ gst-launch-1.0 \
             <b-button variant="primary" size="sm" @click="showSdp(row.item)" class="mr-2">
                 <v-icon name="eye"></v-icon>
                 View
+            </b-button>
+
+            <b-button variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
+                <v-icon name="trash"></v-icon>
+                Remove
             </b-button>
 
       </template>        
@@ -165,6 +171,24 @@ export default {
             this.$router.push(`/vms/${vms._id}/details`)
         },
 
+        isRunning(vms) {
+            this.isLoading = true
+            apiVms.getContainerDetails(vms._id)
+                .then((data) => {
+                    console.log(data)
+                    if (data.length == 0) {
+                        alert("Stopped");
+                    } else {
+                        alert("Running");
+                    }
+                    this.isLoading = false
+                })
+                .catch(e => {
+                    this.isLoading = false
+                    console.log(e)
+                })
+        },
+
         bindSrc (vms) {
             this.$router.push(`/vms/${vms._id}/bindSrc`)
         },
@@ -194,12 +218,14 @@ export default {
 
         restartVms (vms) {
             this.isLoading = true
-
+            
             let form = {
                 name: vms.name,
                 vmsType: vms.vmsType._id,
                 startupParameters: vms.startupParameters,
-                id: vms._id
+                id: vms._id,
+                node: vms.node._id,
+                nodeIp: vms.node.ip
             };
 
             apiVms.newVms(form)
