@@ -80,19 +80,19 @@ gst-launch-1.0 \
                 Bind / Unbind
             </b-button>
 
-            <b-button variant="success" size="sm" @click="restartVms(row.item)" class="mr-2">
+            <b-button variant="secondary" size="sm" @click="restartVms(row.item)" class="mr-2">
                 <v-icon name="play-circle"></v-icon>
                 Recreate
-            </b-button>
-
-            <b-button variant="secondary" size="sm" @click="stopVms(row.item)" class="mr-2">
-                <v-icon name="stop-circle"></v-icon>
-                Stop
             </b-button>
 
             <b-button variant="primary" size="sm" @click="showSdp(row.item)" class="mr-2">
                 <v-icon name="eye"></v-icon>
                 View
+            </b-button>
+
+            <b-button variant="warning" size="sm" @click="stopVms(row.item)" class="mr-2">
+                <v-icon name="stop-circle"></v-icon>
+                Stop
             </b-button>
 
             <b-button variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
@@ -175,7 +175,6 @@ export default {
             this.isLoading = true
             apiVms.getContainerDetails(vms._id)
                 .then((data) => {
-                    console.log(data)
                     if (data.length == 0) {
                         alert("Stopped");
                     } else {
@@ -273,6 +272,7 @@ export default {
                 })
                 .catch(e => {
                     this.isBusy = false
+                    console.log(e)
                 })
         }
     },
