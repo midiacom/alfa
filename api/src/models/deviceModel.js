@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var locationModel = require('./locationModel')
-
+var nodeModel = require('./nodeModel')
 var Schema   = mongoose.Schema;
 
 var devicesSchema = new Schema({
@@ -8,6 +8,11 @@ var devicesSchema = new Schema({
   'description' : String, 
   'physicalPath' : String,  // it is the place when de device is connected locally /dev/video for example
   'connectionParameters': String,
+  'node': {
+    type: Schema.Types.ObjectId,
+    ref: 'node',
+    required: true
+  },  
   'connectionType': {
     type: String,
     required: true

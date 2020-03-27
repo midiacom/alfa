@@ -11,6 +11,10 @@
                 <b-form-input id="name" v-model="form.name" type="text" required/>
             </b-form-group>
 
+            <b-form-group id="input-group-3" label="Edge Node:" label-for="node">
+                <b-form-select style="margin-top:0px!important" id="nodeIp" v-model="form.nodeIp" :options="nodes" size="sm" class="mt-3"></b-form-select>
+            </b-form-group>
+
             <b-form-group id="input-group-1" label="Physical Path:" label-for="physicalPath">
                 <b-form-input id="physicalPath" v-model="form.physicalPath" type="text"/>
             </b-form-group>
@@ -46,6 +50,7 @@
 <script>
 import {apiDevice} from './api'
 import {apiLocation} from '../location/api'
+import {apiNode} from '../node/api'
 
 export default {
     name: 'deviceNew',
@@ -53,12 +58,15 @@ export default {
         return {
             locations: [],
             connectionTypes: [],
+            nodes: [],
             form: {
                 name: '',
                 physicalPath: '',
                 connectionType: "",
                 connectionParameters: "",                
-                description: ''
+                description: '',
+                nodeIp: '',
+                node: ''
             },
             msg: {
                 text: false,
@@ -69,6 +77,14 @@ export default {
     methods: {
         onSubmit(evt) {
             evt.preventDefault()
+
+           // find the node with the ip
+            for(let i = 0; i < this.nodes.length; i++) {
+                if (this.nodes[i].value == this.form.nodeIp) {
+                    this.form.node = this.nodes[i].id
+                }
+            }
+                        
             apiDevice.newDevice(this.form)
                 .then(() => {
                     this.msg.text = "Device saved"
@@ -81,14 +97,22 @@ export default {
         }
     },
     created() {
+
+        apiNode.getNodesForSelect()
+            .then((nodes) => {
+                this.nodes = nodes
+            })
+
         apiDevice.getConnectionTypes()
             .then((ret) => {
                 this.connectionTypes = ret
-            })        
+            })       
+ 
         apiLocation.getLocationsForSelect()
             .then((ret) => {
                 this.locations = ret
             })
+
     }
 }
 </script>

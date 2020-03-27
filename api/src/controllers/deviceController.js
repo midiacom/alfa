@@ -15,9 +15,10 @@ const deviceController = {
         let id = req.params.id;
         
         deviceModel.findById(id)
+            .populate('node')
             .exec()
             .then(device => {
-                docker.api()
+                docker.api(device.node.ip)
                 .then((api) => {
                   let container = api.getContainer(device.dockerId);
                   container.inspect(function (err, data) {
@@ -54,6 +55,7 @@ const deviceController = {
         // console.log("a")
         let id = req.params.id;
         deviceModel.findById(id)
+            .populate('node')
             .exec()
             .then(device => {
                 let createParameters = {}
@@ -70,7 +72,7 @@ const deviceController = {
                     }]
                 }
 
-                docker.api()
+                docker.api(device.node.ip)
                     .then((api) => {
                         api.createContainer(createParameters).then(function(container) {
                             container.start()
@@ -109,6 +111,7 @@ const deviceController = {
         deviceModel.find() 
             .select('name type location connectionType dockerId')
             .populate('location')
+            .populate('node')
             .exec()
             .then(devices => {
                 return res.status(201).json(devices);
@@ -122,6 +125,7 @@ const deviceController = {
     get: (req, res, next) => {
         let id = req.params.id;
         deviceModel.findById(id)
+            .populate('node')
             .then(device => {
                 return res.status(201).json(device);
             })
@@ -132,13 +136,15 @@ const deviceController = {
     },
     
     post: (req, res, next) => {
+
         const device = new deviceModel({
             name: req.body.name,
             connectionType: req.body.connectionType,
             physicalPath: req.body.physicalPath,
             connectionParameters: req.body.connectionParameters,
             description: req.body.description,
-            location: req.body.location
+            location: req.body.location,
+            node: req.body.node
         })
         
         device.save((err,device) => {
@@ -169,6 +175,7 @@ const deviceController = {
             device.connectionParameters = req.body.connectionParameters
             device.description = req.body.description
             device.location = req.body.location
+            device.node = req.body.node
 
             device.save(function (err, device) {
                 /* istanbul ignore next */ 

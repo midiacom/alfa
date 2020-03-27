@@ -34,6 +34,9 @@ const vmsController = {
               api.createContainer({
                 Image: result.dockerImage,
                 Cmd: [startupParameters],
+                HostConfig: {
+                  NetworkMode: "swarm_network"
+                }
               }).then(function(container) {
                 container.start()
                 .then((data) => { 
@@ -89,6 +92,7 @@ const vmsController = {
                 }).catch(function(err) {
                   /* istanbul ignore next */ 
                   console.log('1')
+                  console.log(err)
                   return res.status(422).send(err);
                 });
               }).catch(function(err) {
@@ -176,26 +180,36 @@ const vmsController = {
 
     getContainerDetails: (req, res, next) => {
       let id = req.params.id;
-      docker.api()
-        .then((api) => {
-          let id = req.params.id;
-          var opts = {
-            "filters": `{"id": ["${id}"]}`
-          }
-          api.listContainers(opts, function (err, container) {
-            return res.status(201).json(container);
-          });
-        })
+
+      vmsModel.findById(id)
+          .populate('node')
+          .then(vms => {          
+            docker.api(vms.node.ip)
+            .then((api) => {
+              let id = vms.dockerId;
+              var opts = {
+                "filters": `{"id": ["${id}"]}`
+              }
+              api.listContainers(opts, function (err, container) {
+                return res.status(201).json(container);
+              });
+            })     
+          })
+          .catch(err => {
+              /* istanbul ignore next */ 
+              return res.status(422).send(err.errors);
+          });        
     },
 
     stopVms: (req, res, next) => {
       let id = req.params.id;
       vmsModel.findById(id)
+        .populate('node')
         .then((vms) => {
           if (!vms) {
             return res.status(422).send(`VMS with id ${id} not found!`);
           }
-          docker.api()
+          docker.api(vms.node.ip)
             .then((api) => {
               let container = api.getContainer(vms.dockerId);
 
@@ -208,6 +222,8 @@ const vmsController = {
                     });
                     return res.status(201).json(vms);
                   }
+                } else {
+                  return res.status(201).json({"ok":"ok"});
                 }
               });
             })
@@ -319,9 +335,10 @@ const vmsController = {
     let port = req.params.port;
 
     vmsModel.findById(vmsId)
+      .populate("node")
       .then((vms) => {
       // 1 - Get the ip of the container's VMS
-      docker.api()
+      docker.api(vms.node.ip)
       .then((api) => {
         let container = api.getContainer(vms.dockerId);
         container.inspect(function (err, data) {

@@ -32,16 +32,20 @@
       <template v-slot:cell(location)="data">
           {{ data.item.location.name }}
       </template>
+      
+      <template v-slot:cell(node)="data">
+          {{ data.item.node.name }}
+      </template>
 
       <template v-slot:cell(actions)="row">
         <b-button v-show=!row.item.dockerId variant="success" size="sm" @click="starSrcDevice(row.item)" class="mr-2">
             <v-icon name="play-circle"></v-icon>
-            Start SRC
+            Start 
         </b-button>
 
         <b-button v-show=row.item.dockerId variant="secondary" size="sm" @click="stopSrcDevice(row.item)" class="mr-2">
             <v-icon name="stop-circle"></v-icon>
-            Stop SRC
+            Stop
         </b-button>
         
         <b-button variant="primary" size="sm" @click="editDevice(row.item)" class="mr-2">
@@ -94,6 +98,9 @@ export default {
                 key: 'connectionType'
             },{
                 key:'location'
+            },{
+                key:'node',
+                label: 'Edge Node'
             },{
                 key:'actions',
                 class: 'deviceIndexActions'
