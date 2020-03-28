@@ -80,24 +80,26 @@ gst-launch-1.0 \
                 Bind / Unbind
             </b-button>
 
+
             <b-button variant="secondary" size="sm" @click="restartVms(row.item)" class="mr-2">
                 <v-icon name="play-circle"></v-icon>
                 Recreate
             </b-button>
 
-            <b-button variant="primary" size="sm" @click="showSdp(row.item)" class="mr-2">
+            <b-button title="View" variant="primary" size="sm" @click="showSdp(row.item)" class="mr-2">
                 <v-icon name="eye"></v-icon>
-                View
             </b-button>
 
-            <b-button variant="warning" size="sm" @click="stopVms(row.item)" class="mr-2">
+            <b-button title="Edit" variant="outline-primary" size="sm" @click="editVms(row.item)" class="mr-2">
+                <v-icon name="edit-2"></v-icon>
+            </b-button>
+            
+            <b-button title="Stop" variant="warning" size="sm" @click="stopVms(row.item)" class="mr-2">
                 <v-icon name="stop-circle"></v-icon>
-                Stop
             </b-button>
 
-            <b-button variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
+            <b-button title="Remove" variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
                 <v-icon name="trash"></v-icon>
-                Remove
             </b-button>
 
       </template>        
@@ -169,6 +171,10 @@ export default {
 
         detailsVms (vms) {
             this.$router.push(`/vms/${vms._id}/details`)
+        },
+
+        editVms (vms) {
+            this.$router.push(`/vms/${vms._id}/edit`)
         },
 
         isRunning(vms) {
@@ -284,7 +290,7 @@ export default {
 
 <style>
     .vmsIndexActionsStopped {
-        width: 650px;
+        width: 550px;
         text-align: center;
     }
 </style>

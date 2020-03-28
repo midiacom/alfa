@@ -22,4 +22,6 @@ router.post('/', vmsController.post);
 
 router.delete('/:id', vmsController.delete);
 
+router.put('/:id', vmsController.put);
+
 module.exports = router;

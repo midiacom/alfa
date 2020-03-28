@@ -39,7 +39,7 @@
                 <b-button type="submit" variant="primary">Bind</b-button>
             </b-col>
             <b-col class="text-right">
-                <b-button to="/vms" variant="secondary">Back</b-button>        
+                <b-button to="/vms/allvms" variant="secondary">Back</b-button>        
             </b-col>
         </b-row>
     </b-form>

@@ -16,6 +16,22 @@ export const apiVms = {
         })
       })
   },  
+
+  updateVms (vms) {
+    if (!vms) {
+      return Promise.reject(new Error('Data not informed'))
+    }
+    console.log(vms)
+    return new Promise((resolve, reject) => {
+      config.api.put(`/vms/${vms.id}`,vms)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch((e) => {
+          reject(new Error(`Error when creating a new VMS ${e}`))
+        })
+      })
+  },    
   
   bindSrc (data) {
     if (!data) {

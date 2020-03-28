@@ -169,6 +169,7 @@ const vmsController = {
     get: (req, res, next) => {
       let id = req.params.id;
       vmsModel.findById(id)
+          .populate("node")
           .then(vms => {
               return res.status(201).json(vms);
           })
@@ -270,7 +271,6 @@ const vmsController = {
         })
   },
 
-  
   unbindSrc: (req, res, next) => {
 
     let vmsId = req.params.vmsId;
@@ -326,6 +326,33 @@ const vmsController = {
     // console.log(vmsId)
     // console.log(deviceId)
     // console.log(port)
+  },
+
+  put: (req, res, next) => {
+    var id = req.params.id;
+    vmsModel.findById(id)
+      .exec()
+      .then((vms) => {
+          if (!vms) {
+              return res.status(404).send()
+          }
+
+
+          vms.name = req.body.name        
+          vms.startupParameters = req.body.startupParameters
+          vms.node = req.body.node
+
+          vms.save(function (err, node) {
+              /* istanbul ignore next */ 
+              if (err) {
+                  return res.status(500).json({
+                      message: 'Error when updating node.',
+                      error: err
+                  });
+              }
+              return res.status(201).json(node);
+          })
+      })
   },
 
   bindSrc: (req, res, next) => {

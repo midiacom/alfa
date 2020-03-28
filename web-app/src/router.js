@@ -99,6 +99,12 @@ export default new Router({
       component: () => import(/* webpackChunkName: "vmsBindSrc" */ './views/vms/BindSrc.vue')
     },
 
+    {
+      path: '/vms/:id/edit',
+      name: 'vmsEdit',
+      component: () => import(/* webpackChunkName: "vmsEdit" */ './views/vms/Edit.vue')
+    },            
+
     // Nodes ROUTES
     {
       path: '/node',
