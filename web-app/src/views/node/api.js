@@ -69,6 +69,19 @@ export const apiNode = {
     })
   },
 
+  getNodeImages (nodeIp) {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/node/images/${nodeIp}`)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch(e => {
+          reject(e)
+        })
+    })
+
+  },
+
   /**
    * This will be used for the combobox that demands a diferente return format
    */

@@ -1,6 +1,34 @@
 const nodeModel = require("../models/nodeModel")
+const docker = require("../util/dockerApi")
 
 const nodeController = {
+
+    getEdgeNodeImages: (req, res, next) => {
+        let nodeIp = req.params.nodeIp; // retrieve the actual ip      
+        docker.api(nodeIp)
+        .then((api) => {
+            var opts = {"filters": `{}`}
+            api.listImages(opts, function (err, images) {
+                console.log(images)
+                let img = []
+                for(let i = 0; i < images.length; i++) {
+                    if (images[i].RepoTags[0].indexOf('alfa/') == 0){
+                        img.push({
+                            id: images[i].Id,
+                            image: images[i].RepoTags[0]
+                        })
+                    }
+                }
+
+                return res.status(201).json(img);
+            });
+        })     
+        .catch(err => {
+            /* istanbul ignore next */ 
+            return res.status(422).send(err.errors);
+        });
+    },
+        
     list: (req, res, next) => {
         nodeModel.find() 
             .select(['name','ip'])

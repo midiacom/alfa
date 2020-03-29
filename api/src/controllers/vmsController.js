@@ -4,6 +4,7 @@ const docker = require("../util/dockerApi")
 var mqtt = require('mqtt')
 
 const vmsController = {
+
     getType: (req, res, next) => {
       var id = req.params.id;
       vmsModel.findById(id)

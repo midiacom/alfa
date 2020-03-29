@@ -41,3 +41,5 @@ cat /proc/$CONTAINER_PID/net/dev | egrep eth0
 get only the bytes processed (USE TO TEST) 
 cat /proc/$CONTAINER_PID/net/dev | egrep eth | awk '{print $2}'
 cat /sys/fs/cgroup/cpuacct/docker/$CONTAINER_ID/cpuacct.stat | egrep user | awk '{print $2}'
+
+docker image rm $(docker images -f 'dangling=true' -q)

@@ -27,3 +27,6 @@ COPY ./start.sh ./start.sh
 USER root
 
 ENTRYPOINT ["./start.sh"]
+
+LABEL maintainer="Anselmo Battisti <anselmo@midiacom.uff.br>" \
+      description="Video Sample Plugin for Alfa V-PRISM"

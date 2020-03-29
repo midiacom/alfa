@@ -5,15 +5,15 @@
         <b-col>            
             <h2>
                 <v-icon style="width: 32px;" name="git-commit"></v-icon>
-                Edge Nodes
+                Images Available in Edge Nodes
             </h2>
         </b-col>
-        <b-col class="text-right">
+        <!-- <b-col class="text-right">
             <b-button to="/node/new" variant="success" class="mr-2">
                 <v-icon name="plus"></v-icon>
                 New
-            </b-button>    
-        </b-col>
+            </b-button>
+        </b-col> -->
     </b-row>
     <b-row>
         <b-col>            
@@ -30,21 +30,11 @@
         responsive="sm">
 
       <template v-slot:cell(actions)="row">
-        
-        <b-button variant="primary" size="sm" @click="editNode(row.item)" class="mr-2">
-            <v-icon name="edit-2"></v-icon>
-            Edit
-        </b-button>
 
-        <b-button variant="secondary" size="sm" @click="imagesNode(row.item)" class="mr-2">
-            <v-icon name="cpu"></v-icon>
-            Images
-        </b-button>
-
-        <b-button variant="danger" size="sm" @click="removeNode(row.item)" class="mr-2">
+        <!-- <b-button variant="danger" size="sm" @click="removeNode(row.item)" class="mr-2">
             <v-icon name="trash"></v-icon>
             Remove
-        </b-button>
+        </b-button> -->
       </template>        
 
         <div slot="table-busy" class="text-center text-danger my-2">
@@ -81,12 +71,8 @@ export default {
             isBusy: true,
             isLoading: false,
             fields: [{
-                key: 'name'
+                key: 'image'
             },{
-                key: 'ip',
-                label: 'IP'
-            },
-            {
                 key:'actions',
                 class: 'nodeIndexActions'
             }],
@@ -98,13 +84,6 @@ export default {
         }
     },
     methods: {        
-        editNode (node) {
-            this.$router.push(`/node/${node._id}/edit`)
-        },
-
-        imagesNode (node) {
-            this.$router.push(`/node/${node.ip}/images`)
-        },
 
         removeNode(node) {
             this.$swal.fire({
@@ -125,11 +104,13 @@ export default {
                 }
             })
         },
+
         refresh() {
             this.isBusy = true
             this.isLoading = false
-            apiNode.getNodes()
+            apiNode.getNodeImages(this.$route.params.ip)
                 .then((data) => {
+                    console.log(data)
                     this.items = data
                     this.isBusy = false
                 })

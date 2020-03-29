@@ -121,5 +121,10 @@ export default new Router({
       name: 'nodeEdit',
       component: () => import(/* webpackChunkName: "nodeEdit" */ './views/node/Edit.vue')
     },        
+    {
+      path: '/node/:ip/images',
+      name: 'nodeImages',
+      component: () => import(/* webpackChunkName: "nodeImages" */ './views/node/Images.vue')
+    },        
   ]
 })
