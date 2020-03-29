@@ -78,8 +78,19 @@ export const apiNode = {
         .catch(e => {
           reject(e)
         })
-    })
+    })  
+  },
 
+  getNodeStats (id) {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/node/status/${id}`)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch(e => {
+          reject(e)
+        })
+    })
   },
 
   /**

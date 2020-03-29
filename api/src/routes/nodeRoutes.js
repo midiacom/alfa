@@ -16,4 +16,6 @@ router.delete('/:id', nodeController.delete);
 
 router.get('/images/:nodeIp', nodeController.getEdgeNodeImages);
 
+router.get('/status/:id', nodeController.getEdgeNodeStatus);
+
 module.exports = router;

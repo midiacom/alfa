@@ -126,5 +126,10 @@ export default new Router({
       name: 'nodeImages',
       component: () => import(/* webpackChunkName: "nodeImages" */ './views/node/Images.vue')
     },        
+    {
+      path: '/node/:id/status',
+      name: 'nodeStatus',
+      component: () => import(/* webpackChunkName: "nodeImages" */ './views/node/Status.vue')
+    },        
   ]
 })

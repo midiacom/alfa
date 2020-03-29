@@ -29,13 +29,12 @@
         striped 
         responsive="sm">
 
-      <template v-slot:cell(actions)="row">
-
-        <!-- <b-button variant="danger" size="sm" @click="removeNode(row.item)" class="mr-2">
+      <!-- <template v-slot:cell(actions)="row">
+        <b-button variant="danger" size="sm" @click="removeNode(row.item)" class="mr-2">
             <v-icon name="trash"></v-icon>
             Remove
-        </b-button> -->
-      </template>        
+        </b-button>
+      </template>         -->
 
         <div slot="table-busy" class="text-center text-danger my-2">
             <b-spinner class="align-middle"></b-spinner>

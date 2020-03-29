@@ -45,6 +45,11 @@
             <v-icon name="trash"></v-icon>
             Remove
         </b-button>
+
+        <b-button variant="success" size="sm" @click="statusNode(row.item)" class="mr-2">
+            <v-icon name="trash"></v-icon>
+            Status
+        </b-button>
       </template>        
 
         <div slot="table-busy" class="text-center text-danger my-2">
@@ -106,6 +111,10 @@ export default {
             this.$router.push(`/node/${node.ip}/images`)
         },
 
+        statusNode (node) {
+            this.$router.push(`/node/${node._id}/status`)
+        },
+
         removeNode(node) {
             this.$swal.fire({
                 title: 'Are you sure?',
@@ -147,7 +156,7 @@ export default {
 
 <style>
     .nodeIndexActions {
-        width: 390px;
+        width: 490px;
         text-align: center;
     }
 </style>

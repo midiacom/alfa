@@ -15,6 +15,11 @@
                 <b-form-input id="ip" v-model="form.ip" type="text" required/>
             </b-form-group>
 
+            <b-form-group label="Role in Doker Swarm" label-for="isMarter">
+                <b-form-radio v-model="form.isMaster" name="isMaster" value=true>Master</b-form-radio>
+                <b-form-radio v-model="form.isMaster" name="isMaster" value=false>Slave</b-form-radio>
+            </b-form-group>            
+
             <b-form-group id="input-group-2" label="Description:" label-for="description">
                 <b-form-textarea id="description" v-model="form.description" type="text"/>
             </b-form-group>
@@ -43,7 +48,8 @@ export default {
             form: {
                 name: '',     
                 ip: '',
-                description: ''
+                description: '',
+                isMaster: ''
             },
             msg: {
                 text: false,

@@ -5,7 +5,12 @@ var Schema   = mongoose.Schema;
 var nodesSchema = new Schema({
     'name' : String,
     'ip' : String,
-    'description' : String  
+    'description' : String,
+    'dockerId' : String,
+    'isMaster' : {
+      type: Boolean,
+      default: false
+    }
 },{
   timestamps: true
 });

@@ -9,7 +9,6 @@ const nodeController = {
         .then((api) => {
             var opts = {"filters": `{}`}
             api.listImages(opts, function (err, images) {
-                console.log(images)
                 let img = []
                 for(let i = 0; i < images.length; i++) {
                     if (images[i].RepoTags[0].indexOf('alfa/') == 0){
@@ -28,6 +27,41 @@ const nodeController = {
             return res.status(422).send(err.errors);
         });
     },
+
+    getEdgeNodeStatus: (req, res, next) => {    
+        let id = req.params.id;
+
+        nodeModel.find({'isMaster': true})
+        .then((masterNode) => {
+            nodeModel.findById(id)
+                .then(slaveNode => {
+                    docker.api(masterNode[0].ip)
+                    .then((api) => {   
+                        let nodeDocker = api.getNode(slaveNode.dockerId);
+                        var opts = {"filters": `{}`}
+                        nodeDocker.inspect()
+                        .then((status) => {                           
+                            console.log(status)    
+                            return res.status(201).json(status);
+                        })     
+                        .catch(err => {
+                            /* istanbul ignore next */ 
+                            console.log(err)
+                            return res.status(422).send(err.errors);
+                        });
+                    })     
+                    .catch(err => {
+                        /* istanbul ignore next */ 
+                        console.log(err)
+                        return res.status(422).send(err.errors);
+                    });        
+                })
+                .catch(err => {
+                    /* istanbul ignore next */ 
+                    return res.status(422).send(err.errors);
+                });
+        }) 
+    },
         
     list: (req, res, next) => {
         nodeModel.find() 
@@ -45,6 +79,7 @@ const nodeController = {
         let id = req.params.id;
         nodeModel.findById(id)
             .then(node => {
+                console.log(node)
                 return res.status(201).json(node);
             })
             .catch(err => {
@@ -57,6 +92,7 @@ const nodeController = {
         const node = new nodeModel({
             name: req.body.name,
             ip: req.body.ip,
+            isMaster: req.body.isMaster,
             description: req.body.description
         })                
         
@@ -84,6 +120,8 @@ const nodeController = {
 
             node.name = req.body.name
             node.ip = req.body.ip
+            node.dockerId = req.body.dockerId
+            node.isMaster = req.body.isMaster
             node.description = req.body.description
 
             node.save(function (err, node) {
