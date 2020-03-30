@@ -112,6 +112,34 @@ const vmsController = {
         });
     },
 
+
+    put: (req, res, next) => {
+      var id = req.params.id;
+      vmsModel.findById(id)
+        .exec()
+        .then((vms) => {
+            if (!vms) {
+                return res.status(404).send()
+            }
+  
+  
+            vms.name = req.body.name        
+            vms.startupParameters = req.body.startupParameters
+            vms.node = req.body.node
+  
+            vms.save(function (err, node) {
+                /* istanbul ignore next */ 
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when updating node.',
+                        error: err
+                    });
+                }
+                return res.status(201).json(node);
+            })
+        })
+    },    
+
     async list (req, res, next) {
       let cont = [];
       await vmsModel.find()
@@ -329,33 +357,6 @@ const vmsController = {
     // console.log(port)
   },
 
-  put: (req, res, next) => {
-    var id = req.params.id;
-    vmsModel.findById(id)
-      .exec()
-      .then((vms) => {
-          if (!vms) {
-              return res.status(404).send()
-          }
-
-
-          vms.name = req.body.name        
-          vms.startupParameters = req.body.startupParameters
-          vms.node = req.body.node
-
-          vms.save(function (err, node) {
-              /* istanbul ignore next */ 
-              if (err) {
-                  return res.status(500).json({
-                      message: 'Error when updating node.',
-                      error: err
-                  });
-              }
-              return res.status(201).json(node);
-          })
-      })
-  },
-
   bindSrc: (req, res, next) => {
 
     let vmsId = req.params.vmsId;
@@ -370,6 +371,14 @@ const vmsController = {
       .then((api) => {
         let container = api.getContainer(vms.dockerId);
         container.inspect(function (err, data) {
+
+          if (data == null) {
+            console.log("VMS not founded or not running")
+            return res.status(500).json({
+                message: 'VMS not founded or not running',
+            });            
+          }
+
           // console.log(data.NetworkSettings.Networks[process.env.DOCKER_OVERLAY_NETWORK].IPAddress)
           let ipDockerContainer = data.NetworkSettings.Networks[process.env.DOCKER_OVERLAY_NETWORK].IPAddress;
           var client  = mqtt.connect(process.env.MQTT_SERVER) 

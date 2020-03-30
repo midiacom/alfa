@@ -273,6 +273,15 @@ export default {
             this.isBusy = true
             apiVms.getAllVms()
                 .then((data) => {
+
+                    for (let i = 0; i < data.length; i++) {
+                        console.log(data[i])
+                        if (data[i].node == null) {
+                            data[i].node = []
+                            data[i].node['name'] = "ALERT - Edge Node Removed"
+                        }
+                    }
+                                        
                     this.items = data
                     this.isBusy = false
                 })
