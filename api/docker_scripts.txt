@@ -43,3 +43,11 @@ cat /proc/$CONTAINER_PID/net/dev | egrep eth | awk '{print $2}'
 cat /sys/fs/cgroup/cpuacct/docker/$CONTAINER_ID/cpuacct.stat | egrep user | awk '{print $2}'
 
 docker image rm $(docker images -f 'dangling=true' -q)
+
+Join Swarm 
+
+docker swarm join-token worker
+
+docker swarm init 
+
+docker network create -d overlay --attachable alfa_swarm_overlay

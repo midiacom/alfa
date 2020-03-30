@@ -74,16 +74,6 @@ sudo service docker restart
 curl http://localhost:2375/images/json
 ```
 
-Join Swarm 
-
-docker swarm join-token worker
-
-docker swarm init 
-
-docker network create -d overlay --attachable overlay_alfa
-
-
-
 ## Important!
 Be default the docker API to port: 2375 if you need another port then change the configuration at api/config/dev.env
 

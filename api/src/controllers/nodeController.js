@@ -9,6 +9,11 @@ const nodeController = {
         .then((api) => {
             var opts = {"filters": `{}`}
             api.listImages(opts, function (err, images) {
+                
+                if (err) {
+                    return res.status(422).send(err);        
+                }
+
                 let img = []
                 for(let i = 0; i < images.length; i++) {
                     if (images[i].RepoTags[0].indexOf('alfa/') == 0){
