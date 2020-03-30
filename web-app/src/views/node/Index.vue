@@ -156,7 +156,7 @@ export default {
 
 <style>
     .nodeIndexActions {
-        width: 490px;
+        width: 500px;
         text-align: center;
     }
 </style>

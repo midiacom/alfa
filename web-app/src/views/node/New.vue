@@ -38,7 +38,7 @@
 
 <script>
 import {apiNode} from './api'
-import {apiLocation} from '../location/api'
+// import {apiLocation} from '../location/api'
 
 export default {
     name: 'nodeNew',

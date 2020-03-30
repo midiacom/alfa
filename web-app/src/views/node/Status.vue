@@ -22,7 +22,7 @@
     <br/>
     <b-row>
         <b-col class="text-right">
-            <b-button to="/vms/allvms" variant="secondary">Back</b-button>        
+            <b-button to="/node" variant="secondary">Back</b-button>        
         </b-col>
     </b-row>
   </div>
