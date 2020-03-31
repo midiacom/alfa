@@ -212,7 +212,6 @@ export default {
                     apiVms.stopVms(vms._id)
                         .then(() => {
                             this.refresh()
-                            that.isLoading = false
                         })
                         .catch(e => {
                             console.log(e)
@@ -274,8 +273,7 @@ export default {
             apiVms.getAllVms()
                 .then((data) => {
 
-                    for (let i = 0; i < data.length; i++) {
-                        console.log(data[i])
+                    for (let i = 0; i < data.length; i++) {                        
                         if (data[i].node == null) {
                             data[i].node = []
                             data[i].node['name'] = "ALERT - Edge Node Removed"
@@ -284,7 +282,8 @@ export default {
                                         
                     this.items = data
                     this.isBusy = false
-                })
+                    this.isLoading = false;
+                })                
                 .catch(e => {
                     this.isBusy = false
                     console.log(e)

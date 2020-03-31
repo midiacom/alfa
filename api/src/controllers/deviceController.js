@@ -61,18 +61,22 @@ const deviceController = {
                 let createParameters = {}
                 createParameters.Image = device.connectionType
                 createParameters.Cmd = [`${device.id} ${device.connectionParameters}`]
-                createParameters.HostConfig = {
-                    NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
-                }
 
                 // if there is a physicalPath then add it to Devices options
                 // it will mapp the local device inside the container
                 if (device.physicalPath) {
-                    createParameters.Devices = [{
-                      PathOnHost: device.physicalPath,
-                      PathInContainer: device.physicalPath,
-                      CgroupPermissions: "rwm"
-                    }]
+                    createParameters.HostConfig = {
+                        NetworkMode: process.env.DOCKER_OVERLAY_NETWORK,
+                        Devices: [{
+                            PathOnHost: device.physicalPath,
+                            PathInContainer: device.physicalPath,
+                            CgroupPermissions: "rwm"                        
+                        }]                    
+                    }
+                } else {
+                    createParameters.HostConfig = {
+                        NetworkMode: process.env.DOCKER_OVERLAY_NETWORK,
+                    }
                 }
 
                 docker.api(device.node.ip)

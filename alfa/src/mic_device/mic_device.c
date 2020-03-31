@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
       return -1;
     }
 
-    const char* addr  = "172.17.0.1";
+    const char* addr  = "mosquitto";
     const char* port  = "1883";
     const char* topic = argv[1]; // this is the ID of
 

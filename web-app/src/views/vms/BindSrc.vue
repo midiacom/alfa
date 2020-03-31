@@ -176,8 +176,24 @@ export default {
             apiVms.getVms(id)
                 .then((vms) => {
                     this.isLoading = false
-                    this.vms = vms
+                    this.vms = vms                    
                 })
+
+            apiVms.getContainerDetails(id)
+                .then((dc) => {
+                    if (dc.length == 0) {
+                        this.$swal.fire({
+                            title: 'VMS Stopped!',
+                            text: "You need to start the VMS first!",
+                            type: 'warning',
+                        }).then(() => {                
+                            this.$router.push(`/vms/allvms`)
+                        })
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                })                    
 
             apiDevice.getDevicesToSelectSRCStarted()
                 .then((devices) => {
