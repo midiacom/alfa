@@ -18,8 +18,9 @@
       <hr>
       <strong>This button will gerenate the above data.</strong>
       <ul>
+        <li>One Edge Node</li>
         <li>One Location</li>
-        <li>5 SRC Types</li>
+        <li>6 SRC Types</li>
         <li>4 VMS Types</li>
         <li>6 Devices</li>
       </ul>

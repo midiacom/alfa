@@ -1,6 +1,7 @@
 const deviceModel = require("../models/deviceModel")
 const locationModel = require("../models/locationModel")
 const vmsTypeModel = require("../models/vmsTypeModel")
+const nodeModel = require("../models/nodeModel")
 
 const docker = require("../util/dockerApi")
 
@@ -12,6 +13,13 @@ const bootstrapController = {
             name: "Office #1"
         }).save();
         
+        const edgeNodeLocal = await new nodeModel({
+                name: 'Local Master Node',
+                ip: 'localhost',
+                isMaster: true,
+                description: 'Local Master Node'
+        }).save()
+
         // create the SRCs Types
         const vmsTypeSrc0 = await new vmsTypeModel({
             name: 'SRC = USB Camera #1',
@@ -126,7 +134,8 @@ const bootstrapController = {
             physicalPath: '',
             connectionParameters: '18',
             description: '',
-            location: loc._id
+            location: loc._id,
+            node: edgeNodeLocal._id
         }).save();
 
         const device1 = await new deviceModel({
@@ -135,7 +144,8 @@ const bootstrapController = {
             physicalPath: '',
             connectionParameters: '13',
             description: '',
-            location: loc._id
+            location: loc._id,
+            node: edgeNodeLocal._id
         }).save();
 
         const device2 = await new deviceModel({
@@ -144,7 +154,8 @@ const bootstrapController = {
             physicalPath: '',
             connectionParameters: '',
             description: '',
-            location: loc._id
+            location: loc._id,
+            node: edgeNodeLocal._id
         }).save();
 
         const device3 = await new deviceModel({
@@ -153,7 +164,8 @@ const bootstrapController = {
             physicalPath: '/dev/video0',
             connectionParameters: '/dev/video0',
             description: '',
-            location: loc._id
+            location: loc._id,
+            node: edgeNodeLocal._id
         }).save();
 
         const device4 = await new deviceModel({
@@ -162,7 +174,8 @@ const bootstrapController = {
             physicalPath: '',
             connectionParameters: 'rtsp://192.168.0.102:8080/h264_ulaw.sdp',
             description: '',
-            location: loc._id
+            location: loc._id,
+            node: edgeNodeLocal._id
         }).save();
 
         const device5 = await new deviceModel({
@@ -171,7 +184,8 @@ const bootstrapController = {
             physicalPath: '/dev/snd',
             connectionParameters: 'hw:0',
             description: '',
-            location: loc._id
+            location: loc._id,
+            node: edgeNodeLocal._id
         }).save();
         
         return res.status(201).json("{ok:ok}");
