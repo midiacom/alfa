@@ -84,7 +84,6 @@ const nodeController = {
         let id = req.params.id;
         nodeModel.findById(id)
             .then(node => {
-                console.log(node)
                 return res.status(201).json(node);
             })
             .catch(err => {

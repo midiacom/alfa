@@ -73,7 +73,7 @@ export default {
                 key: 'image'
             },{
                 key:'actions',
-                class: 'nodeIndexActions'
+                class: 'nodeImagesActions'
             }],
             items: [],
             msg: {
@@ -126,7 +126,7 @@ export default {
 </script>
 
 <style>
-    .nodeIndexActions {
+    .nodeImagesActions {
         width: 390px;
         text-align: center;
     }

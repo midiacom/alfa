@@ -3,7 +3,7 @@
     <b-row>
         <b-col>            
             <h2>
-                <v-icon name="layers"></v-icon>
+                <v-icon style="width: 32px;" name="git-commit"></v-icon>
                 Edge Node Status
             </h2>
         </b-col>
