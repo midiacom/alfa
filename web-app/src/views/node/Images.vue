@@ -109,7 +109,6 @@ export default {
             this.isLoading = false
             apiNode.getNodeImages(this.$route.params.ip)
                 .then((data) => {
-                    console.log(data)
                     this.items = data
                     this.isBusy = false
                 })

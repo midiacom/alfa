@@ -67,14 +67,11 @@
         <b-card-text>
           <ul>
             <li>
-              <strong>Created:</strong> {{ vms.total }}
-            </li>
-            <li>
-              <strong>Started:</strong> {{ vms.started }}
+              <strong>Created:</strong> {{ vms.started }}
             </li>
           </ul>
         </b-card-text>
-        <b-button to="/vms" variant="success" class="mr-2">
+        <b-button to="/vms/allvms" variant="success" class="mr-2">
           List VMS
         </b-button>
       </b-card>

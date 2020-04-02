@@ -3,8 +3,8 @@
     <b-row>
         <b-col>            
             <h2>
-                <v-icon style="width: 32px;" name="move"></v-icon>
-                SRC Types
+                <v-icon style="width: 32px;" name="cast"></v-icon>
+                Device Types
             </h2>
         </b-col>
         <b-col class="text-right">

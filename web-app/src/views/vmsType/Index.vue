@@ -10,7 +10,7 @@
         <b-col class="text-right">
             <b-button to="/vmsType/new" variant="success" class="mr-2">
                 <v-icon name="plus"></v-icon>
-                New
+                New VMS Type
             </b-button>    
         </b-col>
     </b-row>
@@ -27,7 +27,7 @@
       <template v-slot:cell(actions)="row">
             <b-button variant="success" size="sm" @click="newVms(row.item)" class="mr-2">
                 <v-icon name="play-circle"></v-icon>
-                Start New VMS
+                New VMS
             </b-button>
 
             <b-button variant="primary" size="sm" @click="editVmsType(row.item)" class="mr-2">

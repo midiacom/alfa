@@ -24,53 +24,47 @@
               </router-link>
             </li>
 
-            <!-- <li>
-              <v-icon name="layers"></v-icon>
-              VMS
-              <ul>
-                <li class="subMenu">
-                  <router-link to="/vms">
-                    -
-                    Running
-                  </router-link>
-                </li>
-                <li class="subMenu">
-                  <router-link to="/vms/allvms">- VMS</router-link>
-                </li>
-              </ul>
-            </li>
-             -->
-
             <li>
               <router-link to="/device">
                 <v-icon name="cast"></v-icon>
                 Devices
               </router-link>
             </li>
+
             <li>
-              <router-link to="/vmsType">
-                <v-icon name="command"></v-icon>
-                VMS Types
+              <router-link to="/node">
+                <v-icon name="git-commit"></v-icon>
+                Edge Nodes
               </router-link>
-            </li>
-            <li>
-              <router-link to="/vmsType/indexSrc">
-                <v-icon name="move"></v-icon>
-                SRC Types
-              </router-link>
-            </li>
+            </li>           
+
             <li>
               <router-link to="/location">
                 <v-icon name="map-pin"></v-icon>
                 Locations
               </router-link>
             </li>
+
             <li>
-              <router-link to="/node">
-                <v-icon name="git-commit"></v-icon>
-                Edge Nodes
-              </router-link>
-            </li>                        
+              <v-icon name="book"></v-icon>
+              Types
+              <ul>
+                <li class="subMenu">
+                  <router-link to="/vmsType">
+                    <v-icon name="layers"></v-icon>
+                    VMS
+                  </router-link>
+                </li>
+
+                <li class="subMenu">
+                  <router-link to="/vmsType/indexSrc">
+                    <v-icon name="cast"></v-icon>
+                    Devices
+                  </router-link>
+                </li>                             
+              </ul>
+            </li>
+
             <hr/>
             <li>
               <a target="_blank" href="https://github.com/anselmobattisti/alfa">
@@ -123,8 +117,8 @@ html,body {
   background-color: #e5e5e5;
   min-height: 1024px;
   height: 100%; 
-  min-width: 280px;  
-  max-width: 280px;  
+  min-width: 230px;  
+  max-width: 230px;  
 }
 
 #app #menu ul {
