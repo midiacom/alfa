@@ -11,7 +11,10 @@ const nodeController = {
             api.listImages(opts, function (err, images) {
                 
                 if (err) {
-                    return res.status(422).send(err);        
+                    return res.status(500).json({
+                        message: 'Error when listing images',
+                        error: err
+                    });
                 }
 
                 let img = []
@@ -46,7 +49,6 @@ const nodeController = {
                         var opts = {"filters": `{}`}
                         nodeDocker.inspect()
                         .then((status) => {                           
-                            console.log(status)    
                             return res.status(201).json(status);
                         })     
                         .catch(err => {

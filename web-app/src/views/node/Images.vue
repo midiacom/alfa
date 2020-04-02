@@ -114,7 +114,8 @@ export default {
                     this.isBusy = false
                 })
                 .catch(e => {
-                    console.log(e)
+                    this.msg.text = "Error when listing images"
+                    this.msg.type = "danger"
                     this.isBusy = false
                 })
         }
