@@ -116,6 +116,7 @@ export default {
                     this.msg.text = "Error when listing images"
                     this.msg.type = "danger"
                     this.isBusy = false
+                    console.log(e)
                 })
         }
     },
