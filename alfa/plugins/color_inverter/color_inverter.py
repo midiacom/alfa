@@ -1,16 +1,62 @@
-#!/usr/bin/env python
+'''
+sudo tcpdump -i lo port 5000
 
-# to run the code pass the port where the multimedia stream arrive
-# python client.py 65534
+https://github.com/jeremyfix/udp_video_streaming/tree/master/udp_socket
+
+send udp video
+https://raspberrypi.stackexchange.com/questions/70911/write-in-gstreamer-pipeline-from-opencv-in-python
+
+send video to container
+gst-launch-1.0 filesrc location=/home/battisti/versionado/alfa/alfa/plugins/face_counter/test4.mp4 \
+    ! decodebin \
+    ! videoscale \
+    ! video/x-raw,width=800,height=600 \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink port=10001 host=172.17.0.2
+
+send video to machine
+gst-launch-1.0 filesrc location=/home/battisti/versionado/alfa/alfa/plugins/face_counter/test4.mp4 \
+    ! decodebin \
+    ! videoscale \
+    ! video/x-raw,width=800,height=600 \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink port=5000
+
+play video
+gst-launch-1.0 \
+    udpsrc port=10003 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! queue2 max-size-bytes=65536 max-size-buffers=65536 max-size-time=10 \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
+
+docker build . -t alfa/plugin/face_counter
+docker run --name face_counter alfa/plugin/face_counter
+docker run -it alfa/plugin/face_counter sh 
+
+docker run alfa/plugin/face_counter 172.17.0.1 5000
+
+python /root/face_counter/face_counter.py xyz 172.17.0.1 1883
+
+python3 face_counter.py tx 172.17.0.1 1883
+
+
+# start python server python3 -m http.server 80
+# CMD python3 /root/face_recognition/face_counter.py
+# python /root/face_counter/face_counter.py
+
+'''
 
 import cv2
-import gi
 import numpy as np
+import gi
 import sys
 
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
-
 
 class Video():
     """BlueRov video capture class constructor
@@ -24,18 +70,17 @@ class Video():
         video_source (string): Udp source ip and port
     """
 
-    def __init__(self, port=5600):
+    def __init__(self, port=5000):
         """Summary
         Args:
             port (int, optional): UDP port
         """
 
-        print(port)
-
         Gst.init(None)
 
         self.port = port
         self._frame = None
+
 
         # [Software component diagram](https://www.ardusub.com/software/components.html)
         # UDP video stream (:5600)
@@ -45,7 +90,7 @@ class Video():
         self.video_codec = '! application/x-rtp, payload=96 ! rtph264depay ! h264parse ! avdec_h264'
         # Python don't have nibble, convert YUV nibbles (4-4-4) to OpenCV standard BGR bytes (8-8-8)
         self.video_decode = \
-            '! decodebin ! videoconvert ! video/x-raw,format=(string)BGR ! videoconvert'
+            '! queue2 max-size-bytes=655360 max-size-buffers=655360 max-size-time=100 ! decodebin ! videoconvert ! video/x-raw,format=(string)BGR ! videoconvert '
         # Create a sink to get data
         self.video_sink_conf = \
             '! appsink emit-signals=true sync=false max-buffers=2 drop=true'
@@ -138,14 +183,34 @@ class Video():
 if __name__ == '__main__':
     # Create the video object
     # Add port= if is necessary to use a different one
-    video = Video(sys.argv[1])
+    video = Video()
 
+    # fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    # out = cv2.VideoWriter('appsrc | rtph264depay ! decodebin ! x264enc ! rtph264pay ! udpsink host=127.0.0.1 port=10003',fourcc, 20.0, (640, 480))
+    # out = cv2.VideoWriter('appsrc ! queue ! videoconvert ! video/x-raw ! omxh264enc ! video/x-h264 ! h264parse ! rtph264pay ! udpsink port=10003 sync=false',0,25.0,(640,480))
+
+    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+    out = cv2.VideoWriter('appsrc  ! h264parse ! '
+                        'rtph264pay config-interval=1 pt=96 ! '
+                        'gdppay ! tcpserversink host=192.168.0.1 port=10003',
+                        fourcc, 20.0, (640, 480))
+
+# host=192.168.0.1
     while True:
         # Wait for the next frame
         if not video.frame_available():
             continue
 
         frame = video.frame()
+        
+        frame.setflags(write=True)
+
+        frame = ~frame
+
+        out.write(frame)
+
+'''
         cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+'''
