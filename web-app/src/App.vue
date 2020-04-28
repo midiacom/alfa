@@ -117,8 +117,8 @@ html,body {
   background-color: #e5e5e5;
   min-height: 1024px;
   height: 100%; 
-  min-width: 230px;  
-  max-width: 230px;  
+  min-width: 260px;  
+  max-width: 260px;  
 }
 
 #app #menu ul {

@@ -46,7 +46,7 @@
         variant="secondary" 
         class="text-center" 
         :show=!items.length>
-        There are no nodes yet!
+        There are no images yet!
     </b-alert>
 
     <b-row>
