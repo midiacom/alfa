@@ -184,18 +184,22 @@ if __name__ == '__main__':
     # Create the video object
     # Add port= if is necessary to use a different one
     video = Video()
+    send_video = Video()
 
     # fourcc = cv2.VideoWriter_fourcc(*'MJPG')
     # out = cv2.VideoWriter('appsrc | rtph264depay ! decodebin ! x264enc ! rtph264pay ! udpsink host=127.0.0.1 port=10003',fourcc, 20.0, (640, 480))
     # out = cv2.VideoWriter('appsrc ! queue ! videoconvert ! video/x-raw ! omxh264enc ! video/x-h264 ! h264parse ! rtph264pay ! udpsink port=10003 sync=false',0,25.0,(640,480))
 
-    fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-    out = cv2.VideoWriter('appsrc  ! h264parse ! '
-                        'rtph264pay config-interval=1 pt=96 ! '
-                        'gdppay ! tcpserversink host=192.168.0.1 port=10003',
-                        fourcc, 20.0, (640, 480))
+    # out = cv2.VideoWriter('appsrc ! queue ! videoconvert ! video/x-raw ! omxh264enc ! video/x-h264 ! h264parse ! rtph264pay ! udpsink host=192.168.0.1 port=10331 sync=false',0,25.0,(640,480))
+    # out = cv2.VideoWriter('appsrc ! queue ! videoconvert ! video/x-raw ! x264enc ! h264parse ! rtph264pay ! autovideosink',0,25.0,(640,480))
+    # host=192.168.0.1
 
-# host=192.168.0.1
+    pipeline = send_video.start_gst(['videotestsrc ! decodebin', '! videoconvert ! video/x-raw,format=(string)BGR ! videoconvert','! appsink'])
+
+    # out = cv2.VideoWriter('appsrc ! queue ! videoconvert ! video/x-raw ! x264enc ! h264parse ! rtph264pay ! udpsink host="192.168.0.1" port="10331" sync=false',0,25.0,(640,480))
+
+    # Gst.debug_bin_to_dot_file(pipeline,-1,'/tmp/teste.dot')
+
     while True:
         # Wait for the next frame
         if not video.frame_available():
@@ -207,10 +211,10 @@ if __name__ == '__main__':
 
         frame = ~frame
 
+        # print(frame.tobytes())
+
         out.write(frame)
 
-'''
-        cv2.imshow('frame', frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-'''
+        # cv2.imshow('frame', frame)
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+            # break

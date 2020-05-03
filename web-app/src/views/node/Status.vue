@@ -4,7 +4,7 @@
         <b-col>            
             <h2>
                 <v-icon style="width: 32px;" name="git-commit"></v-icon>
-                Edge Node Status
+                Edge Node Informations
             </h2>
         </b-col>
     </b-row>

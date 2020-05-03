@@ -3,6 +3,39 @@ const docker = require("../util/dockerApi")
 
 const nodeController = {
 
+    /**
+     * nodeSelection: This module will return in which edge node a virtual node will run.
+     * The selection will be made by a Resource Allocation.
+    */
+    nodeSelection: async (req, res, next) => {
+        let virtualNodeType = req.params.vnt; // it is the image of a VMS or a SRC
+        let resourceAllocationManager = req.params.ra; // it define the RA method
+        let payload = req.params.payload; // the set of parameters to each RA method
+
+        // get all nodes that has the image
+        let nodes = await nodeModel.find() 
+            .select(['name','ip'])
+            .then(nodes => {
+                return nodes;
+            })
+
+        let status = []
+        nodes.forEach(function(node) {
+            console.log(node)
+            let par = {
+                'nodeIp': node.ip
+            }
+            // let s = await nodeController.getEdgeNodeStatus(req, res, par)
+
+            console.log(s)
+        });
+
+        // get all up and running node
+
+        // make the decision
+
+    },
+
     getEdgeNodeImages: (req, res, next) => {
         let nodeIp = req.params.nodeIp; // retrieve the actual ip      
         docker.api(nodeIp)
@@ -18,14 +51,35 @@ const nodeController = {
                 }
 
                 let img = []
+                let imgName = []
                 for(let i = 0; i < images.length; i++) {
                     if (images[i].RepoTags[0].indexOf('alfa/') == 0){
                         img.push({
                             id: images[i].Id,
                             image: images[i].RepoTags[0]
                         })
+                        imgName.push(images[i].RepoTags[0])
                     }
                 }
+
+                // update the image list
+                nodeModel.findOne({
+                    'ip': nodeIp
+                })
+                .exec()
+                .then((node) => {
+                    if (!node) {
+                        console.log('erro')
+                    } else {
+                        node.images = imgName    
+                        node.save(function (err, node) {
+                        })
+                    }
+                })
+                .catch(err => {
+                    /* istanbul ignore next */ 
+                    console.log(err)
+                });           
 
                 return res.status(201).json(img);
             });
@@ -36,9 +90,44 @@ const nodeController = {
         });
     },
 
-    getEdgeNodeStatus: (req, res, next) => {    
-        let id = req.params.id;
+    updateNdgeNodeStatus: async () => {
+        nodeModel.find({'isMaster': true})
+        .then((masterNode) => {
+            nodeModel.find()
+            .exec()
+            .then((slaveNodes) => {
+                if (!slaveNodes){
+                    console.log('Error: nodes not found');
+                }
+                slaveNodes.forEach(function(node){
+                    docker.api(masterNode[0].ip)
+                    .then((api) => {   
+                        let nodeDocker = api.getNode(node.dockerId);
+                        var opts = {"filters": `{}`}
+                        nodeDocker.inspect()
+                        .then((status) => {
+                            if (status.Status.State == 'down') {
+                                node.online = false
+                            } else {
+                                node.online = true 
+                            }
+                            // save the status of the edge node
+                            node.save()                            
+                        })     
+                        .catch(err => {
+                            console.log(err)
+                        });
+                    })     
+                    .catch(err => {
+                        console.log(err)
+                    });        
+                    })
+            })
+        }) 
+    },
 
+    getEdgeNodeStatus: async (req, res, next) => {
+        let id = req.params.id;
         nodeModel.find({'isMaster': true})
         .then((masterNode) => {
             nodeModel.findById(id)
@@ -72,7 +161,7 @@ const nodeController = {
         
     list: (req, res, next) => {
         nodeModel.find() 
-            .select(['name','ip'])
+            .select(['name','ip', 'online'])
             .then(nodes => {
                 return res.status(201).json(nodes);
             })

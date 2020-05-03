@@ -10,7 +10,12 @@ var nodesSchema = new Schema({
     'isMaster' : {
       type: Boolean,
       default: false
-    }
+    },
+    'online' : {
+      type: Boolean,
+      default: false
+    },
+    'images' : []
 },{
   timestamps: true
 });

@@ -29,8 +29,15 @@
         striped 
         responsive="sm">
 
-      <template v-slot:cell(actions)="row">
-        
+      <template v-slot:cell(online)="data">
+
+    <b-badge v-show=data.item.online variant="success">Online</b-badge>
+    <b-badge v-show=!data.item.online variant="danger">Offline</b-badge>
+
+      </template>
+
+      <template v-slot:cell(actions)="row">        
+
         <b-button variant="primary" size="sm" @click="editNode(row.item)" class="mr-2">
             <v-icon name="edit-2"></v-icon>
             Edit
@@ -47,8 +54,8 @@
         </b-button>
 
         <b-button variant="success" size="sm" @click="statusNode(row.item)" class="mr-2">
-            <v-icon name="trash"></v-icon>
-            Status
+            <v-icon name="info"></v-icon>
+            Info
         </b-button>
       </template>        
 
@@ -90,6 +97,9 @@ export default {
             },{
                 key: 'ip',
                 label: 'IP'
+            },{
+                key: 'online',
+                label: 'Status'
             },
             {
                 key:'actions',

@@ -18,4 +18,6 @@ router.get('/images/:nodeIp', nodeController.getEdgeNodeImages);
 
 router.get('/status/:id', nodeController.getEdgeNodeStatus);
 
+router.get('/nodeSelection/:vnt/:ra/:payload', nodeController.nodeSelection);
+
 module.exports = router;
