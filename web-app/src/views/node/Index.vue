@@ -31,8 +31,8 @@
 
       <template v-slot:cell(online)="data">
 
-    <b-badge v-show=data.item.online variant="success">Online</b-badge>
-    <b-badge v-show=!data.item.online variant="danger">Offline</b-badge>
+        <b-badge v-show=data.item.online variant="success">Online</b-badge>
+        <b-badge v-show=!data.item.online variant="danger">Offline</b-badge>
 
       </template>
 
@@ -43,17 +43,17 @@
             Edit
         </b-button>
 
-        <b-button variant="secondary" size="sm" @click="imagesNode(row.item)" class="mr-2">
-            <v-icon name="cpu"></v-icon>
-            Images
-        </b-button>
-
         <b-button variant="danger" size="sm" @click="removeNode(row.item)" class="mr-2">
             <v-icon name="trash"></v-icon>
             Remove
         </b-button>
+        
+        <b-button v-show=row.item.online variant="secondary" size="sm" @click="imagesNode(row.item)" class="mr-2">
+            <v-icon name="cpu"></v-icon>
+            Images
+        </b-button>
 
-        <b-button variant="success" size="sm" @click="statusNode(row.item)" class="mr-2">
+        <b-button v-show=row.item.online variant="success" size="sm" @click="statusNode(row.item)" class="mr-2">
             <v-icon name="info"></v-icon>
             Info
         </b-button>
