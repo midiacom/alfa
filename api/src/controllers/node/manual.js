@@ -1,6 +1,6 @@
 const manual = {
-    run: function(parameters) {
-        return parameters.ip
+    run: function(payload) {
+        return payload.params.ip
     }
 }
 

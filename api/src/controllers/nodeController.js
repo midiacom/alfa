@@ -10,9 +10,7 @@ const nodeController = {
     nodeSelection: async (req, res, next) => {
         let virtualNodeType = req.params.vnt; // it is the image of a VMS or a SRC
         let resourceAllocationManager = req.params.ra; // it define the RA method
-        let payload = req.body; // the set of parameters to each RA method
-        
-        console.log(payload)
+        let params = req.body; // the set of parameters to each RA method
         
         // get all up and running edge nodes nodes that has the image
         let where = {
@@ -21,19 +19,25 @@ const nodeController = {
                 'online': true
             }]
         }
-        
+
         let nodes = await nodeModel.find(where)
             .select(['name','ip'])
             .then(nodes => {
                 return nodes;
             })
 
+        payload = {
+            'nodes': nodes,
+            params
+        }
+
+        // console.log(payload)
         // console.log(nodes)
 
         // call the function that will make the decision
         const ra = require(`./node/${resourceAllocationManager}`)
         let ip = ra.run(payload)
-        
+
         return res.status(201).json(ip);
     },
 

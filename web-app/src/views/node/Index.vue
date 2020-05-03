@@ -96,10 +96,12 @@ export default {
                 key: 'name'
             },{
                 key: 'ip',
-                label: 'IP'
+                label: 'IP',
+                class: 'nodeIpList'
             },{
                 key: 'online',
-                label: 'Status'
+                label: 'Status',
+                class: 'nodeStatusList'
             },
             {
                 key:'actions',
@@ -168,5 +170,13 @@ export default {
     .nodeIndexActions {
         width: 500px;
         text-align: center;
+    }
+    .nodeStatusList {
+        width: 100px;
+        text-align: center;
+    }
+    .nodeIpList {
+        width: 100px;
+        text-align: left;
     }
 </style>
