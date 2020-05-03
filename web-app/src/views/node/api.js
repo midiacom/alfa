@@ -94,7 +94,7 @@ export const apiNode = {
   },
 
   /**
-   * This will be used for the combobox that demands a diferente return format
+   * This will be used for the combobox that demands a different return format
    */
   getNodesForSelect () {
     return new Promise((resolve, reject) => {
@@ -105,6 +105,29 @@ export const apiNode = {
               ret.push({
                 value: element.ip,
                 text: `${element.name} ${element.ip}`,
+                id: element._id
+              })
+            });
+            resolve(ret)
+        })
+        .catch(e => {
+            reject(e)
+        })
+    })
+  },  
+
+  /**
+   * This will be used for the VMS combobox that demands a different return format
+   */
+  getNodesForVmsSelect () {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/node/nodeOptions`)
+        .then(resp => {
+            let ret = []
+            resp.data.forEach(element => {
+              ret.push({
+                value: element.ip,
+                text: `${element.name}`,
                 id: element._id
               })
             });

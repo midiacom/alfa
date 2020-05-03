@@ -1,7 +1,10 @@
 const vmsModel = require("../models/vmsModel")
 const vmsTypeModel = require("../models/vmsTypeModel")
 const docker = require("../util/dockerApi")
-var mqtt = require('mqtt')
+const nodeController = require("./nodeController")
+const mqtt = require('mqtt')
+const path = require('path');
+const fs = require('fs')
 
 const vmsController = {
 
@@ -18,11 +21,27 @@ const vmsController = {
       })
     },
 
-    // start and recreate a VMS
-    // here we unbind a SRC if it was binded
-    post: (req, res, next) => {
+    // Start and recreate a VMS    
+    post: async (req, res, next) => {
 
-      let nodeIp = req.body.nodeIp; // retrive the actual ip
+      let nodeIp = req.body.nodeIp; // Retrieve the actual ip
+
+      // Verify if the Edge Node selection will be done by a Resource Allocation Function or manually
+      // it there is in the folder node/ra a file with the nodeIp it means that the selection will 
+      // be done by a resource allocation algorithm
+      const dirPath = path.join(__dirname, 'node/ra');
+      try {
+        if (fs.existsSync(`${dirPath}/${nodeIp}.js`)) {
+          // Find the image from the VMS that will be started
+          vmsType = await vmsTypeModel.findById(req.body.vmsType)
+            .then((result) => {
+              return result
+            })
+          nodeIp = await nodeController.nodeSelection(vmsType.dockerImage, nodeIp, req.body)
+        }
+      } catch(err) {
+        // console.log(err)
+      }
 
       docker.api(nodeIp)
         .then((api) => {
@@ -41,7 +60,7 @@ const vmsController = {
               }).then(function(container) {
                 container.start()
                 .then((data) => { 
-                  // create a new VMS      
+                  // create a new VMS
                   if (!id) {
                     let vms = new vmsModel({
                       name: req.body.name,

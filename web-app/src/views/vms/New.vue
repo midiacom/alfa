@@ -125,7 +125,7 @@ export default {
                     this.vmsType = vmsType
                 })
 
-            apiNode.getNodesForSelect()
+            apiNode.getNodesForVmsSelect()
                 .then((nodes) => {
                     this.nodes = nodes
                 })

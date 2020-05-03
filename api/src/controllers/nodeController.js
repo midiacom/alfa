@@ -1,16 +1,18 @@
 const nodeModel = require("../models/nodeModel")
 const docker = require("../util/dockerApi")
+const path = require('path');
+const fs = require('fs');
 
 const nodeController = {
 
     /**
      * nodeSelection: This module will return in which edge node a virtual node will run.
      * The selection will be made by a Resource Allocation.
+     let virtualNodeType = req.params.vnt; // it is the image of a VMS or a SRC
+     let resourceAllocationManager = req.params.ra; // it define the RA method
+     let params = req.body; // the set of parameters to each RA method
     */
-    nodeSelection: async (req, res, next) => {
-        let virtualNodeType = req.params.vnt; // it is the image of a VMS or a SRC
-        let resourceAllocationManager = req.params.ra; // it define the RA method
-        let params = req.body; // the set of parameters to each RA method
+    nodeSelection: async (virtualNodeType, resourceAllocationManager, params) => {
         
         // get all up and running edge nodes nodes that has the image
         let where = {
@@ -19,6 +21,8 @@ const nodeController = {
                 'online': true
             }]
         }
+
+        console.log(where)
 
         let nodes = await nodeModel.find(where)
             .select(['name','ip'])
@@ -35,10 +39,10 @@ const nodeController = {
         // console.log(nodes)
 
         // call the function that will make the decision
-        const ra = require(`./node/${resourceAllocationManager}`)
+        const ra = require(`./node/ra/${resourceAllocationManager}`)
         let ip = ra.run(payload)
 
-        return res.status(201).json(ip);
+        return ip;
     },
 
     getEdgeNodeImages: (req, res, next) => {
@@ -186,6 +190,45 @@ const nodeController = {
                 /* istanbul ignore next */ 
                 return res.status(422).send(err.errors);
             });                    
+    },
+
+    nodeOptions: async (req, res, next) => {
+       
+        let nodes = await nodeModel.find()
+            .then(nodes => {
+                return nodes
+            })
+            .catch(err => {
+                /* istanbul ignore next */ 
+                return res.status(422).send(err.errors);
+            });
+        
+        let result = []
+        for (let i = 0; i < nodes.length; i++) {
+            result.push({
+                'name' : `Manual - ${nodes[i].ip}`,
+                'ip': nodes[i].ip,
+                '_id': nodes[i]._id
+            })
+        }
+
+        // select all the files in node foldes
+        const dirPath = path.join(__dirname, 'node/ra');
+        let files = fs.readdirSync(dirPath, function (err, files) {
+            if (err) {return console.log('Unable to scan directory: ' + err)} 
+        });
+
+        for (let i = 0; i < files.length; i++) {
+            let a = files[i].split('.')
+            if (a[0] != 'manual')
+                result.push({
+                    'name': `Automatic Allocation - ${a[0].charAt(0).toUpperCase() + a[0].slice(1)}`,
+                    'ip': a[0],
+                    '_id': a[0]
+                })
+        }
+
+        return res.status(201).json(result);
     },
     
     post: (req, res, next) => {
