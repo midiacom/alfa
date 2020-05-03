@@ -22,10 +22,10 @@ app.listen(port, function () {
 var CronJob = require('cron').CronJob;
 
 // runs once a minute
-// var job = new CronJob('0 */1 * * * *', function() {
-var job = new CronJob('* * * * * *', function() {
+var job = new CronJob('0 */1 * * * *', function() {
+// var job = new CronJob('* * * * * *', function() {
   nodeController.updateNdgeNodeStatus()
-  console.log('You will see this message every second');
+  //console.log('You will see this message every second');
 }, null, true, 'America/Los_Angeles');
 
 job.start();
