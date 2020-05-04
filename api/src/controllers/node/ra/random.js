@@ -1,7 +1,7 @@
-const manual = {
+const ra_random = {
     run: function(payload) {
-        return payload.nodes[Math.floor(Math.random()*payload.nodes.length)].ip;
+        return payload.nodes[Math.floor(Math.random()*payload.nodes.length)];
     }
 }
 
-module.exports = manual
+module.exports = ra_random 

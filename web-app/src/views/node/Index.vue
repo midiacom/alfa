@@ -17,7 +17,7 @@
     </b-row>
     <b-row>
         <b-col>            
-            <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
+            <b-alert :show="msg.show" :variant=msg.type>
                 {{ msg.text }}
             </b-alert>
         </b-col>            
@@ -102,6 +102,10 @@ export default {
                 key: 'online',
                 label: 'Status',
                 class: 'nodeStatusList'
+            },{
+                key: 'virtualEntityNum',
+                label: 'Running',
+                class: 'nodeStatusList'
             },
             {
                 key:'actions',
@@ -110,7 +114,8 @@ export default {
             items: [],
             msg: {
                 text: false,
-                type: ''
+                type: '',
+                show: false
             }
         }
     },
@@ -139,9 +144,15 @@ export default {
                     apiNode.removeNode(node._id)
                         .then(() => {
                             this.refresh()
+                            this.msg.text = "VMS Type saved"
+                            this.msg.type = "success"
+                            this.msg.show = true                            
                         })
                         .catch(e => {
                             console.log(e)
+                            this.msg.text = "VMS Type saved"
+                            this.msg.type = "danger"
+                            this.msg.show = true
                         })
                 }
             })

@@ -1,7 +1,9 @@
 const vmsModel = require("../models/vmsModel")
+const nodeModel = require("../models/nodeModel")
 const vmsTypeModel = require("../models/vmsTypeModel")
 const docker = require("../util/dockerApi")
 const nodeController = require("./nodeController")
+const ra = require('./node/ra');
 const mqtt = require('mqtt')
 const path = require('path');
 const fs = require('fs')
@@ -30,6 +32,7 @@ const vmsController = {
       // it there is in the folder node/ra a file with the nodeIp it means that the selection will 
       // be done by a resource allocation algorithm
       const dirPath = path.join(__dirname, 'node/ra');
+      let nodeResult = {};
       try {
         if (fs.existsSync(`${dirPath}/${nodeIp}.js`)) {
           // Find the image from the VMS that will be started
@@ -37,11 +40,18 @@ const vmsController = {
             .then((result) => {
               return result
             })
-          nodeIp = await nodeController.nodeSelection(vmsType.dockerImage, nodeIp, req.body)
+            nodeResult = await ra.nodeSelection(vmsType.dockerImage, nodeIp, req.body)            
+            nodeIp = nodeResult.ip
+        } else {
+          // if it is a manual choice, grab the node with the same IP
+          await nodeModel.findOne({
+            'ip': nodeIp
+          })
+          .then((node) => {
+            nodeResult._id = node._id
+          })
         }
-      } catch(err) {
-        // console.log(err)
-      }
+      } catch(err) {}
 
       docker.api(nodeIp)
         .then((api) => {
@@ -67,7 +77,7 @@ const vmsController = {
                       dockerId: data.id,
                       startupParameters: startupParameters,
                       vmsType: vmsType,
-                      node: req.body.node,
+                      node: nodeResult._id,
                       bindedTo: []
                     })      
 
@@ -260,10 +270,12 @@ const vmsController = {
           }
           docker.api(vms.node.ip)
             .then((api) => {
-              let container = api.getContainer(vms.dockerId);
-
+              let container = api.getContainer(vms.dockerId)
+              // console.log(container)
               container.inspect(function (err, data) {
                 // if the container is running then stop it
+                // console.log(err)
+                // console.log(data)
                 if (data) {
                   if (data.State.Running) {
                     container.stop(function (err, data) {
@@ -272,9 +284,13 @@ const vmsController = {
                     return res.status(201).json(vms);
                   }
                 } else {
-                  return res.status(201).json({"ok":"ok"});
-                }
-              });
+                  // return res.status(201).json({"ok":"ok"});
+                  return res.status(201).json({
+                    message: 'Container already stopped.',
+                    error: err
+                  });
+                }                
+              })
             })
       })
       .catch(err => {

@@ -2,7 +2,7 @@
     <div>
         <h2>Edit Location</h2>
 
-        <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
+        <b-alert :show="msg.show" :variant=msg.type>
             {{ msg.text }}
         </b-alert>
 
@@ -41,21 +41,28 @@ export default {
             },
             msg: {
                 text: false,
-                type: ''
+                type: '',
+                show: false
             }
         }
     },
     methods: {
+        hasMessage() {
+            if (this.msg.text) return true
+            return false
+        },
         onSubmit(evt) {
             evt.preventDefault()
             apiLocation.updateLocation(this.form)
                 .then(() => {
                     this.msg.text = "Location saved"
                     this.msg.type = "success"
+                    this.msg.show = true
                 })
                 .catch((e) => {
                     this.msg.text = `Error when saving location ${e}`
                     this.msg.type = "danger"
+                    this.msg.show = true
                 })
         },
         refresh() {

@@ -15,6 +15,10 @@ var nodesSchema = new Schema({
       type: Boolean,
       default: false
     },
+    'virtualEntityNum' : {
+      type: Number,
+      default: 0
+    },
     'images' : []
 },{
   timestamps: true

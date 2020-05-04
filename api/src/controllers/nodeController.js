@@ -1,5 +1,6 @@
 const nodeModel = require("../models/nodeModel")
 const docker = require("../util/dockerApi")
+const ra = require('./node/ra');
 const path = require('path');
 const fs = require('fs');
 
@@ -11,7 +12,7 @@ const nodeController = {
      let virtualNodeType = req.params.vnt; // it is the image of a VMS or a SRC
      let resourceAllocationManager = req.params.ra; // it define the RA method
      let params = req.body; // the set of parameters to each RA method
-    */
+        
     nodeSelection: async (virtualNodeType, resourceAllocationManager, params) => {
         
         // get all up and running edge nodes nodes that has the image
@@ -21,8 +22,6 @@ const nodeController = {
                 'online': true
             }]
         }
-
-        console.log(where)
 
         let nodes = await nodeModel.find(where)
             .select(['name','ip'])
@@ -37,12 +36,21 @@ const nodeController = {
 
         // console.log(payload)
         // console.log(nodes)
-
         // call the function that will make the decision
         const ra = require(`./node/ra/${resourceAllocationManager}`)
         let ip = ra.run(payload)
 
         return ip;
+    },*/
+
+    nodeSelection: async (req, res, next) => {
+        let virtualNodeType = req.params.vnt; // it is the image of a VMS or a SRC
+        let resourceAllocationManager = req.params.ra; // it define the RA method
+        let params = req.body; // the set of parameters to each RA method
+
+        let result = await ra.nodeSelection(virtualNodeType, resourceAllocationManager, params)
+        
+        return res.status(201).json(result);
     },
 
     getEdgeNodeImages: (req, res, next) => {
@@ -111,21 +119,40 @@ const nodeController = {
                 slaveNodes.forEach(function(node){
                     docker.api(masterNode[0].ip)
                     .then((api) => {   
+                        // update the status
                         let nodeDocker = api.getNode(node.dockerId);
                         var opts = {"filters": `{}`}
                         nodeDocker.inspect()
-                        .then((status) => {
-                            if (status.Status.State == 'down') {
-                                node.online = false
-                            } else {
-                                node.online = true 
-                            }
-                            // save the status of the edge node
-                            node.save()                            
-                        })     
-                        .catch(err => {
-                            console.log(err)
-                        });
+                            .then((status) => {
+                                if (status.Status.State == 'down') {
+                                    node.online = false
+                                } else {
+                                    node.online = true 
+                                }
+                                // save the status of the edge node
+                                node.save()
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            });
+
+                        // update the container number
+                        docker.api(node.ip)
+                            .then((api) => {
+                                api.listContainers()
+                                .then((cont) => {
+                                    let total = 0;
+                                    for (let i = 0; i < cont.length; i++) {
+                                        // only count the Alfa's virtual nodes 
+                                        if (cont[i].Image.indexOf('alfa\/plugin') >= 0){
+                                            total++
+                                        }
+                                    }
+                                    node.virtualEntityNum = total;
+                                    node.save()
+                                })
+                            })                        
+
                     })     
                     .catch(err => {
                         console.log(err)
@@ -170,7 +197,7 @@ const nodeController = {
         
     list: (req, res, next) => {
         nodeModel.find() 
-            .select(['name','ip', 'online'])
+            .select(['name','ip', 'online','virtualEntityNum'])
             .then(nodes => {
                 return res.status(201).json(nodes);
             })

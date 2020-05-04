@@ -9,7 +9,6 @@
             {{ msg.text }}
         </b-alert>
 
-
         <b-form @submit="onSubmit">
 
             <hr>

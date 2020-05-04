@@ -1,5 +1,6 @@
 <template>
   <div>
+    
     <loading :active.sync="isLoading" :is-full-page="true"></loading>
 
     <b-modal 
@@ -39,13 +40,13 @@ gst-launch-1.0 \
                 <v-icon style="width: 32px;" name="layers"></v-icon>
                 VMS
             </h2>
-
-            <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
-                {{ msg.text }}
-            </b-alert>
         </b-col>
     </b-row>
-    
+     
+    <b-alert :show=msg.show :variant=msg.type>
+        {{ msg.text }}
+    </b-alert>
+
     <b-table
         :busy="isBusy"
         :items="items" 
@@ -159,7 +160,12 @@ export default {
                 key:'actions',
                 class: 'vmsIndexActionsStopped'
             }],
-            items: []
+            items: [],
+            msg: {
+                text: false,
+                type: '',
+                show: false
+            }            
         }
     },
     methods: {
@@ -211,9 +217,17 @@ export default {
                     that.isLoading = true
                     apiVms.stopVms(vms._id)
                         .then(() => {
-                            this.refresh()
+                            that.refresh()
+                            that.msg.text = "VMS stopped"
+                            that.msg.type = "success"
+                            that.msg.show = true
+                            that.isLoading = false;
                         })
                         .catch(e => {
+                            that.msg.text = `Error when stopping the VMS ${e}`
+                            that.msg.type = "danger"
+                            that.msg.show = true
+                            that.isLoading = false;
                             console.log(e)
                         })
                 }
