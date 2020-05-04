@@ -23,7 +23,7 @@ const ra = {
     }
 
     let nodes = await nodeModel.find(where)
-        .select(['name','ip'])
+        .select()
         .then(nodes => {
             return nodes;
         })
