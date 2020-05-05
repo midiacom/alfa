@@ -1,5 +1,5 @@
 const app = require('./src/app');
-const nodeController = require('./src/controllers/nodeController');
+const nodeCron = require('./src/controllers/node/cron');
 
 const port = normalizaPort(process.env.PORT || '8080');
 
@@ -24,7 +24,7 @@ var CronJob = require('cron').CronJob;
 // runs once a minute
 var job = new CronJob('0 */1 * * * *', function() {
 // var job = new CronJob('* * * * * *', function() {
-  nodeController.updateNdgeNodeStatus()
+  nodeCron.update();
   //console.log('You will see this message every second');
 }, null, true, 'America/Los_Angeles');
 

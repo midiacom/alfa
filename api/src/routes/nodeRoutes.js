@@ -6,6 +6,8 @@ const nodeController = require('../controllers/nodeController')
 
 router.get('/nodeOptions', nodeController.nodeOptions);
 
+router.get('/updateStatus', nodeController.updateNodeNodeStatus);
+
 router.get('/', nodeController.list);
 
 router.get('/:id', nodeController.get);

@@ -9,6 +9,10 @@
             </h2>
         </b-col>
         <b-col class="text-right">
+            <b-button @click="updateStatus()" variant="info" class="mr-2">
+                <v-icon name="refresh-ccw"></v-icon>
+                Update Status
+            </b-button>    
             <b-button to="/node/new" variant="success" class="mr-2">
                 <v-icon name="plus"></v-icon>
                 New
@@ -129,6 +133,19 @@ export default {
 
         statusNode (node) {
             this.$router.push(`/node/${node._id}/status`)
+        },
+
+        updateStatus () {
+            this.isBusy = true
+            this.isLoading = false
+            apiNode.updateStatus()
+                .then((data) => {
+                    this.refresh()
+                })
+                .catch(e => {
+                    console.log(e)
+                    this.isBusy = false
+                })              
         },
 
         removeNode(node) {

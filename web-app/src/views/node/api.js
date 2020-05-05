@@ -57,6 +57,18 @@ export const apiNode = {
     })
   },
 
+  updateStatus () {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/node/updateStatus`)
+        .then(resp => {
+            resolve(resp.data)
+        })
+        .catch(e => {
+            reject(e)
+        })
+    })
+  },
+
   getNode (nodeId) {
     return new Promise((resolve, reject) => {
       config.api.get(`/node/${nodeId}`)

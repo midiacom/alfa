@@ -8,7 +8,7 @@ cecho(){
     printf "${!1}${2} ${NC}\n"
 }
 
-# The SRC Types
+# The Device Types
 cecho "GREEN" 
 cecho "GREEN" ----------------------
 cecho "GREEN" "Build Virtual Device Audio Sample"
@@ -39,8 +39,8 @@ cecho "GREEN" ----------------------
 cecho "GREEN" "Build Virtual Device Video Sample"
 cecho "GREEN" ----------------------
 cecho "GREEN" 
-cd ../../src/video_sample/
-docker build . -t alfa/src/video_sample
+cd ../../device/video_sample/
+docker build . -t alfa/device/video_sample
 
 cecho "GREEN" 
 cecho "GREEN" ----------------------
@@ -56,8 +56,8 @@ cecho "GREEN" ----------------------
 cecho "GREEN" "Build Plugin UDP to UDP"
 cecho "GREEN" ----------------------
 cecho "GREEN" 
-cd ../../plugins/udp_to_udp/
-docker build . -t alfa/plugin/udp_to_udp
+cd ../../vms/udp_to_udp/
+docker build . -t alfa/vms/udp_to_udp
 
 cecho "GREEN" 
 cecho "GREEN" ----------------------
