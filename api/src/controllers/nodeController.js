@@ -118,7 +118,7 @@ const nodeController = {
                 }
                 slaveNodes.forEach(function(node){
                     docker.api(masterNode[0].ip)
-                    .then((api) => {   
+                    .then((api) => {
                         // update the status
                         let nodeDocker = api.getNode(node.dockerId);
                         var opts = {"filters": `{}`}
@@ -151,7 +151,13 @@ const nodeController = {
                                     node.virtualEntityNum = total;
                                     node.save()
                                 })
-                            })                        
+                                .catch(err => {
+                                    // console.log(err)
+                                });
+                            })
+                            .catch(err => {
+                                // console.log(err)
+                            });
 
                     })     
                     .catch(err => {
@@ -262,6 +268,7 @@ const nodeController = {
         const node = new nodeModel({
             name: req.body.name,
             ip: req.body.ip,
+            dockerId: req.body.dockerId,
             isMaster: req.body.isMaster,
             description: req.body.description
         })                

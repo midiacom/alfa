@@ -127,9 +127,12 @@ const vmsController = {
                 });
               }).catch(function(err) {
                 /* istanbul ignore next */ 
-                console.log('2')
-                console.log(err)
-                return res.status(422).send(err);
+                return res.status(500).json({
+                  message: 'Erro ao instanciar o VMS',
+                  error: err
+                });                
+                // console.log(err)
+                // return res.status(422).send(err);
               });
             })
             .catch(err => {

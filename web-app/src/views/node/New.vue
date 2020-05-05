@@ -2,7 +2,7 @@
     <div>
         <h2>New Edge Node</h2>
 
-        <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
+        <b-alert :show="msg.show" :variant=msg.type>
             {{ msg.text }}
         </b-alert>
 
@@ -19,6 +19,10 @@
                 <b-form-radio v-model="form.isMaster" name="isMaster" value=true>Master</b-form-radio>
                 <b-form-radio v-model="form.isMaster" name="isMaster" value=false>Slave</b-form-radio>
             </b-form-group>            
+
+            <b-form-group id="input-group-3" label="Docker Node ID:" label-for="dockerId">
+                <b-form-input id="dockerId" v-model="form.dockerId" type="text"/>
+            </b-form-group>
 
             <b-form-group id="input-group-2" label="Description:" label-for="description">
                 <b-form-textarea id="description" v-model="form.description" type="text"/>
@@ -49,11 +53,13 @@ export default {
                 name: '',     
                 ip: '',
                 description: '',
-                isMaster: ''
+                dockerId: '',
+                isMaster: false
             },
             msg: {
                 text: false,
-                type: ''
+                type: '',
+                show: false
             }
         }
     },
@@ -64,10 +70,12 @@ export default {
                 .then(() => {
                     this.msg.text = "Node saved"
                     this.msg.type = "success"
+                    this.msg.show = true
                 })
                 .catch((e) => {
                     this.msg.text = `Error when saving node ${e}`
                     this.msg.type = "danger"
+                    this.msg.show = true
                 })
         }
     },

@@ -5,7 +5,7 @@
 
         <h2>New VMS</h2>
 
-        <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
+        <b-alert :show="msg.show" :variant=msg.type>
             {{ msg.text }}
         </b-alert>
 
@@ -83,7 +83,8 @@ export default {
             },
             msg: {
                 text: false,
-                type: ''
+                type: '',
+                show: false
             },
             isLoading: false
         }
@@ -107,11 +108,14 @@ export default {
                 .then(() => {
                     this.msg.text = "VMS created"
                     this.msg.type = "success"
+                    this.msg.show = true
                     this.isLoading = false;
                 })
                 .catch((e) => {
+                    console.log(e)
                     this.msg.text = `Error when creating VMS ${e}`
                     this.msg.type = "danger"
+                    this.msg.show = true
                     this.isLoading = false;
                 })
         },

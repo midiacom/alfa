@@ -2,7 +2,7 @@
     <div>
         <h2>Edit Edge Node</h2>
 
-        <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
+        <b-alert :show="msg.show" :variant=msg.type>
             {{ msg.text }}
         </b-alert>
 
@@ -59,7 +59,8 @@ export default {
             },
             msg: {
                 text: false,
-                type: ''
+                type: '',
+                show: false
             }
         }
     },
@@ -70,10 +71,12 @@ export default {
                 .then(() => {
                     this.msg.text = "Node saved"
                     this.msg.type = "success"
+                    this.msg.show = true
                 })
                 .catch((e) => {
                     this.msg.text = `Error when saving node ${e}`
                     this.msg.type = "danger"
+                    this.msg.show = true
                 })
         },
         refresh() {

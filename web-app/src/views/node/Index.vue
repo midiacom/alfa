@@ -45,12 +45,11 @@
 
         <b-button variant="danger" size="sm" @click="removeNode(row.item)" class="mr-2">
             <v-icon name="trash"></v-icon>
-            Remove
         </b-button>
         
         <b-button v-show=row.item.online variant="secondary" size="sm" @click="imagesNode(row.item)" class="mr-2">
             <v-icon name="cpu"></v-icon>
-            Images
+            List / Update Images
         </b-button>
 
         <b-button v-show=row.item.online variant="success" size="sm" @click="statusNode(row.item)" class="mr-2">
@@ -144,13 +143,13 @@ export default {
                     apiNode.removeNode(node._id)
                         .then(() => {
                             this.refresh()
-                            this.msg.text = "VMS Type saved"
+                            this.msg.text = "Edge node emoved"
                             this.msg.type = "success"
                             this.msg.show = true                            
                         })
                         .catch(e => {
                             console.log(e)
-                            this.msg.text = "VMS Type saved"
+                            this.msg.text = "Erro when removind edge node"
                             this.msg.type = "danger"
                             this.msg.show = true
                         })
