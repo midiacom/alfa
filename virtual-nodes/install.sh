@@ -146,12 +146,12 @@ whiptail --title "Install VMS and Virtual Devices" --menu "What do you whant to 
 	"3)" "RTSP to USP [Virtual Device]."   \
     "4)" "Video Sample [Virtual Device]."   \
     "5)" "USB Mic [Virtual Device]."   \
-    "6)" "UDP to UDP  Mic [Virtual Device]."   \
-    "7)" "Grayscale Video [Virtual Device]."   \
-    "8)" "Video Crop [Virtual Device]."   \
-    "9)" "Noise Detector [Virtual Device]."   \
-    "10)" "Video Merge [Virtual Device]."   \
-    "11)" "Face Counter [Virtual Device]."   \
+    "6)" "UDP to UDP  Mic [VMS]."   \
+    "7)" "Grayscale Video [VMS]."   \
+    "8)" "Video Crop [VMS]."   \
+    "9)" "Noise Detector [VMS]."   \
+    "10)" "Video Merge [VMS]."   \
+    "11)" "Face Counter [VMS]."   \
 	"12)" "Exit"  3>&2 2>&1 1>&3	
 )
 
