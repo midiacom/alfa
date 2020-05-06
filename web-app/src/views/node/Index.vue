@@ -196,7 +196,7 @@ export default {
 <style>
     .nodeIndexActions {
         width: 500px;
-        text-align: center;
+        text-align: left;        
     }
     .nodeStatusList {
         width: 100px;

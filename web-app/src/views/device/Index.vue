@@ -34,7 +34,7 @@
       </template>
       
       <template v-slot:cell(node)="data">
-          {{ data.item.node.name }}
+          {{ data.item.node.name }} / {{ data.item.node.ip }}
       </template>
 
       <template v-slot:cell(actions)="row">

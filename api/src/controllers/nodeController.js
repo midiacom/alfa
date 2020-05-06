@@ -60,7 +60,7 @@ const nodeController = {
         .then((api) => {
             var opts = {"filters": `{}`}
             api.listImages(opts, function (err, images) {
-                
+
                 if (err) {
                     return res.status(500).json({
                         message: 'Error when listing images',

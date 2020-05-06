@@ -63,7 +63,7 @@ function installVideoSample {
     cecho "GREEN" ----------------------
     cecho "GREEN" 
     cd device/video_sample/
-    docker build . -t alfa/device/video_sample    
+    docker build . -t alfa/device/video_sample
 }
 
 function installMicUsb {
