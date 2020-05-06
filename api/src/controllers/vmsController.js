@@ -4,6 +4,7 @@ const vmsTypeModel = require("../models/vmsTypeModel")
 const docker = require("../util/dockerApi")
 const nodeController = require("./nodeController")
 const ra = require('./node/ra');
+const cron = require('./node/cron');
 const mqtt = require('mqtt')
 const path = require('path');
 const fs = require('fs')
@@ -86,11 +87,13 @@ const vmsController = {
                       /* istanbul ignore next */ 
                       if (err) {
                         console.log(err)
-                          return res.status(500).json({
-                              message: 'Error when creating vmsType',
-                              error: err
-                          });
+                        return res.status(500).json({
+                          message: 'Error when creating vmsType',
+                          error: err
+                        });
                       }
+                      // update the number of vms running in the edge node
+                      cron.update()
                       return res.status(201).json(vms)
                     })
                   } else {
@@ -118,7 +121,6 @@ const vmsController = {
                       return res.status(422).send(err.errors);
                     });
                   }
-       
                 }).catch(function(err) {
                   /* istanbul ignore next */ 
                   console.log('1')
@@ -283,6 +285,7 @@ const vmsController = {
                   if (data.State.Running) {
                     container.stop(function (err, data) {
                       container.remove()
+                      cron.update()
                     });
                     return res.status(201).json(vms);
                   }
