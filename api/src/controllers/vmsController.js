@@ -107,7 +107,7 @@ const vmsController = {
                       vms.save((err,vms) => {
                         /* istanbul ignore next */ 
                         if (err) {
-                            return res.status(500).json({
+                            return res.status(500).json({                                
                                 message: 'Error when creating vmsType',
                                 error: err
                             });
@@ -129,6 +129,9 @@ const vmsController = {
                 });
               }).catch(function(err) {
                 /* istanbul ignore next */ 
+                console.log('---------------')
+                console.log(err)
+                console.log('---------------')
                 return res.status(500).json({
                   message: 'Erro ao instanciar o VMS',
                   error: err
@@ -461,6 +464,11 @@ const vmsController = {
         });
       })
     })
+  },
+
+  monitor: (req, res, next) => {
+    console.log(req.params)
+    return res.status(200).json({"ok":"ok"});
   }
 }
 

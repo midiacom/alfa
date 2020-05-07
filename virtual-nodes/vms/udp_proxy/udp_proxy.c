@@ -1028,7 +1028,7 @@ static void agent_send(
     // list 
     int len = sprintf(agent_buffer,":%s;%s;%s:%d;%d;%ld;%ld;%s;%ld;%ld", 
         options.id_str,  
-        (!*source?"_":source), monitor.dst_host_1, monitor.dst_port_1, 
+        (!*source?"_/_":source), monitor.dst_host_1, monitor.dst_port_1, 
         milliseconds, monitor.new_bytes, monitor.new_packets,
         now, monitor.total_bytes, monitor.total_packets);
 
@@ -1206,6 +1206,8 @@ static void collect_loop(char *port) {
 
             char *url, *s; 
             s = options.rest_url_str;
+
+            
             int len = 0;
             for (url = agent_buffer; *s; s++, url++ ) {
                 *url = *s;
