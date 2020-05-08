@@ -1,26 +1,26 @@
-#!/bin/sh
+#!/bin/bash
 # run the Makefile
 make
 
-echo "compilou"
+# parse the space string in array
+spo=$1
+OIFS=$IFS
+IFS=' '
+spo_array=($spo)
+IFS=$OIFS
 
 # this ip is the docker machine ip docker0: see the value using
 # $1 = destination ip
 # $2 = destination port
-
-VAR1=${1}
-VAR2=":"
-VAR3=${2}
-VAR4="${VAR1}${VAR2}${VAR3}"
-
-echo "${VAR4}"
+# $3 = time do heart beat
+# $4 = identificador do fluxo
 
 # data collector
+# example: ./udp_proxy -P 6001 -R 192.168.0.1:3000/vms/monitor
 ./udp_proxy -P 6001 -R http://rest-api:3000/vms/monitor &
 
-#  ./udp_proxy -P 6001 -R http://172.17.0.1:3000/vms/monitor &
-
-./udp_proxy -p 5000 -c 127.0.0.1:6001 "${VAR4}"
-
-
-read 
+# data forwarder
+# ./udp_proxy -i A1 -ch 127.0.0.1 -cp 6001 192.168.0.1 5008
+# example ./udp_proxy -i A1 -ch 127.0.0.1 192.168.0.1 5008
+# echo "./udp_proxy -ch 127.0.0.1 -cp 6001 -i ${spo_array[2]} ${spo_array[0]} ${spo_array[1]}"
+./udp_proxy -ch 127.0.0.1 -cp 6001 -hs ${spo_array[2]} -i ${spo_array[3]} ${spo_array[0]} ${spo_array[1]}

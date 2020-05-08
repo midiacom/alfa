@@ -16,4 +16,5 @@ COPY ./start.sh ./start.sh
 
 USER root
 
-ENTRYPOINT ["./start.sh"]
+ENTRYPOINT ["/bin/bash", "./start.sh"]
+# ENTRYPOINT ["./start.sh"]

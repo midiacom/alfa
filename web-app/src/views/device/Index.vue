@@ -57,6 +57,11 @@
             <v-icon name="trash"></v-icon>
             Remove
         </b-button>
+
+        <b-button v-show=row.item.dockerId variant="warning" size="sm" @click="containerDetails(row.item)" class="mr-2">
+            <v-icon name="info"></v-icon>
+        </b-button>
+
       </template>        
 
         <div slot="table-busy" class="text-center text-danger my-2">
@@ -113,6 +118,11 @@ export default {
         }
     },
     methods: {
+
+        containerDetails (device) {
+            this.$router.push(`/device/${device._id}/details`)
+        },
+
         stopSrcDevice (device) {
             apiDevice.stopSrcDevice(device._id)
                 .then(() => {
@@ -192,7 +202,7 @@ export default {
 
 <style>
     .deviceIndexActions {
-        width: 390px;
+        width: 450px;
         text-align: center;
     }
 </style>

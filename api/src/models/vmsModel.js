@@ -8,6 +8,7 @@ var Schema   = mongoose.Schema;
 var vmsSchema = new Schema({
     'startupParameters' : String,
     'name' : String,
+    'nameMonitor' : String,
     'dockerId' : String,
     'node': {
         type: Schema.Types.ObjectId,
@@ -27,7 +28,19 @@ var vmsSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'vmsType',
         required: true
-    }
+    },
+    'monitor': [{
+        'senderip': String,
+        'senderport': String,
+        'toip': String,
+        'toport': String,
+        'milsec': Number,
+        'bs': Number,
+        'ps': Number,
+        'timestamp': Date,
+        'totalbytes': Number,
+        'totalpackage': Number
+    }]
 },{
   timestamps: true
 });

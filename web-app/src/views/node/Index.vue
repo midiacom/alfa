@@ -56,9 +56,8 @@
             List / Update Images
         </b-button>
 
-        <b-button v-show=row.item.online variant="success" size="sm" @click="statusNode(row.item)" class="mr-2">
+        <b-button v-show=row.item.online variant="warning" size="sm" @click="statusNode(row.item)" class="mr-2">
             <v-icon name="info"></v-icon>
-            Info
         </b-button>
       </template>        
 

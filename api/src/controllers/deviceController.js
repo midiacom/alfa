@@ -209,6 +209,31 @@ const deviceController = {
             }
             return res.status(201).json(device);
         })
-    }
+    },
+
+
+
+    getContainerDetails: (req, res, next) => {
+        let id = req.params.id;
+  
+        deviceModel.findById(id)
+            .populate('node')
+            .then(device => {          
+              docker.api(device.node.ip)
+              .then((api) => {
+                let id = device.dockerId;
+                var opts = {
+                  "filters": `{"id": ["${id}"]}`
+                }
+                api.listContainers(opts, function (err, container) {
+                  return res.status(201).json(container);
+                });
+              })     
+            })
+            .catch(err => {
+                /* istanbul ignore next */ 
+                return res.status(422).send(err.errors);
+            });
+    } 
 }    
 module.exports = deviceController

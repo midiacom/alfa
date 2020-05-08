@@ -62,6 +62,12 @@ const vmsController = {
 
           vmsTypeModel.findById(vmsType)
             .then((result) => {
+              let nameMonitor = "";
+              // this is the vms type that performs network monitoring
+              if (result.dockerImage == 'alfa/vms/udp_proxy') {                
+                nameMonitor = `${req.body.name}_${parseInt(Math.random()*1000)}`
+                startupParameters += ` ${nameMonitor}`
+              }
               api.createContainer({
                 Image: result.dockerImage,
                 Cmd: [startupParameters],
@@ -79,6 +85,7 @@ const vmsController = {
                       startupParameters: startupParameters,
                       vmsType: vmsType,
                       node: nodeResult._id,
+                      nameMonitor: nameMonitor,
                       bindedTo: []
                     })      
 
@@ -465,10 +472,48 @@ const vmsController = {
       })
     })
   },
+  
+  getMonitors: (req, res, next) => {
+    let filter = {'nameMonitor': req.params.monitorName}
+    vmsModel.findOne(filter)
+    .then(vms => {   
+      return res.status(200).json(vms.monitor);
+    })
+  },
 
   monitor: (req, res, next) => {
-    console.log(req.params)
-    return res.status(200).json({"ok":"ok"});
+    
+    let tim = req.params.timestamp    
+    let aux_time= new Date(tim.substr(0,4), tim.substr(4,2), tim.substr(6,2), tim.substr(9,2), tim.substr(11,2), tim.substr(13,2), 0);
+
+    let monitTmp = {
+      'senderip': req.params.senderip,
+      'senderport': req.params.senderport,
+      'toip': req.params.toip,
+      'toport': req.params.toport,
+      'milsec': parseInt(req.params.milsec),
+      'bs': parseInt(req.params.bs),
+      'ps': parseInt(req.params.ps),
+      'timestamp': aux_time,
+      'totalbytes': parseInt(req.params.totalbytes),
+      'totalpackage': parseInt(req.params.totalpackage)
+    }
+
+    let filter = {'nameMonitor': req.params.id}
+
+    vmsModel.findOne(filter)
+    .then(vms => {
+      // store only the last 60 monit messages
+      if (vms.monitor.length > 60) {
+        let a = vms.monitor.shift()
+      }
+
+      vms.monitor.push(monitTmp)
+
+      vms.save((err,vms) => {})
+    
+      return res.status(200).json({"ok":"ok"});
+    })
   }
 }
 

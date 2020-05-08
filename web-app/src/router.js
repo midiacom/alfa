@@ -50,6 +50,12 @@ export default new Router({
       component: () => import(/* webpackChunkName: "deviceEdit" */ './views/device/Edit.vue')
     },    
 
+    {
+      path: '/device/:id/details',
+      name: 'deviceContainerDetails',
+      component: () => import(/* webpackChunkName: "vmsTypeEdit" */ './views/device/ContainerDetails.vue')
+    },
+
     // VMSTYPES ROUTES
     {
       path: '/vmsType',
@@ -72,7 +78,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "vmsTypeEdit" */ './views/vmsType/Edit.vue')
     },    
     
-    // VMSTYPES ROUTES
+    // VMS ROUTES
     {
       path: '/vms',
       name: 'vmsIndex',
@@ -103,7 +109,13 @@ export default new Router({
       path: '/vms/:id/edit',
       name: 'vmsEdit',
       component: () => import(/* webpackChunkName: "vmsEdit" */ './views/vms/Edit.vue')
-    },            
+    },
+
+    {
+      path: '/vms/:monitorName/monitor',
+      name: 'vmsMonitor',
+      component: () => import(/* webpackChunkName: "vmsEdit" */ './views/vms/Monitor.vue')
+    },
 
     // Nodes ROUTES
     {

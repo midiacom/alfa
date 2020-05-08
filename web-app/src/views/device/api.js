@@ -152,5 +152,18 @@ export const apiDevice = {
           reject(e)
         })
     })
-  }
+  },
+
+
+  getContainerDetails (deviceId) {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/device/getContainerDetails/${deviceId}`)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch(e => {
+          reject(e)
+        })
+    })
+  }  
 }

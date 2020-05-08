@@ -64,10 +64,15 @@ gst-launch-1.0 \
             </a>
         </template>
 
+        <template v-slot:cell(startupParameters)="row">
+            {{row.item.startupParameters}} 
+            <b-button title="Edit" variant="outline-primary" size="sm" @click="monitor(row.item)" class="mr-2">
+                <v-icon name="activity"></v-icon>
+            </b-button>            
+        </template>
+
         <template v-slot:cell(name)="row">
-            <a href="#" @click="detailsVms(row.item)" title="VMS Details">
-                {{row.item.name }}
-            </a>
+            {{row.item.name }}
         </template>
 
         <template v-slot:cell(node)="row">
@@ -95,7 +100,11 @@ gst-launch-1.0 \
                 <v-icon name="edit-2"></v-icon>
             </b-button>
             
-            <b-button title="Stop" variant="warning" size="sm" @click="stopVms(row.item)" class="mr-2">
+            <b-button title="Container Details" variant="warning" size="sm" @click="detailsVms(row.item)" class="mr-2">
+                <v-icon name="info"></v-icon>
+            </b-button>
+
+            <b-button title="Stop" variant="outline-danger" size="sm" @click="stopVms(row.item)" class="mr-2">
                 <v-icon name="stop-circle"></v-icon>
             </b-button>
 
@@ -169,6 +178,10 @@ export default {
         }
     },
     methods: {
+        
+        monitor (vms) {
+            this.$router.push(`/vms/${vms.nameMonitor}/monitor`)
+        },
 
         showSdp (vms) {
             this.sdp = vms.sdp
@@ -312,7 +325,7 @@ export default {
 
 <style>
     .vmsIndexActionsStopped {
-        width: 550px;
+        width: 600px;
         text-align: center;
     }
 </style>

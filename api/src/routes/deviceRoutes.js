@@ -6,6 +6,8 @@ const deviceController = require('../controllers/deviceController')
 
 router.get('/', deviceController.list);
 
+router.get('/getContainerDetails/:id', deviceController.getContainerDetails);
+
 router.get('/:id', deviceController.get);
 
 router.get('/:id/startSrc', deviceController.startSrc);

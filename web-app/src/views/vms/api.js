@@ -142,5 +142,17 @@ export const apiVms = {
           reject(e)
         })
     })
+  },
+
+  getMonitor (nameMonitor) {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/vms/monitors/${nameMonitor}`)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch(e => {
+          reject(e)
+        })
+    })
   }
 }

@@ -64,13 +64,13 @@ static struct {
 } options = {
     0, 
     DEFAULT_COLLECTOR_ID,
-    NULL, 
+    DEFAULT_PORT, 
     NULL,  DEFAULT_PORT,
     NULL,  DEFAULT_PORT,
     NULL,  DEFAULT_COLLECTOR_PORT,
     DEFAULT_HEARTBEAT,
     0,
-    NULL,
+    DEFAULT_COLLECTOR_PORT,
     0,
     0,
     DEFAULT_WEB_SITE
@@ -692,21 +692,24 @@ static char * split_host_port(char *s) {
  */
 static void help(char *program) {
     fprintf(stderr,"------------------------------------\n");
-    fprintf(stderr,"UDP PROXY for V-PRISM    version 0.1\n");
+    fprintf(stderr,"UDP FORWARD for V-PRISM    version 0.1\n");
     fprintf(stderr,"------------------------------------\n");
-    fprintf(stderr,"Usage: %s [ options ] remote_host1[:remote_port1] [ remote_host2[:remote_port2] ] \n",program);
-    fprintf(stderr,"remote_port1              - destination udp port - Default = 5000\n");
-    fprintf(stderr,"remote_port2              - destination udp port - Default = 5000\n");
-    fprintf(stderr,"Options (regular mode):\n");
-    fprintf(stderr,"  -p udp_port             - local udp port. Default = 5000\n");
-    fprintf(stderr,"  -i ID String            - used to identify this instance. Default = UPX_001\n");
-    fprintf(stderr,"  -s seconds              - maximum idle seconds (heartbeat). Default = 60\n");
-    fprintf(stderr,"  -c collector:port       - ip:port of remote collector. \n");
+    fprintf(stderr,"Usage: %s [ options ] remote_host [ remote_port ]  \n",program);
+    fprintf(stderr,"remote_host                - destination host\n");
+    fprintf(stderr,"remote_port                - destination udp port - Default = 5000\n");
+    fprintf(stderr,"Options (forward mode):\n");
+    fprintf(stderr,"  -p udp_port              - local udp port. Default = 5000\n");
+    fprintf(stderr,"  -i ID String             - used to identify this instance. Default = UPX_001\n");
+    fprintf(stderr,"  -hs heatbeat_seconds     - maximum idle seconds (heartbeat). Default = 60\n");
+    fprintf(stderr,"  -ch collector_host       - ip of remote collector. \n");
+    fprintf(stderr,"  -cp collector_port       - udp port of remote collector. Default = 6001 \n");
+    fprintf(stderr,"  -sh secondary_host       - ip of secondary remote host. \n");
+    fprintf(stderr,"  -sp secondary_port       - udp port of secondary remote host  - Default = 5000\n");
     fprintf(stderr,"Options (collect mode):\n");
-    fprintf(stderr,"  -P collect_port         - listen port in collect mode.\n");
     fprintf(stderr,"  -R REST_URL             - url of REST database collector.\n");
+    fprintf(stderr,"  -P collect_port         - listen port in collect mode. Default=6001\n");
     fprintf(stderr,"Options (common):\n");
-    fprintf(stderr,"  -h help                 - prints this help\n");
+    fprintf(stderr,"  -h                      - prints this help\n");
     fprintf(stderr,"  -D                      - debug. print on stderr \n");
 }
 
@@ -741,27 +744,36 @@ static void parse_options(int argc, char *argv[]) {
     #undef SET_IF_NULL
 #endif
 
+#define CHECK_MODE(M) if (options.collect_mode == M) {                   \
+                    fprintf(stderr, "Mixing regular and collect mode!"); \
+            }
+
     int i;
     char **it;
-    options.collect_mode = 0;
+    options.collect_mode = -1;
 
     // parse_options options
     for (i=1, it=argv+1; i < argc; i++, it++) {
         if (*it[0] != '-') break;
 
         if (strcmp(*it,"-p") == 0) {
+            CHECK_MODE(1);
             i ++;
             it ++;
             options.listen_port_str = *it;
+            options.collect_mode = 0;
         } 
         else
         if (strcmp(*it,"-i") == 0) {
+            CHECK_MODE(1);
             i ++;
             it ++;
             options.id_str = *it;
+            options.collect_mode = 0;
         }
         else
         if (strcmp(*it,"-P") == 0) {
+            CHECK_MODE(0);
             i ++;
             it ++;
             options.collect_port_str = *it;
@@ -769,25 +781,51 @@ static void parse_options(int argc, char *argv[]) {
         }
         else
         if (strcmp(*it,"-R") == 0) {
+            CHECK_MODE(0);
             i ++;
             it ++;
             options.rest_url_str = *it;
             options.collect_mode = 1;
         }
         else
-        if (strcmp(*it,"-c") == 0) {
+        if (strcmp(*it,"-ch") == 0) {
+            CHECK_MODE(1);
             i ++;
             it ++;
             options.collector_host_str = *it;
-            char *s = split_host_port(options.collector_host_str);
-            if (s) options.collector_port_str = s;
+            options.collect_mode = 0;
+        }
+        else
+        if (strcmp(*it,"-cp") == 0) {
+            CHECK_MODE(1);
+            i ++;
+            it ++;
+            options.collector_port_str = *it;
+            options.collect_mode = 0;
+        }
+        else
+        if (strcmp(*it,"-sh") == 0) {
+            CHECK_MODE(1);
+            i ++;
+            it ++;
+            options.secondary_host_str = *it;
+            options.collect_mode = 0;
+        }
+        else
+        if (strcmp(*it,"-sp") == 0) {
+            CHECK_MODE(1);
+            i ++;
+            it ++;
+            options.secondary_port_str = *it;
+            options.collect_mode = 0;
         }
         else
         if (strcmp(*it,"-D") == 0) {
             options.debug = 1;
         }
         else
-        if (strcmp(*it,"-s") == 0) {
+        if (strcmp(*it,"-hs") == 0) {
+            CHECK_MODE(1);
             i ++;
             it ++;
             int hb = atoi(*it);
@@ -803,24 +841,28 @@ static void parse_options(int argc, char *argv[]) {
                 perror("INVALID HEARTBEAT SECONDS");
                 exit(EXIT_FAILURE);
             }
+            options.collect_mode = 0;
         }
     }
 
-    if (options.collect_port_str) {
-        return;
+    if (options.collect_mode==-1) {
+        options.collect_mode = 0;
     } 
 
+    if (options.collect_mode==1) {
+        if (i < argc) {
+            fprintf(stderr,"Warinig: Mode is undefined.\n");
+        }
+        return;
+    } 
+    
     if (i < argc) {
         options.remote_host_str = *it;
-        char *s = split_host_port(options.remote_host_str);
-        if (s) options.remote_port_str = s;
         i++; it++;
     }
 
     if (i < argc) {
-        options.secondary_host_str = *it;
-        char *s = split_host_port(options.secondary_host_str);
-        if (s) options.secondary_port_str = s;
+        options.remote_port_str = *it;
         i++; it++;
     }
 
@@ -947,8 +989,6 @@ static int send_via_rest(char *url) {
  */
 static int send_via_get(char *data) {
 	struct http_message msg;
-
-    fprintf(stderr,"sent\n");
 
     strcpy(url,options.rest_url_str);
     strcat(url,data);
@@ -1206,8 +1246,6 @@ static void collect_loop(char *port) {
 
             char *url, *s; 
             s = options.rest_url_str;
-
-            
             int len = 0;
             for (url = agent_buffer; *s; s++, url++ ) {
                 *url = *s;
@@ -1272,7 +1310,7 @@ int main(int argc, char *argv[]) {
     //
    
     // settings just for tests
-    options.listen_port_str = "2001";  options.remote_port_str = "2002";
+    // options.listen_port_str = "2001";  options.remote_port_str = "2002";
 
     parse_options(argc, argv);
 

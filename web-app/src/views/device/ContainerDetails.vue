@@ -4,7 +4,7 @@
         <b-col>            
             <h2>
                 <v-icon name="layers"></v-icon>
-                VMS Container Details
+                Device Container Details
             </h2>
         </b-col>
     </b-row>
@@ -12,7 +12,7 @@
     <b-row>
         <b-col>
             <json-viewer
-            :value="vms"
+            :value="device"
             :expand-depth=5
             copyable
             boxed
@@ -22,30 +22,31 @@
     <br/>
     <b-row>
         <b-col class="text-right">
-            <b-button to="/vms/allvms" variant="secondary">Back</b-button>        
+            <b-button to="/device/" variant="secondary">Back</b-button>        
         </b-col>
     </b-row>
   </div>
 </template>
 
 <script>
-import {apiVms} from './api'
+import {apiDevice} from './api'
 import JsonViewer from 'vue-json-viewer'
 
+
 export default {
-    name: 'vmsDetails',
+    name: 'deviceContainerDetails',
     components: {JsonViewer},
     data() {
         return {
-            vms: []
+            device: []
         }
     },
     methods: {  
         refresh() {
             this.isBusy = true
-            apiVms.getContainerDetails(this.$route.params.id)
+            apiDevice.getContainerDetails(this.$route.params.id)
                 .then((data) => {
-                    this.vms = data
+                    this.device = data
                 })
                 .catch(e => {
                     console.log(e)

@@ -116,7 +116,7 @@ const bootstrapController = {
             sdp: '',
             ports: '15000;15001'
         }).save();
-
+        
         const vmsTypeVms5 = await new vmsTypeModel({
             name: 'VMS = Video Face Counter',
             dockerImage: 'alfa/vms/face_counter',
@@ -127,6 +127,16 @@ const bootstrapController = {
             ports: '5000'
         }).save();
 
+        const vmsTypeVms6 = await new vmsTypeModel({
+            name: 'VMS = UDP Proxy',
+            dockerImage: 'alfa/vms/udp_proxy',
+            startupParameters: "IP PORT | Example 172.17.0.1 10001",
+            description: 'Use this VMS between two VMS to get network statistics about the stream',
+            src: 0,
+            sdp: '',
+            ports: '5000'
+        }).save();
+        
         // create the devices
         const device0 = await new deviceModel({
             name: 'Video Sample Ball #1',
