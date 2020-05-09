@@ -148,10 +148,6 @@ export default {
             isBusy: true,
             isLoading: false,
             sdp: '',
-            msg: {
-                text: false,
-                type: ''
-            },            
             fields: [{
                 key: 'dockerId',
                 label: '#'
