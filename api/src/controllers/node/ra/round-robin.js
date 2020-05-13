@@ -2,6 +2,7 @@ const docker = require("../../../util/dockerApi")
 
 const ra_rr = {
     run: async function(payload) {
+        console.log(payload)
         let node = payload.nodes[0]
         for(let i = 1; i < payload.nodes.length; i++){
             // select the edge node with the smallest number of running VMS

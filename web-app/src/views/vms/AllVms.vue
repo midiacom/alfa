@@ -65,8 +65,9 @@ gst-launch-1.0 \
         </template>
 
         <template v-slot:cell(startupParameters)="row">
-            {{row.item.startupParameters}} 
-            <b-button title="Edit" variant="outline-primary" size="sm" @click="monitor(row.item)" class="mr-2">
+            {{row.item.startupParameters}}
+
+            <b-button v-show=row.item.monitor.length title="Edit" variant="outline-primary" size="sm" @click="monitor(row.item)" class="mr-2">
                 <v-icon name="activity"></v-icon>
             </b-button>            
         </template>
@@ -85,7 +86,6 @@ gst-launch-1.0 \
                 <v-icon name="minimize-2"></v-icon>
                 Bind / Unbind
             </b-button>
-
 
             <b-button variant="secondary" size="sm" @click="restartVms(row.item)" class="mr-2">
                 <v-icon name="play-circle"></v-icon>
@@ -233,7 +233,7 @@ export default {
                             that.isLoading = false;
                         })
                         .catch(e => {
-                            that.msg.text = `Error when stopping the VMS ${e}`
+                            that.msg.text = `${e}`
                             that.msg.type = "danger"
                             that.msg.show = true
                             that.isLoading = false;

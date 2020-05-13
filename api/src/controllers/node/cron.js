@@ -32,6 +32,8 @@ const cron = {
                                 node.save()
                             })
                             .catch(err => {
+                                node.online = false
+                                node.save()
                                 console.log(err)
                             });
 

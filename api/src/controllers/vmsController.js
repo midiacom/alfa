@@ -288,9 +288,13 @@ const vmsController = {
               let container = api.getContainer(vms.dockerId)
               // console.log(container)
               container.inspect(function (err, data) {
-                // if the container is running then stop it
-                // console.log(err)
-                // console.log(data)
+                if (err) {
+                  return res.status(422).json({
+                    message: 'Container not running or created anymore.',
+                    error: err
+                  });
+                }
+
                 if (data) {
                   if (data.State.Running) {
                     container.stop(function (err, data) {
@@ -305,12 +309,15 @@ const vmsController = {
                     message: 'Container already stopped.',
                     error: err
                   });
-                }                
+                }
               })
             })
+            .catch(err => {
+              console.log('b');
+              return res.status(422).send(err.errors);
+            });        
       })
       .catch(err => {
-        /* istanbul ignore next */ 
         return res.status(422).send(err.errors);
       });
     },
