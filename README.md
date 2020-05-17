@@ -115,7 +115,7 @@ sudo ./install.sh
 
 * Install the nodejs packages in web-app and api folder
 ```
-cd web-client
+cd web-app
 sudo npm install
 npm run build
 ```
