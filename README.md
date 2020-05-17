@@ -92,15 +92,21 @@ https://docs.docker.com/compose/install/
 git clone git@github.com:midiacom/alfa.git .
 ```
 
-## Build de SRC and the VMS
+## Build Virtual Devices and the VMS
 
 Before using the system you need to build the Dockerfiles of all SRC and VMS. To do it follow the above steps.
 
-* Access the folder alfa
+* Access the folder virtual-nodes
 * Run the command 
 
 ```
-sudo ./compile_src_and_vms.sh
+sudo ./build_all.sh
+```
+
+Or if you want install only one VMS or VD you can run 
+
+```
+sudo ./install.sh
 ```
 
 **tip:** if you need to kill all the VMS and SRC you can run **./kill_all_running_src_and_plugins.sh** at this folder
