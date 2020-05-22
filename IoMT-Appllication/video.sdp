@@ -1,0 +1,5 @@
+v=0
+c=IN IP4 192.168.0.150
+m=video 10001 RTP/AVP 96
+a=rtpmap:96 H264/90000
+a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-sets=Z2QAFKzZQUH7AWoMAgtKAAADAAIAAAMAeR4oUyw\=\,aOvssiw\=

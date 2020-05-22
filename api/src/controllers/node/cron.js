@@ -10,6 +10,7 @@ const cron = {
             .then((slaveNodes) => {
                 if (!slaveNodes){
                     console.log('Error: nodes not found');
+                    return false;
                 }
                 slaveNodes.forEach(function(node){
                     docker.api(masterNode[0].ip)
@@ -32,9 +33,10 @@ const cron = {
                                 node.save()
                             })
                             .catch(err => {
+                                // if the node was not founded then mark it as offline
                                 node.online = false
                                 node.save()
-                                console.log(err)
+                                // console.log(err)
                             });
 
                         // update the container number
@@ -64,7 +66,7 @@ const cron = {
                     .catch(err => {
                         console.log(err)
                     });        
-                    })
+                })
             })
         })         
     },

@@ -37,11 +37,17 @@ gst-launch-1.0 \
     <b-row>
         <b-col>            
             <h2>
-                <v-icon style="width: 32px;" name="layers"></v-icon>
-                VMS
+            <v-icon style="width: 32px;" name="send"></v-icon>
+                Running VMS
             </h2>
         </b-col>
-    </b-row>
+        <b-col class="text-right">
+            <b-button to="/vmsType" variant="success" class="mr-2">
+                <v-icon name="plus"></v-icon>
+                Start a New VMS
+            </b-button>    
+        </b-col>
+    </b-row>    
      
     <b-alert :show=msg.show :variant=msg.type>
         {{ msg.text }}

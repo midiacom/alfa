@@ -27,7 +27,7 @@
             <li>
               <router-link to="/device">
                 <v-icon name="cast"></v-icon>
-                Devices
+                Virtual Devices
               </router-link>
             </li>
 
