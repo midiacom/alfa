@@ -23,9 +23,9 @@
                 <b-form-input id="description" v-model="form.description" type="text"/>
             </b-form-group>
 
-            <b-form-group id="input-group-6" label="Type of VMS:" label-for="src">
-                <b-form-radio v-model="form.src" name="src" value="0">Plugin</b-form-radio>
-                <b-form-radio v-model="form.src" name="src" value="1">SRC</b-form-radio>            
+            <b-form-group id="input-group-6" label="Virtual Entity:" label-for="src">
+                <b-form-radio v-model="form.src" name="src" value="0">VMS Type</b-form-radio>
+                <b-form-radio v-model="form.src" name="src" value="1">Virtual Device Type</b-form-radio>            
             </b-form-group>
 
             <b-form-group v-show="form.src == 0" id="input-group-6" label="Ports (if more than one use ';'):" label-for="ports">
