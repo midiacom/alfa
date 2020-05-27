@@ -18,6 +18,8 @@
 #include <sys/time.h>
 #include <time.h>
 
+#include <pthread.h>
+
 //****************************************************************************************
 //
 //                                     KEY CONSTANTS
@@ -35,6 +37,8 @@
 #define DEFAULT_COLLECTOR_ID     "UPX_001"
 #define DEFAULT_COLLECTOR_HOST   "localhost"
 #define DEFAULT_COLLECTOR_PORT   "6001"
+#define DEFAULT_MQTT_PORT        "3000"
+
 #define DEFAULT_HEARTBEAT         60
 #define DEFAULT_PORT             "5000"
 #define DEFAULT_LOG_PORT         "6001"
@@ -52,6 +56,7 @@ static struct {
     int   collect_mode;
     char *id_str;
     char *listen_port_str;
+    char *mqtt_host_str;     char *mqtt_port_str;
     char *remote_host_str;     char *remote_port_str;
     char *secondary_host_str;  char *secondary_port_str;
     char *collector_host_str;  char *collector_port_str;
@@ -65,6 +70,7 @@ static struct {
     0, 
     DEFAULT_COLLECTOR_ID,
     DEFAULT_PORT, 
+    NULL,  DEFAULT_MQTT_PORT,
     NULL,  DEFAULT_PORT,
     NULL,  DEFAULT_PORT,
     NULL,  DEFAULT_COLLECTOR_PORT,
@@ -87,10 +93,9 @@ static struct {
     struct timespec start;
     char  *last_src;
     char  *last_payload;
+    char  *dst_host_port;
     char  *dst_host_1;
     int    dst_port_1;
-    char  *dst_host_2;
-    int    dst_port_2;
     double new_rate;
     double prev_rate;
 } monitor;
@@ -118,6 +123,11 @@ static char *now_as_string(char *fmt) {
     return buf;
 }
 
+//****************************************************************************************
+//
+// SFLOW 
+//
+//****************************************************************************************
 
 //****************************************************************************************
 //
@@ -694,17 +704,19 @@ static void help(char *program) {
     fprintf(stderr,"------------------------------------\n");
     fprintf(stderr,"UDP FORWARD for V-PRISM    version 0.1\n");
     fprintf(stderr,"------------------------------------\n");
-    fprintf(stderr,"Usage: %s [ options ] remote_host [ remote_port ]  \n",program);
+    fprintf(stderr,"Usage: %s [ options ] [remote_host [ remote_port ]]  \n",program);
     fprintf(stderr,"remote_host                - destination host\n");
     fprintf(stderr,"remote_port                - destination udp port - Default = 5000\n");
     fprintf(stderr,"Options (forward mode):\n");
     fprintf(stderr,"  -p udp_port              - local udp port. Default = 5000\n");
-    fprintf(stderr,"  -i ID String             - used to identify this instance. Default = UPX_001\n");
-    fprintf(stderr,"  -hs heatbeat_seconds     - maximum idle seconds (heartbeat). Default = 60\n");
-    fprintf(stderr,"  -ch collector_host       - ip of remote collector. \n");
+    fprintf(stderr,"  -i ID_String             - used to identify this instance. Default = UPX_001\n");
+    fprintf(stderr,"  -ms maximum_silence      - maximum silence seconds (heartbeat). Default = 60\n");
+    fprintf(stderr,"  -c  collector_host       - ip of remote collector. \n");
     fprintf(stderr,"  -cp collector_port       - udp port of remote collector. Default = 6001 \n");
-    fprintf(stderr,"  -sh secondary_host       - ip of secondary remote host. \n");
+    fprintf(stderr,"  -s  secondary_host       - ip of secondary remote host. \n");
     fprintf(stderr,"  -sp secondary_port       - udp port of secondary remote host  - Default = 5000\n");
+    fprintf(stderr,"  -mh mqtt_host            - mqtt host\n");
+
     fprintf(stderr,"Options (collect mode):\n");
     fprintf(stderr,"  -R REST_URL             - url of REST database collector.\n");
     fprintf(stderr,"  -P collect_port         - listen port in collect mode. Default=6001\n");
@@ -730,13 +742,13 @@ static int parse_int_option(char *s, int *res, char *err) {
  * 
  *
  */
-static void parse_options(int argc, char *argv[]) {
+static void parse_command_line(int argc, char *argv[]) {
+#if 0
     if (argc < 2) {
         help(argv[0]);
         exit(EXIT_FAILURE);
     } 
 
-#if 0
     // defaults
     #define SET_IF_NULL(A,B) if (!(A)) A = (B);
     SET_IF_NULL(options.listen_port_str,"5000");
@@ -764,6 +776,11 @@ static void parse_options(int argc, char *argv[]) {
             options.collect_mode = 0;
         } 
         else
+        if (strcmp(*it,"-h") == 0) {
+            help(argv[0]);
+            exit(EXIT_FAILURE);
+        }
+        else
         if (strcmp(*it,"-i") == 0) {
             CHECK_MODE(1);
             i ++;
@@ -788,7 +805,15 @@ static void parse_options(int argc, char *argv[]) {
             options.collect_mode = 1;
         }
         else
-        if (strcmp(*it,"-ch") == 0) {
+        if (strcmp(*it,"-mh") == 0) {
+            CHECK_MODE(1);
+            i ++;
+            it ++;
+            options.mqtt_host_str = *it;
+            options.collect_mode = 0;
+        }
+        else
+        if (strcmp(*it,"-c") == 0 || strcmp(*it,"-ch") == 0) {
             CHECK_MODE(1);
             i ++;
             it ++;
@@ -804,7 +829,7 @@ static void parse_options(int argc, char *argv[]) {
             options.collect_mode = 0;
         }
         else
-        if (strcmp(*it,"-sh") == 0) {
+        if (strcmp(*it,"-s") == 0 || strcmp(*it,"-sh") == 0) {
             CHECK_MODE(1);
             i ++;
             it ++;
@@ -824,7 +849,7 @@ static void parse_options(int argc, char *argv[]) {
             options.debug = 1;
         }
         else
-        if (strcmp(*it,"-hs") == 0) {
+        if (strcmp(*it,"-hs") == 0 || strcmp(*it,"-ms") == 0) {
             CHECK_MODE(1);
             i ++;
             it ++;
@@ -851,7 +876,7 @@ static void parse_options(int argc, char *argv[]) {
 
     if (options.collect_mode==1) {
         if (i < argc) {
-            fprintf(stderr,"Warinig: Mode is undefined.\n");
+            fprintf(stderr,"Warninig: Mode is undefined.\n");
         }
         return;
     } 
@@ -868,8 +893,11 @@ static void parse_options(int argc, char *argv[]) {
 
     if (i == argc) {
         if (!options.remote_host_str) {
-            fprintf(stderr,"Missing destination_host\n");
-            exit(EXIT_FAILURE);
+            if (!options.mqtt_host_str) {
+                fprintf(stderr,"Missing destination_host and mqtt_host!\n\n");
+                fprintf(stderr,"For help on command line options, run again using option -h\n");
+                exit(EXIT_FAILURE);
+            }
         }
     }
 }
@@ -1065,19 +1093,22 @@ static void agent_send(
 
     char *now  = now_as_string("%Y%m%d_%H%M%S");
 
+    char *host1 = (monitor.dst_host_1)?monitor.dst_host_1:"_";
+
     // list 
     int len = sprintf(agent_buffer,":%s;%s;%s:%d;%d;%ld;%ld;%s;%ld;%ld", 
         options.id_str,  
-        (!*source?"_/_":source), monitor.dst_host_1, monitor.dst_port_1, 
+        (!*source?"_/_":source), host1, monitor.dst_port_1, 
         milliseconds, monitor.new_bytes, monitor.new_packets,
         now, monitor.total_bytes, monitor.total_packets);
 
 
     if (options.debug) {
-        fprintf(stderr,"id:%s; %s->%s:%d; bytes: %8ld; packets:%8ld", 
+        fprintf(stderr,"id:%s; %s->%s:%d; bytes: %8ld; packets:%8ld\n", 
             options.id_str, 
-            source, monitor.dst_host_1, monitor.dst_port_1, 
+            source, host1, monitor.dst_port_1, 
             monitor.total_bytes, monitor.total_packets);
+        fprintf(stderr,"Sent [x]: [%s]\n", agent_buffer);
     }
 
     send(socket, agent_buffer, len+1, 0);
@@ -1085,7 +1116,6 @@ static void agent_send(
 
     monitor.total_bytes += monitor.new_bytes;
     monitor.total_packets += monitor.new_packets;
-
 
     monitor.new_bytes = 0;
     monitor.new_packets = 0;
@@ -1268,9 +1298,116 @@ static void collect_loop(char *port) {
             *url = '\0';
 
             send_via_rest(agent_buffer);
+
+            if (options.debug) {
+                fprintf(stderr,"Received [x]: [%s]\n", payload);
+            }
         }      
     }
 }
+
+
+//****************************************************************************************
+//
+//                                     OUT_SOCKET LIST   
+//
+//****************************************************************************************
+
+typedef struct s_oitem {
+    int    socket;
+    char   name[1024];
+    struct s_oitem *next, *prev;
+} Oitem, *POitem;
+
+typedef struct s_olist {
+    int    n;
+    POitem first;
+    POitem last;
+} Olist, *POlist;
+
+/************************
+ * 
+ * 
+ *
+ */
+POlist olist_create(void) {
+    return calloc(1, sizeof(Olist));
+}
+
+/************************
+ * 
+ * 
+ *
+ */
+void olist_destroy(POlist pol) {
+    POitem poi, pnext;
+    for (poi = pol->first; poi; poi=pnext) {
+        pnext = poi->next;
+        free(poi);
+    }
+    free(pol);
+}
+
+/************************
+ * 
+ * 
+ *
+ */
+POitem olist_append(POlist pol, int socket, char *host, char *port) {
+    POitem poi = malloc(sizeof(Oitem));
+
+    poi->socket = socket;
+    poi->prev = pol->last;
+    strcpy(poi->name,host);
+    strcat(poi->name,port);
+
+    if (pol->last) {
+        pol->last->next = poi;
+    } else {
+        pol->first = poi;
+    }
+    poi->prev = pol->last;
+    pol->n ++;
+
+    return poi;
+}
+
+/************************
+ * 
+ * 
+ *
+ */
+POitem olist_locate_by_name(POlist pol, char *name) {
+    POitem poi;
+    for (poi = pol->first; poi; poi= poi->next) {
+        if (strcmp(name, poi->name)==0) return poi;
+    }
+    return NULL;
+}
+
+/************************
+ * 
+ * 
+ *
+ */
+POitem olist_delete(POlist pol, POitem poi) {
+    if (poi->prev) {
+        poi->prev->next = poi->next;
+    } else {
+        pol->first = poi->next;
+    }
+    if (poi->next) {
+        poi->next->prev = poi->prev;
+    } else {
+        pol->last = poi->prev;
+    }
+    pol->n --;
+    free(poi);
+    return NULL;
+}
+
+
+static POlist out_list = NULL;
 
 //****************************************************************************************
 //
@@ -1297,100 +1434,65 @@ static void set_socket_timeout(int socket, int seconds) {
 #define RCVBUF_SZ   (256*1024)
 static char rcvbuf[RCVBUF_SZ];
 
+#define MAX_SOCKETS 1024
+static int  n_out_sockets;
+static int  out_sockets[MAX_SOCKETS];
+static int out_changes = 0;
+
+static pthread_mutex_t lock; 
+
+
 /************************
  * 
  * 
  *
  */
-int main(int argc, char *argv[]) {
+int update_sockets(void) {
+    int updated = 0;
+    pthread_mutex_lock(&lock);
+    if (out_changes) {
+        POitem poi, pnext;
+        int *ps = out_sockets;
+        n_out_sockets = 0;
+        for (poi = out_list->first, ps = out_sockets; poi; poi = pnext, ps++) {
+            pnext = poi->next;
+            if (poi->socket < 0) {
+                close(-poi->socket);
+                olist_delete(out_list, poi);
+            } else {
+                *ps = poi->socket;
+                n_out_sockets ++;
+            }
+        }
+        out_changes  = 0;
+        updated = 1;
+    }
+    pthread_mutex_unlock(&lock);
+    return updated;
+}
+
+/************************
+ * 
+ * 
+ *
+ */
+int forward_loop(int socket_in, int collector_out) {
     struct sockaddr_in src_in;
 
-    //
-    // PARSE OPTIONS
-    //
-   
-    // settings just for tests
-    // options.listen_port_str = "2001";  options.remote_port_str = "2002";
-
-    parse_options(argc, argv);
-
-    //
-    // collector mode?
-    //
-    if (options.collect_mode) {
-        collect_loop(options.collect_port_str);
-        return 0;
-    } 
-
-    //
-    // Proxy Mode
-    //
-    char *dst_host = options.remote_host_str;
-    char *dst_port = options.remote_port_str;
-
-    char *sec_host = options.secondary_host_str;
-    char *sec_port = options.secondary_port_str;
-
-    char *c_host = options.collector_host_str;
-    char *c_port = options.collector_port_str;
-
-    //
-    // SOCKETS
-    //
-    int socket_in   = init_socket(LOCAL_SOCKET, NULL, options.listen_port_str);
-    int proxy_out   = init_socket(REMOTE_SOCKET, dst_host, dst_port);
-    int proxy_out_2 = init_socket(REMOTE_SOCKET, sec_host, sec_port);
-    int collector_out = init_socket(REMOTE_SOCKET, c_host, c_port);
-
-    set_socket_timeout(socket_in, 1);
-    setsockopt(socket_in, SOL_SOCKET, SO_RCVBUF, rcvbuf, sizeof(rcvbuf));
-    
-
-    //
-    // INFORM OPERATIONAL MODE
-    //
-    fprintf(stderr,"--------------------------------------------------------------------------\n");
-    fprintf(stderr,"Redirecting UDP. From: *:%s   To: %s:%s",
-        options.listen_port_str, 
-        options.remote_host_str, options.remote_port_str);
-
-    if (proxy_out_2) {
-        fprintf(stderr,",  %s:%s",
-            options.secondary_host_str, options.secondary_port_str);
-    }
-    fprintf(stderr,"\n");
-
-    if (collector_out) {
-        fprintf(stderr,"COLLECTOR: %s:%s   HEARTBEAT: %d\n",
-            c_host, c_port, options.heartbeat);
-    } else {
-        fprintf(stderr,"NO COLLECTOR\n");
-    }
-    fprintf(stderr,"--------------------------------------------------------------------------\n");
-
-    // ready to handle for non ipv4 addresses
-    char flex_src_addr[256];
-
-    agent_init(options.heartbeat);
-    monitor.dst_host_1 = options.remote_host_str;
-    monitor.dst_port_1 = atoi(options.remote_port_str);
-    if (options.secondary_host_str) {
-        monitor.dst_host_2 = options.secondary_host_str;
-        monitor.dst_port_2 = atoi(options.secondary_port_str);
-    }
-
-    
     // payload area begins after a header reservation
     // useful to "forge" a fake packet around the payload 
     // to send as "sample packet"
     char *payload = io_buffer + HEADER_RESERVATION;
+
+    // ready to handle for non ipv4 addresses
+    char flex_src_addr[256];
 
     int exit_mode = EXIT_SUCCESS;
 
     if (collector_out) {
         agent_send(collector_out, 0, monitor.last_src, NULL);
     }
-    
+
     // loop forever
     while (1) {
 
@@ -1407,6 +1509,9 @@ int main(int argc, char *argv[]) {
         //
         if (payload_len <= 0) {
             if (err == EAGAIN) {
+                // update sockets when idle
+                update_sockets();
+
                 if (collector_out) {
                     agent_heartbeat(collector_out); // send a heartbeat
                 }
@@ -1420,6 +1525,7 @@ int main(int argc, char *argv[]) {
             exit_mode = EXIT_FAILURE;
             break;
         }
+ 
 
         //
         // Send to collector, if exists
@@ -1431,15 +1537,167 @@ int main(int argc, char *argv[]) {
         //
         // Forward packet
         //
-        send(proxy_out, payload, payload_len, 0);
-        
-        //
-        // Secondary forward
-        //
-        if (proxy_out_2) {
-            send(proxy_out_2, payload, payload_len, 0);
+        int i;
+        for (i=0; i < n_out_sockets; i++) {
+            send(out_sockets[i], payload, payload_len, 0);
         }
+
+        // 
+        // Update sockets after burst
+        //
+        update_sockets();
     }
 
     return exit_mode;
+}
+
+
+/************************
+ * 
+ * 
+ *
+ */
+int append_host_port(POlist pol, char *dst_host, char *dst_port) { 
+    int socket = init_socket(REMOTE_SOCKET, dst_host, dst_port);
+    if (!socket) return 0;
+    
+    pthread_mutex_lock(&lock);
+    olist_append(pol, socket, dst_host, dst_port);
+    out_changes ++;
+    pthread_mutex_unlock(&lock);
+
+    return socket;
+}
+
+/************************
+ * 
+ * 
+ *
+ */
+POitem remove_host_port(POlist pol, char *name) { 
+    
+    pthread_mutex_lock(&lock);
+    POitem poi = olist_locate_by_name(pol, name);
+    if (poi) {
+        poi->socket *= -1;
+        out_changes ++;
+    }
+    pthread_mutex_unlock(&lock);
+
+    return poi;
+}
+
+
+/************************
+ * 
+ * 
+ *
+ */
+int main(int argc, char *argv[]) {
+    struct sockaddr_in src_in;
+
+    //
+    // PARSE OPTIONS
+    //
+   
+    // settings just for tests
+    // options.listen_port_str = "2001";  options.remote_port_str = "2002";
+
+    parse_command_line(argc, argv);
+
+    //
+    // collector mode?
+    //
+    if (options.collect_mode) {
+        collect_loop(options.collect_port_str);
+        return 0;
+    } 
+
+    //
+    // Forward Mode
+    //
+
+    //
+    // Initialization of Core System Variables
+    //
+    pthread_mutex_init(&lock, NULL);
+    out_list = olist_create();
+
+    //
+    // hosts and ports
+    //
+    char *c_host = options.collector_host_str;
+    char *c_port = options.collector_port_str;
+
+    char *dst_host = options.remote_host_str;
+    char *dst_port = options.remote_port_str;
+
+    char *sec_host = options.secondary_host_str;
+    char *sec_port = options.secondary_port_str;
+
+    //
+    // SOCKETS IN & COLLECTOR
+    //
+    int socket_in   = init_socket(LOCAL_SOCKET, NULL, options.listen_port_str);
+    int collector_out = init_socket(REMOTE_SOCKET, c_host, c_port);
+    set_socket_timeout(socket_in, 1);
+    setsockopt(socket_in, SOL_SOCKET, SO_RCVBUF, rcvbuf, sizeof(rcvbuf));
+
+    //
+    // INITIAL OUT SOCKETs
+    //
+    int proxy_out   = append_host_port(out_list, dst_host, dst_port);
+    int proxy_out_2 = append_host_port(out_list, sec_host, sec_port);
+
+#if 0
+    int proxy_out   = init_socket(REMOTE_SOCKET, dst_host, dst_port);
+    int proxy_out_2 = init_socket(REMOTE_SOCKET, sec_host, sec_port);
+
+    //
+    // insert OUT SOCKETS in OUT_LIST
+    //
+    if (proxy_out) {
+        olist_append(out_list, proxy_out, "udp0");
+        out_changes ++;
+    }
+    if (proxy_out_2) {
+        olist_append(out_list, proxy_out, "udp1");
+        out_changes ++;
+    }
+#endif    
+
+    //
+    // INFORM OPERATIONAL MODE
+    //
+    fprintf(stderr,"--------------------------------------------------------------------------\n");
+    fprintf(stderr,"Redirecting UDP. From: *:%s     To: ",options.listen_port_str);
+
+    if (proxy_out) {
+        fprintf(stderr,"%s:%s",
+            options.remote_host_str, options.remote_port_str);
+    }
+    if (proxy_out_2) {
+        fprintf(stderr,",  %s:%s",
+            options.secondary_host_str, options.secondary_port_str);
+    }
+    fprintf(stderr,"\n");
+
+    if (collector_out) {
+        fprintf(stderr,"COLLECTOR: %s:%s   MAXIMUM SILENCE (s): %d\n",
+            c_host, c_port, options.heartbeat);
+    } else {
+        fprintf(stderr,"NO COLLECTOR\n");
+    }
+    fprintf(stderr,"--------------------------------------------------------------------------\n");
+
+    //
+    // Prepare Agent
+    //
+
+    agent_init(options.heartbeat);
+
+    monitor.dst_host_1 = options.remote_host_str;
+    monitor.dst_port_1 = atoi(options.remote_port_str);
+
+    return forward_loop(socket_in, collector_out);
 }

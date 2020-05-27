@@ -23,4 +23,4 @@ IFS=$OIFS
 # ./udp_proxy -i A1 -ch 127.0.0.1 -cp 6001 192.168.0.1 5008
 # example ./udp_proxy -i A1 -ch 127.0.0.1 192.168.0.1 5008
 # echo "./udp_proxy -ch 127.0.0.1 -cp 6001 -i ${spo_array[2]} ${spo_array[0]} ${spo_array[1]}"
-./udp_proxy -ch 127.0.0.1 -cp 6001 -hs ${spo_array[2]} -i ${spo_array[3]} ${spo_array[0]} ${spo_array[1]}
+./udp_proxy -ch 127.0.0.1 -cp 6001 -mq localhost -hs ${spo_array[2]} -i ${spo_array[3]} ${spo_array[0]} ${spo_array[1]}
