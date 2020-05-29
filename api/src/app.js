@@ -12,7 +12,8 @@ const locationRoutes = require('./routes/locationRoutes');
 const deviceRoutes   = require('./routes/deviceRoutes');
 const vmsTypeRoutes  = require('./routes/vmsTypeRoutes');
 const vmsRoutes      = require('./routes/vmsRoutes');
-const nodesRoutes      = require('./routes/nodeRoutes');
+const nodesRoutes    = require('./routes/nodeRoutes');
+const maestroRoutes    = require('./routes/maestroRoutes');
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
@@ -37,6 +38,8 @@ app.use('/vmsType', vmsTypeRoutes);
 app.use('/vms', vmsRoutes);
 
 app.use('/node', nodesRoutes);
+
+app.use('/maestro', maestroRoutes);
 
 app.use('/', index);
 

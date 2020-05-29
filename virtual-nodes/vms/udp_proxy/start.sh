@@ -17,7 +17,7 @@ IFS=$OIFS
 
 # data collector
 # example: ./udp_proxy -P 6001 -R 192.168.0.1:3000/vms/monitor
-./udp_proxy -P 6001 -R http://rest-api:3000/vms/monitor &
+./udp_proxy -P 6001 -mq localhost -R http://rest-api:3000/vms/monitor &
 
 # data forwarder
 # ./udp_proxy -i A1 -ch 127.0.0.1 -cp 6001 192.168.0.1 5008
