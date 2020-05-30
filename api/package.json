@@ -16,6 +16,7 @@
   "author": "Anselmo Battisti",
   "license": "ISC",
   "dependencies": {
+    "async-mqtt": "^2.6.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "cron": "^1.8.2",

@@ -7,9 +7,9 @@ const docker = require("../util/dockerApi")
 const nodeController = require("./nodeController")
 const vmsController = require("./vmsController")
 const ra = require('./node/ra');
-const mqtt = require('mqtt')
+// const mqtt = require('mqtt')
 const crypto = require('crypto')
-const { AsyncClient } = require("async-mqtt");
+const MQTT = require("async-mqtt");
 
 const maestroController = {
 
@@ -21,19 +21,11 @@ const maestroController = {
      */
     vmsRequestCreation: async (req, res, next) => {
         
-        let vmsId    = '5ed252d8f75ac51e4b6e2b71'
-        let deviceId = '5ebaba4dd30be70037251cfb'
-        let port     = 5000
-
-        let ret = await maestroController.bindVMStoSRC(vmsId, deviceId, port)
-        return res.status(201).json(ret);
-
-        // -----------
         let locationId = req.body.locationId;
         let outputType = req.body.outputType;        
         let virtualDeviceParameters = req.body.virtualDeviceParameters;
 
-        deviceModel.find()
+        deviceModel.findOne()
         .and({
             'location': locationId,
             'outputType': outputType,
@@ -68,9 +60,7 @@ const maestroController = {
                 // criar o VMS usando o VMS Type
                 vmsController.post(req, res, next)
                     .then(async (result) => {
-
                         vms = null
-
                         // faz um pooling, HORRIVEL ISSO SOCORRO
                         while (vms == null) {
                             vms = await vmsModel.findOne({'name': req.body.name})
@@ -78,33 +68,25 @@ const maestroController = {
                                     return result
                                 })
                         }
-
-                        vmsModel.findById(vms._id)
-                            .populate("vmsType")
-                            .then((newVms) => {
-                                // return res.status(201).json(resultVirtualDevice);
-                                req.params.vmsId = newVms._id
-                                req.params.deviceId = resultVirtualDevice._id
-                                req.params.port = req.body.bindPort;
-
-                                // dar o bind em um dos devices
-                                vmsController.bindSrc(req, res, next)
-                                    .then(async (bind) => {
-                                        return res.status(201).json(bind);
-                                    })
-                            });
+                        
+                        let ret = await maestroController.bindVMStoSRC(vms._id, resultVirtualDevice._id, req.body.bindPort)
+                        return res.status(201).json(vms);
                     })
-
             })
         })
         .catch(err => {
             /* istanbul ignore next */ 
             return res.status(422).send(err.errors);
-        });        
+        });
     },
 
+    /**
+     * bindVMStoSRC
+     * 
+     * This function bind the VMS and a SRC
+    */
     bindVMStoSRC: async (vmsId, deviceId, port) => {
-
+        // get VMS data
         let vms = await vmsModel.findById(vmsId)
           .populate("node")
           .then((vms) => {
@@ -115,7 +97,7 @@ const maestroController = {
             return {error: 'VMS not found'}
         }
 
-        // 1 - Get the ip of the container's VMS
+        // get the Docker API
         let dockerApi = await docker.api(vms.node.ip)
             .then((api) => {
                 return api
@@ -125,66 +107,41 @@ const maestroController = {
             return {error: 'VMS not found'}
         }
         
+        // get informations about the container that runs the VMS
         let container = await dockerApi.getContainer(vms.dockerId);
-
         let containerInpection = await container.inspect()
             .then((data) => {
                 if (data == null) {return {error: 'VMS not found'}}
                 return data
             })
 
+        // Get the IP of the VMS container
         let ipDockerContainer = containerInpection.NetworkSettings.Networks[process.env.DOCKER_OVERLAY_NETWORK].IPAddress;
 
-        let aux_name = port.concat(vms.dockerId.substring(0,11).replace(/[a-z]/g, '')).substring(0,11)
+        // MQTT client connect        
+        const mqtt_client = await MQTT.connectAsync(process.env.MQTT_SERVER)
 
+        // string that the Virtual Device is waiting to to the bind
+        let aux_name = `${port}${vms.dockerId.substring(0,11).replace(/[a-z]/g,'').substring(0,11)}`
         let pub_string = `${ipDockerContainer};${port};${aux_name};A`
-
-        const asyncClient = new AsyncClient(mqtt.connect(process.env.MQTT_SERVER));
         
-        let pub = await asyncClient.publish(deviceId,pub_string)
-            .then((data) => {
-                if (data == null) {return {error: 'VMS not found'}}
-                return data
-            })
+        try {
+            await mqtt_client.publish(deviceId.toString(),pub_string)
+            await mqtt_client.end();
+        } catch (e){
+            console.log(e.stack);
+        }
 
-        return pub
-        /*
+        // save in the VMS database the port that was binded
         vms.bindedTo.push({
-          device: deviceId,
-          port: port
+            device: deviceId,
+            port: port
         });
 
-
-        client.on('connect', function () {
-            client.subscribe(deviceId, function (err) {
-                if (!err) {
-                  let aux_name = port.concat(vms.dockerId.substring(0,11).replace(/[a-z]/g, '')).substring(0,11)
-                  client.publish(deviceId, `${ipDockerContainer};${port};${aux_name};A`)
-                  
-                  vms.bindedTo.push({
-                    device: deviceId,
-                    port: port
-                  });
-        
-                  vms.save((err,vms) => {                
-                    if (err) {
-                        return res.status(500).json({
-                            message: 'Error when creating vmsType',
-                            error: err
-                        });
-                    }
-                  })
-                  if (req.body.remoteRequest){                        
-                    return vms
-                  } else {
-                    return res.status(201).json({"ok":"ok"});
-                  }
-                } else {
-                  console.log(err)
-                }
-              })
-          });
-        return containerInpection;*/
+        return vms.save()
+            .then((ret) => {             
+                return ret
+            })
     }
 }
 
