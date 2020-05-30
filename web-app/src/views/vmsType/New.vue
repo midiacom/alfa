@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>New VMS Type</h2>
+        <h2>New Virtual Type</h2>
 
         <b-alert :show="msg.show" :variant=msg.type>
             {{ msg.text }}
@@ -23,9 +23,9 @@
                 <b-form-input id="description" v-model="form.description" type="text"/>
             </b-form-group>
 
-            <b-form-group id="input-group-6" label="Virtual Entity:" label-for="src">
-                <b-form-radio v-model="form.src" name="src" value="0">VMS Type</b-form-radio>
-                <b-form-radio v-model="form.src" name="src" value="1">Virtual Device Type</b-form-radio>            
+            <b-form-group id="input-group-6" label="Type:" label-for="src">
+                <b-form-radio v-model="form.src" name="src" value="0">VMS</b-form-radio>
+                <b-form-radio v-model="form.src" name="src" value="1">Device</b-form-radio>
             </b-form-group>
 
             <b-form-group v-show="form.src == 0" id="input-group-6" label="Ports (if more than one use ';'):" label-for="ports">
@@ -33,17 +33,15 @@
             </b-form-group>
 
             <b-form-group v-show="form.src == 0" id="input-group-6" label="SDP File:" label-for="sdp">
-                <textarea v-model="form.sdp" name="" id="" cols="90" rows="10">
+                <textarea v-model="form.sdp" name="" id="" cols="90" rows="5">
                 </textarea>
-
-                <h4>An SDP example file can be.</h4>
-                <pre>
-                v=0 \n \
-                c=IN IP4 127.0.0.1 \n \
-                m=video ${port} RTP/AVP 96 \n \
-                a=rtpmap:96 H264/90000 \n \
-                a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-sets=Z2QAFKzZQUH7AWoMAgtKAAADAAIAAAMAeR4oUyw\=\,aOvssiw\=
-                </pre>
+<pre>
+v=0 \n \
+c=IN IP4 127.0.0.1 \n \
+m=video ${port} RTP/AVP 96 \n \
+a=rtpmap:96 H264/90000 \n \
+a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-sets=Z2QAFKzZQUH7AWoMAgtKAAADAAIAAAMAeR4oUyw\=\,aOvssiw\=
+</pre>
 
             </b-form-group>
 

@@ -5,7 +5,7 @@
         <b-col>            
             <h2>
                 <v-icon style="width: 32px;" name="cast"></v-icon>
-                Devices
+                Virtual Devices
             </h2>
         </b-col>
         <b-col class="text-right">

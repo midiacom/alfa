@@ -100,8 +100,12 @@ const vmsController = {
                         });
                       }
                       // update the number of vms running in the edge node
-                      cron.update()
-                      return res.status(201).json(vms)
+                      cron.update()                   
+                      if (req.body.remoteRequest){                        
+                        return vms
+                      } else {
+                        return res.status(201).json(vms)
+                      }
                     })
                   } else {
                     // restart and update the dockerId
@@ -462,14 +466,17 @@ const vmsController = {
                 vms.save((err,vms) => {
                   /* istanbul ignore next */                   
                   if (err) {
-                    console.log(err)
                       return res.status(500).json({
                           message: 'Error when creating vmsType',
                           error: err
                       });
                   }
                 })
-                return res.status(201).json({"ok":"ok"});
+                if (req.body.remoteRequest){                        
+                  return vms
+                } else {
+                  return res.status(201).json({"ok":"ok"});
+                }
               } else {
                 console.log(err)
               }

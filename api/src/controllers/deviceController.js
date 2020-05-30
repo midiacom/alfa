@@ -151,7 +151,8 @@ const deviceController = {
             connectionParameters: req.body.connectionParameters,
             description: req.body.description,
             location: req.body.location,
-            node: req.body.node
+            node: req.body.node,
+            outputType: req.body.outputType
         })
         
         device.save((err,device) => {
@@ -183,7 +184,8 @@ const deviceController = {
             device.description = req.body.description
             device.location = req.body.location
             device.node = req.body.node
-
+            device.outputType = req.body.outputType
+            
             device.save(function (err, device) {
                 /* istanbul ignore next */ 
                 if (err) {

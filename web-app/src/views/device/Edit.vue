@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>Edit Device</h2>
+        <h2>Edit Virtual Device</h2>
 
         <b-alert :show="msg.show" :variant=msg.type>
             {{ msg.text }}
@@ -33,6 +33,12 @@
 
         <b-form-group id="input-group-2" label="Description:" label-for="description">
             <b-form-input id="description" v-model="form.description" type="text"/>
+        </b-form-group>
+
+        <b-form-group id="input-group-6" label="Output Type:" label-for="outputType">
+            <b-form-radio v-model="form.outputType" name="outputType" value="video">Video</b-form-radio>
+            <b-form-radio v-model="form.outputType" name="outputType" value="audio">Audio</b-form-radio>
+            <b-form-radio v-model="form.outputType" name="outputType" value="audioevideo">Audio & Video</b-form-radio>
         </b-form-group>
 
         <b-row>
@@ -71,7 +77,8 @@ export default {
                 location: '',
                 description: '',
                 nodeIp: '',
-                node: ''
+                node: '',
+                outputType: 'video'
             },
             msg: {
                 text: false,
@@ -134,6 +141,7 @@ export default {
                     this.form.location = device.location
                     this.form.node = device.node._id
                     this.form.nodeIp = device.node.ip
+                    this.form.outputType = device.outputType
 
                     for(let i = 0; i < this.nodes.length; i++) {
                         if (this.nodes[i].value == this.form.nodeIp) {

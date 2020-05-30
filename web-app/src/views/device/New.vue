@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>New Device</h2>
+        <h2>New Virtual Device</h2>
 
         <b-alert :show="msg.show" :variant=msg.type>
             {{ msg.text }}
@@ -35,6 +35,12 @@
                 <b-form-textarea id="description" v-model="form.description" type="text"/>
             </b-form-group>
 
+            <b-form-group id="input-group-6" label="Output Type:" label-for="outputType">
+                <b-form-radio v-model="form.outputType" name="outputType" value="video">Video</b-form-radio>
+                <b-form-radio v-model="form.outputType" name="outputType" value="audio">Audio</b-form-radio>
+                <b-form-radio v-model="form.outputType" name="outputType" value="audioevideo">Audio & Video</b-form-radio>                
+            </b-form-group>
+            
             <b-row>
                 <b-col>
                     <b-button type="submit" variant="primary">Save</b-button>
@@ -66,7 +72,8 @@ export default {
                 connectionParameters: "",                
                 description: '',
                 nodeIp: '',
-                node: ''
+                node: '',
+                outputType: 'video'
             },
             msg: {
                 text: false,

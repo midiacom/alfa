@@ -90,6 +90,7 @@ html,body {
 
 #content {
   padding-top: 15px;
+  overflow: hidden;
 }
 
 .subMenu {
