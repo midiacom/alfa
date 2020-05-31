@@ -64,12 +64,6 @@ gst-launch-1.0 \
             {{row.item.vmsType.name}}
         </template>
 
-        <template v-slot:cell(dockerId)="row">
-            <a href="#" @click="isRunning(row.item)">
-                Status
-            </a>
-        </template>
-
         <template v-slot:cell(startupParameters)="row">
             {{row.item.startupParameters}}
 
@@ -102,6 +96,7 @@ gst-launch-1.0 \
                 <v-icon name="eye"></v-icon>
             </b-button>
 
+
             <b-button title="Edit" variant="outline-primary" size="sm" @click="editVms(row.item)" class="mr-2">
                 <v-icon name="edit-2"></v-icon>
             </b-button>
@@ -110,12 +105,16 @@ gst-launch-1.0 \
                 <v-icon name="info"></v-icon>
             </b-button>
 
-            <b-button title="Stop" variant="outline-danger" size="sm" @click="stopVms(row.item)" class="mr-2">
-                <v-icon name="stop-circle"></v-icon>
+            <b-button @click="isRunning(row.item)" title="Status" variant="outline-warning" size="sm" class="mr-2">
+                <v-icon name="activity"></v-icon>
             </b-button>
 
             <b-button title="Remove" variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
                 <v-icon name="trash"></v-icon>
+            </b-button>
+
+            <b-button title="Stop" variant="outline-danger" size="sm" @click="stopVms(row.item)" class="mr-2">
+                <v-icon name="stop-circle"></v-icon>
             </b-button>
 
       </template>        
@@ -155,9 +154,6 @@ export default {
             isLoading: false,
             sdp: '',
             fields: [{
-                key: 'dockerId',
-                label: '#'
-            },{
                 key: 'name',
             },{
                 key: 'node',
@@ -327,7 +323,7 @@ export default {
 
 <style>
     .vmsIndexActionsStopped {
-        width: 600px;
+        width: 650px;
         text-align: center;
     }
 </style>

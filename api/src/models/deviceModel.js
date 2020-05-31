@@ -11,7 +11,7 @@ var devicesSchema = new Schema({
   'outputType': {
     type: String,
     required: true
-  },  
+  },
   'node': {
     type: Schema.Types.ObjectId,
     ref: 'node',

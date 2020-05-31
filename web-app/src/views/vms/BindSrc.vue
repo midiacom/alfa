@@ -3,7 +3,7 @@
         <loading :active.sync="isLoading" :is-full-page="true"></loading>      
         <h2>
             <v-icon style="width: 32px;" name="minimize-2"></v-icon>
-            Bind VMS With a Device
+            Bind VMS With a Virtual Device
         </h2>
 
         <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
@@ -17,11 +17,11 @@
 
         <b-form @submit="onSubmit">
 
-        <b-form-group id="input-group-2" label="Chose the device that will send the data:" label-for="deviceId">
+        <b-form-group id="input-group-2" label="Choose the device that will send the data:" label-for="deviceId">
             <b-form-select style="margin-top:0px!important" id="deviceId" v-model="form.deviceId" :options="devices" size="sm" class="mt-3"></b-form-select>
         </b-form-group>
 
-        <b-form-group id="input-group-3" label="In which port the VMS is listening for this data stream?" label-for="port">
+        <b-form-group id="input-group-3" label="In which port the VMS is listening for this multimedia stream?" label-for="port">
             <ul style="font-size: 18px; list-style: none">
                 <li v-for="port in ports" :key="port" >
                     <label><input type="radio" v-model="form.port" name="port" :value=port :disabled=isBinded(port)>

@@ -3,6 +3,7 @@ const nodeModel = require("../models/nodeModel")
 const vmsTypeModel = require("../models/vmsTypeModel")
 const docker = require("../util/dockerApi")
 const nodeController = require("./nodeController")
+const maestroControllerAux = require("./maestro/aux")
 const ra = require('./node/ra');
 const cron = require('./node/cron');
 const mqtt = require('mqtt')
@@ -28,6 +29,7 @@ const vmsController = {
     post: async (req, res, next) => {
 
       let nodeIp = req.body.nodeIp; // Retrieve the actual ip
+      let outputType = req.body.outputType; // Define the multimedia stream type that the VMS will output
 
       // Verify if the Edge Node selection will be done by a Resource Allocation Function or manually
       // it there is in the folder node/ra a file with the nodeIp it means that the selection will 
@@ -86,6 +88,7 @@ const vmsController = {
                       vmsType: vmsType,
                       node: nodeResult._id,
                       nameMonitor: nameMonitor,
+                      outputType: outputType,
                       bindedTo: []
                     })      
 
@@ -419,12 +422,17 @@ const vmsController = {
     // console.log(port)
   },
 
-  bindSrc: (req, res, next) => {
+  bindSrc: async (req, res, next) => {
 
     let vmsId = req.params.vmsId;
     let deviceId = req.params.deviceId;
     let port = req.params.port;
 
+    let ret = await maestroControllerAux.bindVMStoSRC(vmsId, deviceId, port)
+
+    return res.status(201).json({"ok":"ok"});
+
+    /*
     vmsModel.findById(vmsId)
       .populate("node")
       .then((vms) => {
@@ -463,8 +471,7 @@ const vmsController = {
                   port: port
                 });
 
-                vms.save((err,vms) => {
-                  /* istanbul ignore next */                   
+                vms.save((err,vms) => {             
                   if (err) {
                       return res.status(500).json({
                           message: 'Error when creating vmsType',
@@ -485,6 +492,7 @@ const vmsController = {
         });
       })
     })
+    */
   },
   
   getMonitors: (req, res, next) => {

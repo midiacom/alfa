@@ -10,6 +10,10 @@ var vmsSchema = new Schema({
     'name' : String,
     'nameMonitor' : String,
     'dockerId' : String,
+    'outputType': {
+        type: String,
+        required: true
+    },    
     'node': {
         type: Schema.Types.ObjectId,
         ref: 'node',

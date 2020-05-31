@@ -1,0 +1,327 @@
+{
+	"info": {
+		"_postman_id": "5c40c934-4096-4ff4-9af7-b87aa0c412eb",
+		"name": "ALFA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "version",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{orion}}/version",
+					"host": [
+						"{{orion}}"
+					],
+					"path": [
+						"version"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Creating an Application",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"urn:ngsi-ld:Application:001\",\n    \"type\": \"Application\",\n    \"address\": {\n        \"type\": \"PostalAddress\",\n        \"value\": {\n            \"streetAddress\": \"Bornholmer Straße 65\",\n            \"addressRegion\": \"Berlin\",\n            \"addressLocality\": \"Prenzlauer Berg\",\n            \"postalCode\": \"10439\"\n        },\n        \"metadata\": {\n    \t\t\"verified\": {\n        \t\t\"value\": true,\n        \t\t\"type\": \"Boolean\"\n    \t\t}\n    \t}\n    },\n    \"location\": {\n        \"type\": \"geo:json\",\n        \"value\": {\n             \"type\": \"Point\",\n             \"coordinates\": [13.3986, 52.5547]\n        }\n    },\n    \"name\": {\n        \"type\": \"Text\",\n        \"value\": \"Bösebrücke Einkauf\"\n    }\n}"
+				},
+				"url": {
+					"raw": "http://{{orion}}/v2/entities/",
+					"protocol": "http",
+					"host": [
+						"{{orion}}"
+					],
+					"path": [
+						"v2",
+						"entities",
+						""
+					]
+				},
+				"description": "## Creating Context Data\n\nAt its heart, FIWARE is a system for managing context information, so lets add some context data into the system by creating a  new entity (a store in **Berlin**). Any entity must have a `id` and `type` attributes, additional attributes are optional and will depend on the system being described. Each additional attribute should also have a defined `type` and a `value` attribute."
+			},
+			"response": []
+		},
+		{
+			"name": "Edge Node Manual Selection",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ip\": \"192.168.0.110\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}node/nodeSelection/mic/manual",
+					"host": [
+						"{{url}}node"
+					],
+					"path": [
+						"nodeSelection",
+						"mic",
+						"manual"
+					]
+				},
+				"description": "Call the Resource Allocation function that will select the Edge Node to run the Virtual Node"
+			},
+			"response": []
+		},
+		{
+			"name": "Edge Node Random Selection",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}node/nodeSelection/udp_to_udp/random",
+					"host": [
+						"{{url}}node"
+					],
+					"path": [
+						"nodeSelection",
+						"udp_to_udp",
+						"random"
+					]
+				},
+				"description": "Call the Resource Allocation function that will select the Edge Node to run the Virtual Node"
+			},
+			"response": []
+		},
+		{
+			"name": "Edge Node Round Robin Selection",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}node/nodeSelection/udp_to_udp/round-robin",
+					"host": [
+						"{{url}}node"
+					],
+					"path": [
+						"nodeSelection",
+						"udp_to_udp",
+						"round-robin"
+					]
+				},
+				"description": "Call the Resource Allocation function that will select the Edge Node to run the Virtual Node"
+			},
+			"response": []
+		},
+		{
+			"name": "Edge Node Options",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}node/nodeOptions",
+					"host": [
+						"{{url}}node"
+					],
+					"path": [
+						"nodeOptions"
+					]
+				},
+				"description": "This returns the list of all edge nodes available and the automatic resource allocation methods "
+			},
+			"response": []
+		},
+		{
+			"name": "Update Edge Node Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}node/updateNodeNodeStatusApi",
+					"host": [
+						"{{url}}node"
+					],
+					"path": [
+						"updateNodeNodeStatusApi"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "VMS Monitor",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "172.17.0.1:3000/vms/monitor/abs/192.168.0.1/192.168.0.150/55001/10/11/12/13/14/15",
+					"host": [
+						"172",
+						"17",
+						"0",
+						"1"
+					],
+					"port": "3000",
+					"path": [
+						"vms",
+						"monitor",
+						"abs",
+						"192.168.0.1",
+						"192.168.0.150",
+						"55001",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Virtual Device Container",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}device/getContainerDetails/5eb1ad074873df0025476ffc",
+					"host": [
+						"{{url}}device"
+					],
+					"path": [
+						"getContainerDetails",
+						"5eb1ad074873df0025476ffc"
+					]
+				},
+				"description": "Get Virtual Device Container"
+			},
+			"response": []
+		},
+		{
+			"name": "getMonitor",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cadivisor",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8084/api/v1.2//docker/b6e407f14c5a3a89fc0e6b3215d223eaf14b42fe091fe4e912674aacc0fe55f6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8084",
+					"path": [
+						"api",
+						"v1.2",
+						"",
+						"docker",
+						"b6e407f14c5a3a89fc0e6b3215d223eaf14b42fe091fe4e912674aacc0fe55f6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "App creating new VMS",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "locationId",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "vmsTypeId",
+						"value": "5ebaba4dd30be70037251cf6",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "virtualDeviceParameters",
+						"value": "{streamType:'video'}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "locationId",
+							"value": "5ebaba4dd30be70037251ced",
+							"type": "text"
+						},
+						{
+							"key": "outputType",
+							"value": "video",
+							"type": "text"
+						},
+						{
+							"key": "vmsType",
+							"value": "alfa/vms/udp_to_udp",
+							"type": "text"
+						},
+						{
+							"key": "toIp",
+							"value": "172.17.0.1",
+							"type": "text"
+						},
+						{
+							"key": "toPort",
+							"value": "10005",
+							"type": "text"
+						},
+						{
+							"key": "startupParameters",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "bindPort",
+							"value": "5000",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}maestro/vmsCreation",
+					"host": [
+						"{{url}}maestro"
+					],
+					"path": [
+						"vmsCreation"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
