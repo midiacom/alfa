@@ -45,7 +45,8 @@
             <b-form-group id="input-group-6" label="Output Type:" label-for="outputType">
                 <b-form-radio v-model="form.outputType" name="outputType" value="video">Video</b-form-radio>
                 <b-form-radio v-model="form.outputType" name="outputType" value="audio">Audio</b-form-radio>
-                <b-form-radio v-model="form.outputType" name="outputType" value="audioevideo">Audio & Video</b-form-radio>                
+                <b-form-radio v-model="form.outputType" name="outputType" value="audioevideo">Audio & Video</b-form-radio>
+                <b-form-radio v-model="form.outputType" name="outputType" value="audioevideo">Text</b-form-radio>
             </b-form-group>            
 
             <b-row>

@@ -139,7 +139,7 @@ function installFaceCounter {
 while [ 1 ]
 do
 CHOICE=$(
-whiptail --title "Install VMS and Virtual Devices" --menu "What do you whant to install?" 16 100 9 \
+whiptail --title "Install VMS and Virtual Devices" --menu "What do you whant to install?" 16 50 8 \
     "0)" "All Virtual Device  & VMS."   \
 	"1)" "Audio Sample [Virtual Device]."   \
     "2)" "USB Camera [Virtual Device]."   \
