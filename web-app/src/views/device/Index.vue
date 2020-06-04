@@ -15,13 +15,11 @@
             </b-button>    
         </b-col>
     </b-row>
-    <b-row>
-        <b-col>            
-            <b-alert :show="msg.text" :v-show="msg.text" :variant=msg.type>
-                {{ msg.text }}
-            </b-alert>
-        </b-col>            
-    </b-row>
+
+        <b-alert :show="msg.show" :variant=msg.type>
+            {{ msg.text }}
+        </b-alert>
+
     <b-table
         :busy="isBusy"
         :items="items" 
@@ -113,7 +111,8 @@ export default {
             items: [],
             msg: {
                 text: false,
-                type: ''
+                type: '',
+                show: false
             }
         }
     },
@@ -129,11 +128,14 @@ export default {
                     this.refresh()
                     this.msg.text = "Device SRC stopped"
                     this.msg.type = "success"
+                    this.msg.show = true
+
                 })
                 .catch((e) => {
                     this.refresh()
                     this.msg.text = `Error when stopping the SRC device ${e}`
                     this.msg.type = "danger"
+                    this.msg.show = true
                 })
         },
         starSrcDevice (device) {
@@ -143,11 +145,13 @@ export default {
                     this.refresh()
                     this.msg.text = "Device SRC started"
                     this.msg.type = "success"
+                    this.msg.show = true
                 })
                 .catch((e) => {
                     this.refresh()
                     this.msg.text = `Error when starting the SRC device ${e}`
                     this.msg.type = "danger"
+                    this.msg.show = true
                 })
         },
         editDevice (device) {

@@ -24,7 +24,7 @@ class Video():
         video_source (string): Udp source ip and port
     """
 
-    def __init__(self, port=5600):
+    def __init__(self, port=5000):
         """Summary
         Args:
             port (int, optional): UDP port

@@ -108,9 +108,10 @@ const deviceController = {
                 })
                 .catch(err => {
                     /* istanbul ignore next */
-                    console.log("3")
+                    // console.log("3")
                     console.log(err)
-                    return res.status(422).send(err.errors);
+                    console.log("Edge Node Offline")
+                    return res.status(422).send(`${err.errors} Edge Node offline`);
                 });
     },
 

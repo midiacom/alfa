@@ -77,6 +77,13 @@ curl http://localhost:2375/images/json
 ## Important!
 Be default the docker API to port: 2375 if you need another port then change the configuration at api/config/dev.env
 
+## Docker Network Overlay 
+
+```
+docker network create --driver overlay --attachable alfa_swarm_overlay1
+```
+
+
 ### Docker Compose
 
 To install docker compose follow this steps
