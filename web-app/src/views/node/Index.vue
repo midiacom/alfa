@@ -44,21 +44,21 @@
 
         <b-button variant="primary" size="sm" @click="editNode(row.item)" class="mr-2">
             <v-icon name="edit-2"></v-icon>
-            Edit
         </b-button>
 
         <b-button variant="danger" size="sm" @click="removeNode(row.item)" class="mr-2">
             <v-icon name="trash"></v-icon>
         </b-button>
-        
-        <b-button v-show=row.item.online variant="secondary" size="sm" @click="imagesNode(row.item)" class="mr-2">
-            <v-icon name="cpu"></v-icon>
-            List / Update Images
-        </b-button>
-
+    
         <b-button v-show=row.item.online variant="warning" size="sm" @click="statusNode(row.item)" class="mr-2">
             <v-icon name="info"></v-icon>
         </b-button>
+
+        <b-button v-show=row.item.online variant="secondary" size="sm" @click="imagesNode(row.item)" class="mr-2">
+            <v-icon name="cpu"></v-icon>
+            VN Images
+        </b-button>
+
       </template>        
 
         <div slot="table-busy" class="text-center text-danger my-2">
@@ -106,8 +106,8 @@ export default {
                 class: 'nodeStatusList'
             },{
                 key: 'virtualEntityNum',
-                label: 'Running',
-                class: 'nodeStatusList'
+                label: 'VMS Num.',
+                class: 'vmsNumList'
             },
             {
                 key:'actions',
@@ -138,7 +138,7 @@ export default {
             this.isBusy = true
             this.isLoading = false
             apiNode.updateStatus()
-                .then((data) => {
+                .then(() => {
                     this.refresh()
                 })
                 .catch(e => {
@@ -194,15 +194,19 @@ export default {
 
 <style>
     .nodeIndexActions {
-        width: 500px;
+        width: 340px;
         text-align: left;        
     }
     .nodeStatusList {
-        width: 100px;
+        width: 60px;
         text-align: center;
     }
     .nodeIpList {
         width: 100px;
         text-align: left;
+    }
+    .vmsNumList {
+        width: 140px;
+        text-align: center;
     }
 </style>

@@ -26,6 +26,7 @@ const cron = {
                             .then((status) => {
                                 if (status.Status.State == 'down') {
                                     node.online = false
+                                    node.virtualEntityNum = 0;
                                 } else {
                                     node.online = true 
                                 }
