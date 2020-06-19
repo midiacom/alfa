@@ -38,22 +38,18 @@
       <template v-slot:cell(actions)="row">
         <b-button v-show=!row.item.dockerId variant="success" size="sm" @click="starSrcDevice(row.item)" class="mr-2">
             <v-icon name="play-circle"></v-icon>
-            Start 
         </b-button>
 
         <b-button v-show=row.item.dockerId variant="secondary" size="sm" @click="stopSrcDevice(row.item)" class="mr-2">
             <v-icon name="stop-circle"></v-icon>
-            Stop
         </b-button>
         
         <b-button variant="primary" size="sm" @click="editDevice(row.item)" class="mr-2">
             <v-icon name="edit-2"></v-icon>
-            Edit
         </b-button>
 
         <b-button variant="danger" size="sm" @click="removeDevice(row.item)" class="mr-2">
             <v-icon name="trash"></v-icon>
-            Remove
         </b-button>
 
         <b-button v-show=row.item.dockerId variant="warning" size="sm" @click="containerDetails(row.item)" class="mr-2">
@@ -206,7 +202,7 @@ export default {
 
 <style>
     .deviceIndexActions {
-        width: 450px;
+        width: 250px;
         text-align: center;
     }
 </style>

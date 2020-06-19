@@ -31,7 +31,7 @@ function installAudioSample {
     cecho "GREEN" "Build Virtual Device Audio Sample"
     cecho "GREEN" ----------------------
     cecho "GREEN" 
-    cd device/audio_sample/
+    cd ./device/audio_sample/
     docker build . -t alfa/device/audio_sample    
 }
 
@@ -41,7 +41,7 @@ function installUsbCamera {
     cecho "GREEN" "Build Virtual Device Câmera USB"
     cecho "GREEN" ----------------------
     cecho "GREEN" 
-    cd device/camera_usb/
+    cd ./device/camera_usb/
     docker build . -t alfa/device/camera_usb    
 }
 
@@ -52,7 +52,7 @@ function installRtsp {
     cecho "GREEN" ----------------------
     cecho "GREEN" 
 
-    cd device/rtsp_to_udp/
+    cd ./device/rtsp_to_udp/
     docker build . -t alfa/device/rtsp_to_udp
 } 
 
@@ -62,7 +62,7 @@ function installVideoSample {
     cecho "GREEN" "Build Virtual Device Video Sample"
     cecho "GREEN" ----------------------
     cecho "GREEN" 
-    cd device/video_sample/
+    cd ./device/video_sample/
     docker build . -t alfa/device/video_sample
 }
 
@@ -72,7 +72,7 @@ function installMicUsb {
     cecho "GREEN" "Build Virtual Device USB MIC"
     cecho "GREEN" ----------------------
     cecho "GREEN" 
-    cd device/mic_device/
+    cd ./device/mic_device/
     docker build . -t alfa/device/mic_device
 }
 
@@ -82,7 +82,7 @@ function installUdpToUdp {
     cecho "GREEN" "Build Plugin UDP to UDP"
     cecho "GREEN" ----------------------
     cecho "GREEN" 
-    cd vms/udp_to_udp/
+    cd ./vms/udp_to_udp/
     docker build . -t alfa/vms/udp_to_udp
 }
 
@@ -92,7 +92,7 @@ function installGrayscale {
     cecho "GREEN" "Build VMS UDP Video to Grayscale UDP Video"
     cecho "GREEN" ----------------------
     cecho "GREEN" 
-    cd vms/udp_video_black_white/
+    cd ./vms/udp_video_black_white/
     docker build . -t alfa/vms/udp_video_black_white    
 }
 
@@ -102,7 +102,7 @@ function installVideoCrop {
     cecho "GREEN" "Build VMS UDP Video to Crop Video And UDP Video"
     cecho "GREEN" ----------------------
     cecho "GREEN" 
-    cd vms/udp_video_crop
+    cd ./vms/udp_video_crop
     docker build . -t alfa/vms/udp_video_crop
 }
 
@@ -112,7 +112,7 @@ function installNoiseDetector {
     cecho "GREEN" "Build VMS Noise Detector"
     cecho "GREEN" ----------------------
     cecho "GREEN" 
-    cd vms/noise_detector
+    cd ./vms/noise_detector
     docker build . -t alfa/vms/noise_detector    
 }
 
@@ -122,7 +122,7 @@ function installVideoMerge {
     cecho "GREEN" "Build VMS Video Merge"
     cecho "GREEN" ----------------------
     cecho "GREEN" 
-    cd vms/video_merge
+    cd ./vms/video_merge
     docker build . -t alfa/vms/video_merge    
 }
 
@@ -132,7 +132,7 @@ function installFaceCounter {
     cecho "GREEN" "Build VMS Face Counter"
     cecho "GREEN" ----------------------
     cecho "GREEN" 
-    cd vms/face_counter
+    cd ./vms/face_counter
     docker build . -t alfa/vms/face_counter    
 }
 

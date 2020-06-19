@@ -82,14 +82,13 @@ gst-launch-1.0 \
 
 
       <template v-slot:cell(actions)="row">
-            <b-button variant="success" size="sm" @click="bindSrc(row.item)" class="mr-2">
+            
+            <b-button title="Bind / Unbind" variant="success" size="sm" @click="bindSrc(row.item)" class="mr-2">
                 <v-icon name="minimize-2"></v-icon>
-                Bind / Unbind
             </b-button>
 
-            <b-button variant="secondary" size="sm" @click="restartVms(row.item)" class="mr-2">
+            <b-button title="Recreate" variant="secondary" size="sm" @click="restartVms(row.item)" class="mr-2">
                 <v-icon name="play-circle"></v-icon>
-                Recreate
             </b-button>
 
             <b-button title="View" variant="primary" size="sm" @click="showSdp(row.item)" class="mr-2">
@@ -323,7 +322,7 @@ export default {
 
 <style>
     .vmsIndexActionsStopped {
-        width: 650px;
+        width: 500px;
         text-align: center;
     }
 </style>
