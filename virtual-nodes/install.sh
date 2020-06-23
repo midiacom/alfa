@@ -139,7 +139,7 @@ function installFaceCounter {
 function installUdpFlex {
     cecho "GREEN" 
     cecho "GREEN" ----------------------
-    cecho "GREEN" "Build VMS Face Counter"
+    cecho "GREEN" "Build VMS UDP Flex"
     cecho "GREEN" ----------------------
     cecho "GREEN" 
     cd ./vms/udp_flex
@@ -162,7 +162,7 @@ whiptail --title "Install VMS and Virtual Devices" --menu "What do you whant to 
     "9)" "Noise Detector [VMS]."   \
     "10)" "Video Merge [VMS]."   \
     "11)" "Face Counter [VMS]."   \
-    "12)" "UDP Flex [VMS]."   \    
+    "12)" "UDP Flex [VMS]."   \
 	"13)" "Exit"  3>&2 2>&1 1>&3	
 )
 
