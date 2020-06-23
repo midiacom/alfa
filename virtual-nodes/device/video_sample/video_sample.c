@@ -49,7 +49,7 @@ gst-launch-1.0  videotestsrc pattern=ball \
 
 Show the video
 gst-launch-1.0 \
-    udpsrc port=10001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    udpsrc port=10002 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
     ! rtph264depay \
     ! decodebin \
     ! videoconvert \

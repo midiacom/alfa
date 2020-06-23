@@ -66,7 +66,6 @@ gst-launch-1.0 \
 
         <template v-slot:cell(startupParameters)="row">
             {{row.item.startupParameters}}
-
             <b-button v-show=row.item.monitor.length title="Edit" variant="outline-primary" size="sm" @click="monitor(row.item)" class="mr-2">
                 <v-icon name="activity"></v-icon>
             </b-button>            

@@ -9,6 +9,7 @@ const cron = require('./node/cron');
 const mqtt = require('mqtt')
 const path = require('path');
 const fs = require('fs')
+const crypto = require('crypto')
 
 const vmsController = {
 
@@ -66,10 +67,15 @@ const vmsController = {
             .then((result) => {
               let nameMonitor = "";
               // this is the vms type that performs network monitoring
-              if (result.dockerImage == 'alfa/vms/udp_proxy') {                
-                nameMonitor = `${req.body.name}_${parseInt(Math.random()*1000)}`
+              if (result.dockerImage.trim() == 'alfa/vms/udp_flex') {                
+                let hash_name = crypto.createHash('md5').update(req.body.name).digest("hex").substr(0,5)
+
+                nameMonitor = `${hash_name}${parseInt(Math.random()*1000)}`
                 startupParameters += ` ${nameMonitor}`
               }
+
+              console.log(startupParameters)
+              
               api.createContainer({
                 Image: result.dockerImage,
                 Cmd: [startupParameters],
@@ -90,7 +96,7 @@ const vmsController = {
                       nameMonitor: nameMonitor,
                       outputType: outputType,
                       bindedTo: []
-                    })      
+                    })
 
                     // save
                     vms.save((err,vms) => {
@@ -505,6 +511,8 @@ const vmsController = {
 
   monitor: (req, res, next) => {
     
+    // console.log(req.params)
+
     let tim = req.params.timestamp    
     let aux_time= new Date(tim.substr(0,4), tim.substr(4,2), tim.substr(6,2), tim.substr(9,2), tim.substr(11,2), tim.substr(13,2), 0);
 
@@ -526,7 +534,7 @@ const vmsController = {
     vmsModel.findOne(filter)
     .then(vms => {
       // store only the last 60 monit messages
-      if (vms.monitor.length > 60) {
+      if (vms.monitor && vms.monitor.length > 60) {
         let a = vms.monitor.shift()
       }
 

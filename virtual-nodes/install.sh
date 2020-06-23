@@ -136,10 +136,20 @@ function installFaceCounter {
     docker build . -t alfa/vms/face_counter    
 }
 
+function installUdpFlex {
+    cecho "GREEN" 
+    cecho "GREEN" ----------------------
+    cecho "GREEN" "Build VMS Face Counter"
+    cecho "GREEN" ----------------------
+    cecho "GREEN" 
+    cd ./vms/udp_flex
+    docker build . -t alfa/vms/udp_flex
+}
+
 while [ 1 ]
 do
 CHOICE=$(
-whiptail --title "Install VMS and Virtual Devices" --menu "What do you whant to install?" 16 50 8 \
+whiptail --title "Install VMS and Virtual Devices" --menu "What do you whant to install?" 17 50 8 \
     "0)" "All Virtual Device  & VMS."   \
 	"1)" "Audio Sample [Virtual Device]."   \
     "2)" "USB Camera [Virtual Device]."   \
@@ -152,7 +162,8 @@ whiptail --title "Install VMS and Virtual Devices" --menu "What do you whant to 
     "9)" "Noise Detector [VMS]."   \
     "10)" "Video Merge [VMS]."   \
     "11)" "Face Counter [VMS]."   \
-	"12)" "Exit"  3>&2 2>&1 1>&3	
+    "12)" "UDP Flex [VMS]."   \    
+	"13)" "Exit"  3>&2 2>&1 1>&3	
 )
 
 result=$(whoami)
@@ -209,7 +220,10 @@ case $CHOICE in
         installFaceCounter
         result="Face Recognition Installed"
         ;;
-
+	"12)")
+        installUdpFlex
+        result="UDP Flex Installed"
+        ;;
 	*) exit
         ;;
 esac
