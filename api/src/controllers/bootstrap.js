@@ -133,10 +133,10 @@ const bootstrapController = {
         }).save();
 
         const vmsTypeVms6 = await new vmsTypeModel({
-            name: 'VMS = UDP Proxy',
-            dockerImage: 'alfa/vms/udp_proxy',
-            startupParameters: "IP PORT | Example 172.17.0.1 10001",
-            description: 'Use this VMS between two VMS to get network statistics about the stream',
+            name: 'VMS = UDP Flex',
+            dockerImage: 'alfa/vms/udp_flex',
+            startupParameters: "IP PORT SEC| Example 172.17.0.1 10001 20",
+            description: 'Use this VMS between two VMS to get network statistics about the stream (172.17.0.1;10020;01ac7153;A) o tópíco tem que ser igual ao id da msg pra add o fluxo de saída',
             src: 0,
             sdp: '',
             ports: '5000'
