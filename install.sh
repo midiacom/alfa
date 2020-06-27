@@ -7,16 +7,14 @@ echo " +-----------------+"
 echo "Web Interface URL: (localhost)"
 read weburl
 
-if [ -z $weburl]
-then
+if [ -z $weburl ]; then
     weburl="localhost"
 fi
 
 echo "API URL: (127.0.0.1)"
 read apiurl
 
-if [ -z $apiurl]
-then
+if [ -z $apiurl ]; then
     apiurl="127.0.0.1"
 fi
 
