@@ -58,4 +58,3 @@ services:
 networks: 
   swarm_overlay3:
       driver: overlay
-      external: true
