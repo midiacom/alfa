@@ -58,3 +58,6 @@ services:
 networks: 
   swarm_overlay3:
       driver: overlay
+
+# sudo docker network create --driver=overlay --attachable alfa_swarm_overlay3
+# docker run --network=alfa_swarm_overlay3 -ti alpine:latest sh
