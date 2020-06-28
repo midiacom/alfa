@@ -122,7 +122,19 @@ export const apiVms = {
 
   getVms (vmsId) {
     return new Promise((resolve, reject) => {
-      config.api.get(`/vms/${vmsId}`)
+      config.api.get(`/vms/log/${vmsId}`)
+        .then(resp => {
+            resolve(resp.data)
+        })
+        .catch(e => {
+            reject(e)
+        })
+    })
+  },
+
+  getLog (vmsId) {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/vms/log/${vmsId}`)
         .then(resp => {
             resolve(resp.data)
         })

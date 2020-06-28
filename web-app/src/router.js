@@ -112,6 +112,12 @@ export default new Router({
     },
 
     {
+      path: '/vms/:id/log',
+      name: 'vmsLog',
+      component: () => import(/* webpackChunkName: "vmsEdit" */ './views/vms/Log.vue')
+    },
+
+    {
       path: '/vms/:monitorName/monitor',
       name: 'vmsMonitor',
       component: () => import(/* webpackChunkName: "vmsEdit" */ './views/vms/Monitor.vue')

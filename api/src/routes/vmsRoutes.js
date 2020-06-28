@@ -14,6 +14,8 @@ router.get('/unbindSrc/:vmsId/:deviceId/:port', vmsController.unbindSrc);
 
 router.get('/type/:id', vmsController.getType);
 
+router.get('/log/:id', vmsController.getLog);
+
 router.get('/', vmsController.list);
 
 router.get('/stop/:id', vmsController.stopVms);

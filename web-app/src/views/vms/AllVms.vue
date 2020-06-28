@@ -88,11 +88,11 @@ gst-launch-1.0 \
 
             <b-button title="Recreate" variant="secondary" size="sm" @click="restartVms(row.item)" class="mr-2">
                 <v-icon name="play-circle"></v-icon>
-            </b-button>
+            </b-button>    
 
-            <b-button title="View" variant="primary" size="sm" @click="showSdp(row.item)" class="mr-2">
+            <!-- <b-button title="View" variant="primary" size="sm" @click="showSdp(row.item)" class="mr-2">
                 <v-icon name="eye"></v-icon>
-            </b-button>
+            </b-button> 
 
 
             <b-button title="Edit" variant="outline-primary" size="sm" @click="editVms(row.item)" class="mr-2">
@@ -110,10 +110,32 @@ gst-launch-1.0 \
             <b-button title="Remove" variant="danger" size="sm" @click="removeStoppedVms(row.item)" class="mr-2">
                 <v-icon name="trash"></v-icon>
             </b-button>
+            -->
 
             <b-button title="Stop" variant="outline-danger" size="sm" @click="stopVms(row.item)" class="mr-2">
                 <v-icon name="stop-circle"></v-icon>
             </b-button>
+
+            <b-dropdown variant="primary" id="dropdown-1" text="Actions" class="m-md-2">
+                <b-dropdown-item @click="showSdp(row.item)">
+                    <v-icon name="eye"></v-icon> - Show
+                </b-dropdown-item>
+                <b-dropdown-item @click="editVms(row.item)">
+                    <v-icon name="edit-2"></v-icon> - Edit
+                </b-dropdown-item>
+                <b-dropdown-item @click="isRunning(row.item)">
+                    <v-icon name="activity"></v-icon> - Status
+                </b-dropdown-item>
+                <b-dropdown-item @click="detailsVms(row.item)">
+                    <v-icon name="info"></v-icon> - Info
+                </b-dropdown-item>
+                <b-dropdown-item @click="logVMS(row.item)">
+                    <v-icon name="align-justify"></v-icon> - Logs
+                </b-dropdown-item>
+                <b-dropdown-item @click="removeStoppedVms(row.item)">
+                    <v-icon name="trash"></v-icon> - Remove
+                </b-dropdown-item>
+            </b-dropdown>                  
 
       </template>        
 
@@ -179,6 +201,10 @@ export default {
             this.$router.push(`/vms/${vms.nameMonitor}/monitor`)
         },
 
+        logVMS (vms) {
+            this.$router.push(`/vms/${vms._id}/log`)
+        },
+
         showSdp (vms) {
             this.sdp = vms.sdp
             this.$refs['sdpModal'].show()
@@ -196,10 +222,16 @@ export default {
             this.isLoading = true
             apiVms.getContainerDetails(vms._id)
                 .then((data) => {
-                    if (data.length == 0) {
-                        alert("Stopped");
+                    if (data == null || data.length == 0) {
+                        this.$swal.fire({
+                            text: "Stopped!",
+                            type: 'error',
+                        })                        
                     } else {
-                        alert("Running");
+                        this.$swal.fire({
+                            text: "Running!",
+                            type: 'success',
+                        })
                     }
                     this.isLoading = false
                 })

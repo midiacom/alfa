@@ -14,6 +14,7 @@ const crypto = require('crypto')
 const vmsController = {
 
     getType: (req, res, next) => {
+      
       var id = req.params.id;
       vmsModel.findById(id)
       .populate('vmsType')
@@ -24,6 +25,40 @@ const vmsController = {
           }          
           return res.status(201).json(result.vmsType);
       })
+    },
+
+    getLog: (req, res, next) => {
+      let id = req.params.id;
+      vmsModel.findById(id)
+        .populate('node')
+        .then((vms) => {
+          if (!vms) {
+            return res.status(422).send(`VMS with id ${id} not found!`);
+          }
+          docker.api(vms.node.ip)
+            .then((api) => {
+              let container = api.getContainer(vms.dockerId)
+              // console.log(container)
+              container.logs({stdout: true, stderr: true}, function (err, data) {
+                console.log(err);
+                if (err) {
+                  return res.status(422).json({
+                    message: 'Container not running or created anymore.',
+                    error: err
+                  });
+                }
+                return res.status(201).json(data)  
+              })
+            })
+            .catch(err => {
+              // console.log(err);              
+              console.log('b');
+              return res.status(422).send(err.errors);
+            });        
+      })
+      .catch(err => {
+        return res.status(422).send(err.errors);
+      });
     },
 
     // Start and recreate a VMS    
