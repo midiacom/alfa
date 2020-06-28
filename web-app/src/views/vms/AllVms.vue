@@ -112,27 +112,27 @@ gst-launch-1.0 \
             </b-button>
             -->
 
-            <b-button title="Stop" variant="outline-danger" size="sm" @click="stopVms(row.item)" class="mr-2">
+            <b-button title="Stop" variant="danger" size="sm" @click="stopVms(row.item)" class="mr-2">
                 <v-icon name="stop-circle"></v-icon>
             </b-button>
 
-            <b-dropdown variant="primary" id="dropdown-1" text="Actions" class="m-md-2">
-                <b-dropdown-item @click="showSdp(row.item)">
-                    <v-icon name="eye"></v-icon> - Show
+            <b-dropdown size="sm" variant="primary" id="dropdown-1" text="Actions" class="m-md-2">
+                <b-dropdown-item variant="primary" @click="showSdp(row.item)">
+                    <v-icon name="eye"></v-icon> - VMS View
                 </b-dropdown-item>
                 <b-dropdown-item @click="editVms(row.item)">
-                    <v-icon name="edit-2"></v-icon> - Edit
+                    <v-icon name="edit-2"></v-icon> - VMS Edit
                 </b-dropdown-item>
                 <b-dropdown-item @click="isRunning(row.item)">
                     <v-icon name="activity"></v-icon> - Status
                 </b-dropdown-item>
                 <b-dropdown-item @click="detailsVms(row.item)">
-                    <v-icon name="info"></v-icon> - Info
+                    <v-icon name="info"></v-icon> - Details
                 </b-dropdown-item>
                 <b-dropdown-item @click="logVMS(row.item)">
                     <v-icon name="align-justify"></v-icon> - Logs
                 </b-dropdown-item>
-                <b-dropdown-item @click="removeStoppedVms(row.item)">
+                <b-dropdown-item variant="danger" @click="removeStoppedVms(row.item)">
                     <v-icon name="trash"></v-icon> - Remove
                 </b-dropdown-item>
             </b-dropdown>                  
@@ -353,7 +353,7 @@ export default {
 
 <style>
     .vmsIndexActionsStopped {
-        width: 500px;
+        width: 310px;
         text-align: center;
     }
 </style>
