@@ -10,6 +10,7 @@ const mqtt = require('mqtt')
 const path = require('path');
 const fs = require('fs')
 const crypto = require('crypto')
+const { isArray } = require("util")
 
 const vmsController = {
 
@@ -186,6 +187,7 @@ const vmsController = {
         .then((api) => {
           let vmsType = req.body.vmsType;
           let startupParameters = req.body.startupParameters;
+          let portForward = req.body.portForward;
           let id = req.body.id;
 
           vmsTypeModel.findById(vmsType)
@@ -199,15 +201,39 @@ const vmsController = {
                 startupParameters += ` ${nameMonitor}`
               }
 
-              console.log(startupParameters)
-              
-              api.createContainer({
+              let conf_container = {
                 Image: result.dockerImage,
                 Cmd: [startupParameters],
                 HostConfig: {
                   NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
                 }
-              }).then(function(container) {
+              }               
+
+              // port Forward, used to bind VMS with external Virtual Devices or
+              // programns running outside ALFA
+              let containerPorts = {}
+              let exposePorts = {}
+              if (portForward != "") {
+                let ports = portForward.split(";")
+                ports.forEach(port => {
+                  let p = port.split(":")
+                  let aux_index = `${p[1]}/udp`
+                  let aux_port = `${p[0]}`
+                  containerPorts[aux_index] = [
+                    {"HostIp":"","HostPort":aux_port}
+                  ]  
+                  exposePorts[aux_index] = {}  
+                })
+              
+                console.log(containerPorts);
+                conf_container['ExposedPorts'] = exposePorts
+                conf_container['HostConfig']['PortBindings'] = containerPorts
+              }              
+
+              // console.log(conf_container);              
+              // return
+
+              api.createContainer(conf_container).then(function(container){
                 container.start()
                 .then((data) => { 
                   // create a new VMS
@@ -220,6 +246,7 @@ const vmsController = {
                       node: nodeResult._id,
                       nameMonitor: nameMonitor,
                       outputType: outputType,
+                      portForward: portForward,
                       bindedTo: []
                     })
 

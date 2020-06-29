@@ -32,6 +32,7 @@
             <b-form-group>
                 <strong>Startup Parameters Example:</strong> {{ vmsType.startupParameters }}
             </b-form-group>
+
             <hr>
 
             <b-form-group id="input-group-2" label="Name:" label-for="name">
@@ -40,6 +41,10 @@
 
             <b-form-group id="input-group-3" label="Startup Parameters:" label-for="startupParameters">
                 <b-form-input id="startupParameters" v-model="form.startupParameters" type="text"/>
+            </b-form-group>
+
+            <b-form-group id="input-group-3" label="Port Forward:" label-for="portForward" title="EXT_POST:INT_PORT (; for multiple forward) - This is for testing VMS only, by default leave empty">
+                <b-form-input id="portForward" v-model="form.portForward" type="text"/>
             </b-form-group>
 
             <b-form-group id="input-group-6" label="Output Type:" label-for="outputType">

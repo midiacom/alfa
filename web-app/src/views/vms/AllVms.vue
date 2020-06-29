@@ -65,7 +65,15 @@ gst-launch-1.0 \
         </template>
 
         <template v-slot:cell(startupParameters)="row">
-            {{row.item.startupParameters}}   
+            <em>
+                {{row.item.startupParameters}}   
+            </em>
+
+            <em v-show="row.item.portForward">
+                <br/><strong>Port Foward</strong>
+                {{row.item.portForward}}   
+            </em>
+
         </template>
 
         <template v-slot:cell(name)="row">

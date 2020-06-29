@@ -8,6 +8,7 @@ var Schema   = mongoose.Schema;
 var vmsSchema = new Schema({
     'startupParameters' : String,
     'name' : String,
+    'portForward' : String,
     'nameMonitor' : String,
     'dockerId' : String,
     'outputType': {
