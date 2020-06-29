@@ -26,6 +26,10 @@ router.get('/getContainerDetails/:id', vmsController.getContainerDetails);
 
 router.post('/', vmsController.post);
 
+router.post('/addfoward', vmsController.addFoward);
+
+router.get('/remfoward/:vmsId/:forwardId', vmsController.remFoward);
+
 router.delete('/:id', vmsController.delete);
 
 router.put('/:id', vmsController.put);

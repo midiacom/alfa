@@ -91,6 +91,7 @@ html,body {
 #content {
   padding-top: 15px;
   overflow: hidden;
+  min-height: 800px;
 }
 
 .subMenu {

@@ -60,15 +60,12 @@ gst-launch-1.0 \
         striped 
         responsive="sm">
 
-        <template v-slot:cell(vmsType)="row">
+        <template v-slot:cell(vmsType)="row" align-v="center">
             {{row.item.vmsType.name}}
         </template>
 
         <template v-slot:cell(startupParameters)="row">
-            {{row.item.startupParameters}}
-            <b-button v-show=row.item.monitor.length title="Edit" variant="outline-primary" size="sm" @click="monitor(row.item)" class="mr-2">
-                <v-icon name="activity"></v-icon>
-            </b-button>            
+            {{row.item.startupParameters}}   
         </template>
 
         <template v-slot:cell(name)="row">
@@ -120,20 +117,35 @@ gst-launch-1.0 \
                 <b-dropdown-item variant="primary" @click="showSdp(row.item)">
                     <v-icon name="eye"></v-icon> - VMS View
                 </b-dropdown-item>
+
                 <b-dropdown-item @click="editVms(row.item)">
                     <v-icon name="edit-2"></v-icon> - VMS Edit
                 </b-dropdown-item>
+
                 <b-dropdown-item @click="isRunning(row.item)">
                     <v-icon name="activity"></v-icon> - Status
                 </b-dropdown-item>
+
                 <b-dropdown-item @click="detailsVms(row.item)">
                     <v-icon name="info"></v-icon> - Details
                 </b-dropdown-item>
+                
                 <b-dropdown-item @click="logVMS(row.item)">
                     <v-icon name="align-justify"></v-icon> - Logs
                 </b-dropdown-item>
+
                 <b-dropdown-item variant="danger" @click="removeStoppedVms(row.item)">
                     <v-icon name="trash"></v-icon> - Remove
+                </b-dropdown-item>
+
+                <b-dropdown-divider></b-dropdown-divider>
+
+                <b-dropdown-item v-show=row.item.monitor.length variant="success" @click="monitor(row.item)">
+                    <v-icon name="bar-chart-2"></v-icon> - Forward Status
+                </b-dropdown-item>
+
+                <b-dropdown-item v-show=row.item.monitor.length variant="info" @click="forwardManager(row.item)">
+                    <v-icon name="arrow-up-right"></v-icon> - Forward Manager
                 </b-dropdown-item>
             </b-dropdown>                  
 
@@ -196,9 +208,13 @@ export default {
         }
     },
     methods: {
-        
+
         monitor (vms) {
             this.$router.push(`/vms/${vms.nameMonitor}/monitor`)
+        },
+
+        forwardManager (vms) {
+            this.$router.push(`/vms/${vms._id}/ffmanager`)
         },
 
         logVMS (vms) {

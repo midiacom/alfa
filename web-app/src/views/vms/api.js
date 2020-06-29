@@ -17,6 +17,38 @@ export const apiVms = {
       })
   },  
 
+  addFoward (form) {
+    if (!form) {
+      return Promise.reject(new Error('Data not informed'))
+    }
+    return new Promise((resolve, reject) => {
+      config.api.post(`/vms/addfoward`,form)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch((e) => {
+          reject(new Error(`Error when forwarding ${e}`))
+        })
+      })
+  },  
+
+  remFoward (data) {
+    console.log(data);
+    
+    if (!data) {
+      return Promise.reject(new Error('Data not informed'))
+    }
+    return new Promise((resolve, reject) => {
+      config.api.get(`/vms/remfoward/${data.vmsId}/${data.forwardId}`)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch((e) => {
+          reject(new Error(`Error when forwarding ${e}`))
+        })
+      })
+  },  
+
   updateVms (vms) {
     if (!vms) {
       return Promise.reject(new Error('Data not informed'))
@@ -122,7 +154,7 @@ export const apiVms = {
 
   getVms (vmsId) {
     return new Promise((resolve, reject) => {
-      config.api.get(`/vms/log/${vmsId}`)
+      config.api.get(`/vms/${vmsId}`)
         .then(resp => {
             resolve(resp.data)
         })
@@ -142,7 +174,7 @@ export const apiVms = {
             reject(e)
         })
     })
-  },
+  },  
 
   getContainerDetails (vmsId) {
     return new Promise((resolve, reject) => {

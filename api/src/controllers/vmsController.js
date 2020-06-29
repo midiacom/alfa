@@ -13,8 +13,98 @@ const crypto = require('crypto')
 
 const vmsController = {
 
+  remFoward: (req, res, next) => {    
+    id = req.params.vmsId
+    forwardId = req.params.forwardId
+    vmsModel.findById(id)
+      .exec()
+      .then((vms) => {
+          if (!vms) {
+              return res.status(404).send()
+          }
+
+          let p = -1
+          for (var i = 0; i < vms.forward.length; i++) {
+            var element = vms.forward[i]            
+            if (element._id == forwardId) {
+              p = i
+              let aux = element
+              var client  = mqtt.connect(process.env.MQTT_SERVER)                          
+              client.on('connect', function () {              
+                client.subscribe(vms.nameMonitor, function (err) {
+                  if (!err) {       
+                  let mqtt_add_string = `${aux.ip};${aux.port};${vms.nameMonitor};R`
+                    client.publish(vms.nameMonitor, mqtt_add_string)
+                  } else {
+                    console.log(err);
+                  }
+                })
+              })
+              break
+            }
+          }
+
+          if (p >= 0) {
+            vms.forward.splice(p,1)
+          }
+
+          vms.save(function (err, node) {
+              /* istanbul ignore next */ 
+              if (err) {
+                  return res.status(500).json({
+                      message: 'Error when updating node.',
+                      error: err
+                  });
+              }
+              return res.status(201).json(node);
+          })
+      })      
+  },
+
+  // ----
+  addFoward: (req, res, next) => {
+    id = req.body.vmsId
+    vmsModel.findById(id)
+      .exec()
+      .then((vms) => {
+          if (!vms) {
+              return res.status(404).send()
+          }
+
+          // send to MQTT
+          var client  = mqtt.connect(process.env.MQTT_SERVER)
+          
+          client.on('connect', function () {              
+            client.subscribe(vms.nameMonitor, function (err) {
+              if (!err) {       
+                let mqtt_add_string =    `${req.body.ip};${req.body.port};${vms.nameMonitor};A`
+                client.publish(vms.nameMonitor, mqtt_add_string)
+              } else {
+                console.log(err);
+              }
+            })
+          })
+          // ----------
+
+          vms.forward.push({
+            ip: req.body.ip,
+            port: req.body.port
+          })
+
+          vms.save(function (err, node) {
+              /* istanbul ignore next */ 
+              if (err) {
+                  return res.status(500).json({
+                      message: 'Error when updating node.',
+                      error: err
+                  });
+              }
+              return res.status(201).json(node);
+          })
+      })      
+    },
+
     getType: (req, res, next) => {
-      
       var id = req.params.id;
       vmsModel.findById(id)
       .populate('vmsType')
@@ -449,7 +539,7 @@ const vmsController = {
               return res.status(422).send(err);
             }
           })
-        })        
+        })
         // console.log(vms)
         // return res.status(201).json(vms);
       })

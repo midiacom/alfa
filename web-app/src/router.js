@@ -112,6 +112,12 @@ export default new Router({
     },
 
     {
+      path: '/vms/:id/ffmanager',
+      name: 'vmsFFmanager',
+      component: () => import(/* webpackChunkName: "vmsEdit" */ './views/vms/FFManager.vue')
+    },
+
+    {
       path: '/vms/:id/log',
       name: 'vmsLog',
       component: () => import(/* webpackChunkName: "vmsEdit" */ './views/vms/Log.vue')

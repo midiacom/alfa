@@ -33,6 +33,10 @@ var vmsSchema = new Schema({
         ref: 'vmsType',
         required: true
     },
+    'forward': [{
+        'ip': String,
+        'port': String,        
+    }],
     'monitor': [{
         'senderip': String,
         'senderport': String,

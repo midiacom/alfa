@@ -170,7 +170,6 @@ export default {
                     this.isLoading = false
                     this.ports = vmsType.ports.split(";")
                     this.form.port = this.ports[0]
-
                 })
 
             apiVms.getVms(id)
