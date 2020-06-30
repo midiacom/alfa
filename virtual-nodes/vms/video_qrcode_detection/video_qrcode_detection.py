@@ -185,12 +185,9 @@ if __name__ == '__main__':
     mqtt_hostname = sys.argv[2]
     mqtt_port = sys.argv[3]    
 
-    qrcode_time = {
-        "1":10,
-        "2":20,
-        "3":35,
-        "4":45,
-    }
+    qrcode_time = {}
+
+    detector = cv2.QRCodeDetector()
 
     while True:
         # Wait for the next frame
@@ -202,8 +199,6 @@ if __name__ == '__main__':
         # frame.setflags(write=True)
 
         # publish.single(mqtt_topic, str(len(face_locations)), hostname=mqtt_hostname, port=int(mqtt_port))
-        
-        detector = cv2.QRCodeDetector()
 
         data, bbox, _ = detector.detectAndDecode(frame)
 
@@ -217,9 +212,10 @@ if __name__ == '__main__':
                     ant = qrcode_time[i]
                 sys.exit()
 
-            print(data)
             ts = time.time()
-            qrcode_time[data] = ts            
+            qrcode_time[data] = ts
+
+            print(f'{data} - {ts}')
             
         # publish.single(mqtt_topic, str(len(face_locations)), hostname=mqtt_hostname, port=int(mqtt_port))
 

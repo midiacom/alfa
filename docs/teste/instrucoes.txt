@@ -1,0 +1,22 @@
+1 - Enviar o Vídeo para o VMS na edge e na cloud
+
+gst-launch-1.0 filesrc location=./out.mp4 \
+    ! decodebin \
+    ! videoscale \
+    ! video/x-raw,width=320,height=240 \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink port=5000
+
+play video
+gst-launch-1.0 \
+    udpsrc port=5000 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
+    ! queue2 max-size-bytes=65536 max-size-buffers=65536 max-size-time=10 \
+    ! rtph264depay \
+    ! decodebin \
+    ! videoconvert \
+    ! autovideosink
+
+2 - coletar os dados 
+
+3 - analisar os dados
