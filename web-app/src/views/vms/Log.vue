@@ -25,11 +25,9 @@
 
 <script>
 import {apiVms} from './api'
-import JsonViewer from 'vue-json-viewer'
 
 export default {
-    name: 'vmsDetails',
-    components: {JsonViewer},
+    name: 'vmsLog',
     data() {
         return {
             log: "null"

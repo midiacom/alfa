@@ -213,7 +213,7 @@ const vmsController = {
               // programns running outside ALFA
               let containerPorts = {}
               let exposePorts = {}
-              if (portForward != "") {
+              if (portForward != undefined) {
                 let ports = portForward.split(";")
                 ports.forEach(port => {
                   let p = port.split(":")
