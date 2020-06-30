@@ -208,7 +208,7 @@ if __name__ == '__main__':
                 ant = -1
                 for i in qrcode_time:
                     if (ant != -1):       
-                        print(f' {i};{qrcode_time[i]-ant}')
+                        print(f'{i};{qrcode_time[i]-ant}')
                     ant = qrcode_time[i]
                 sys.exit()
 

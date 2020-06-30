@@ -3,7 +3,7 @@
 gst-launch-1.0 filesrc location=./out.mp4 \
     ! decodebin \
     ! videoscale \
-    ! video/x-raw,width=320,height=240 \
+    ! video/x-raw,width=800,height=600 \
     ! x264enc \
     ! rtph264pay \
     ! udpsink port=5000
