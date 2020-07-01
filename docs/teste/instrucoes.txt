@@ -3,6 +3,22 @@
 gst-launch-1.0 filesrc location=./out.mp4 \
     ! decodebin \
     ! videoscale \
+    ! video/x-raw,width=200,height=200 \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=52.205.17.49 port=5000
+
+gst-launch-1.0 filesrc location=./out.mp4 \
+    ! decodebin \
+    ! videoscale \
+    ! video/x-raw,width=200,height=200 \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink port=5000
+
+gst-launch-1.0 filesrc location=./out.mp4 \
+    ! decodebin \
+    ! videoscale \
     ! video/x-raw,width=800,height=600 \
     ! x264enc \
     ! rtph264pay \
@@ -17,6 +33,55 @@ gst-launch-1.0 \
     ! videoconvert \
     ! autovideosink
 
+
 2 - coletar os dados 
 
 3 - analisar os dados
+
+
+if __name__ == '__main__':
+    # Create the video object
+    # Add port= if is necessary to use a different one
+    video = Video()
+
+    mqtt_topic = sys.argv[1]
+    mqtt_hostname = sys.argv[2]
+    mqtt_port = sys.argv[3]    
+
+    qrcode_time = {}
+
+    detector = cv2.QRCodeDetector()
+
+    while True:
+        # Wait for the next frame
+        if not video.frame_available():
+            continue
+
+        frame = video.frame()
+        
+        # frame.setflags(write=True)
+
+        # publish.single(mqtt_topic, str(len(face_locations)), hostname=mqtt_hostname, port=int(mqtt_port))
+
+        data, bbox, _ = detector.detectAndDecode(frame)
+
+        # if there is a QR code
+        if bbox is not None:
+            if data == "10":
+                ant = -1
+                for i in qrcode_time:
+                    if (ant != -1):       
+                        print(f'{i};{qrcode_time[i]-ant}')
+                    ant = qrcode_time[i]
+                sys.exit()
+
+            ts = time.time()
+            qrcode_time[data] = ts
+
+            print(f'{data} - {ts}')
+            
+        # publish.single(mqtt_topic, str(len(face_locations)), hostname=mqtt_hostname, port=int(mqtt_port))
+
+        # cv2.imshow('frame', frame)
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #    break
