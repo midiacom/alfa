@@ -199,13 +199,17 @@ if __name__ == '__main__':
             # frame.setflags(write=True)
             # publish.single(mqtt_topic, str(len(face_locations)), hostname=mqtt_hostname, port=int(mqtt_port))
             data, bbox, _ = detector.detectAndDecode(frame)
+            
+            del frame
+
             # if there is a QR code
             if bbox is not None:
                 if data == "10":
                     ant = -1
                     for i in qrcode_time:
-                        if (ant != -1):       
-                            print(f' {i};{qrcode_time[i]-ant}')
+                        if (ant != -1):
+                            val = 2 - qrcode_time[i]-ant
+                            print(f' {i};{val}')
                         ant = qrcode_time[i]
                     sys.exit()
 

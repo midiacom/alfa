@@ -6,7 +6,7 @@ gst-launch-1.0 filesrc location=./out.mp4 \
     ! video/x-raw,width=200,height=200 \
     ! x264enc \
     ! rtph264pay \
-    ! udpsink host=52.205.17.49 port=5000
+    ! udpsink host=3.236.140.158 port=5000
 
 gst-launch-1.0 filesrc location=./out.mp4 \
     ! decodebin \
