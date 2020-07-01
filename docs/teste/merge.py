@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 
 base_image = cv2.imread("back_small.png")
-x_offset=y_offset=0
+# base_image = cv2.imread("back.jpg")
+x_offset=y_offset=15
 
 mean = 10   # some constant
 std = 10.0    # some constant (standard deviation)

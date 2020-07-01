@@ -175,32 +175,6 @@ class Video():
         return Gst.FlowReturn.OK
 
 
-def angle_cos(p0, p1, p2):
-    d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
-    return abs( np.dot(d1, d2) / np.sqrt( np.dot(d1, d1)*np.dot(d2, d2) ) )
-
-def find_squares(img):
-    img = cv2.GaussianBlur(img, (5, 5), 0)
-    squares = []
-    for gray in cv2.split(img):
-        for thrs in range(0, 255, 26):
-            if thrs == 0:
-                bin = cv2.Canny(gray, 0, 50, apertureSize=5)
-                bin = cv2.dilate(bin, None)
-            else:
-                _retval, bin = cv2.threshold(gray, thrs, 255, cv2.THRESH_BINARY)
-            contours, _hierarchy = cv2.findContours(bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-            for cnt in contours:
-                cnt_len = cv2.arcLength(cnt, True)
-                cnt = cv2.approxPolyDP(cnt, 0.02*cnt_len, True)
-                if len(cnt) == 4 and cv2.contourArea(cnt) > 1000 and cv2.isContourConvex(cnt):
-                    cnt = cnt.reshape(-1, 2)
-                    max_cos = np.max([angle_cos( cnt[i], cnt[(i+1) % 4], cnt[(i+2) % 4] ) for i in range(4)])
-                    if max_cos < 0.1:
-                        squares.append(cnt)
-    return squares
-
-
 if __name__ == '__main__':
     # Create the video object
     # Add port= if is necessary to use a different one
@@ -212,13 +186,36 @@ if __name__ == '__main__':
 
     qrcode_time = {}
 
+    detector = cv2.QRCodeDetector()
+
     while True:
         # Wait for the next frame
-        if not video.frame_available():
-            continue
+        if video.frame_available():
 
-        frame = video.frame()
-        
-        squares = find_squares(frame)
+            time.sleep(0.3)
+            
+            frame = video.frame()          
 
-        print(squares)
+            # frame.setflags(write=True)
+            # publish.single(mqtt_topic, str(len(face_locations)), hostname=mqtt_hostname, port=int(mqtt_port))
+            data, bbox, _ = detector.detectAndDecode(frame)
+            # if there is a QR code
+            if bbox is not None:
+                if data == "10":
+                    ant = -1
+                    for i in qrcode_time:
+                        if (ant != -1):       
+                            print(f' {i};{qrcode_time[i]-ant}')
+                        ant = qrcode_time[i]
+                    sys.exit()
+
+                ts = time.time()
+                qrcode_time[data] = ts
+
+                print(f'{data} - {ts}')
+                
+            # publish.single(mqtt_topic, str(len(face_locations)), hostname=mqtt_hostname, port=int(mqtt_port))
+
+            # cv2.imshow('frame', frame)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #    break
