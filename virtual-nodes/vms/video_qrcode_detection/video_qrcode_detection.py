@@ -226,7 +226,9 @@ if __name__ == '__main__':
 
                 ts = time.time()
                 qrcode_time[data] = ts
-                total_frame += int(data)
+                
+                total_frame += 1
+                
                 if data == '':
                     total_qrcode += 1
                     qtd_frames[0] = qtd_frames[0] + 1

@@ -9,7 +9,7 @@ pip install opencv-python
 gst-launch-1.0 filesrc location=./out.mp4 \
     ! decodebin \
     ! videoscale \
-    ! video/x-raw,width=200,height=200 \
+    ! video/x-raw,framerate=5/1, width=200,height=200 \
     ! x264enc \
     ! rtph264pay \
     ! udpsink host=3.236.140.158 port=5000
@@ -17,7 +17,7 @@ gst-launch-1.0 filesrc location=./out.mp4 \
 gst-launch-1.0 filesrc location=./out.mp4 \
     ! decodebin \
     ! videoscale \
-    ! video/x-raw,width=200,height=200 \
+    ! video/x-raw,framerate=5/1, width=200,height=200 \
     ! x264enc \
     ! rtph264pay \
     ! udpsink host=192.168.0.109 port=5000
@@ -25,7 +25,7 @@ gst-launch-1.0 filesrc location=./out.mp4 \
 gst-launch-1.0 filesrc location=./out.mp4 \
     ! decodebin \
     ! videoscale \
-    ! video/x-raw,width=200,height=200 \
+    ! video/x-raw,framerate=5/1, width=200,height=200 \
     ! x264enc \
     ! rtph264pay \
     ! udpsink port=5000
