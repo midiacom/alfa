@@ -186,7 +186,7 @@ if __name__ == '__main__':
 
     qrcode_time = {}
     qtd_frames = {}
-    for x in range(1, 10):
+    for x in range(0, 10):
         qtd_frames[x] = 0
 
     detector = cv2.QRCodeDetector()
@@ -219,7 +219,10 @@ if __name__ == '__main__':
 
                 ts = time.time()
                 qrcode_time[data] = ts
-                qtd_frames[int(data)] = qtd_frames[int(data)] + 1
+                if data == '':
+                    qtd_frames[0] = qtd_frames[0] + 1
+                else:
+                    qtd_frames[int(data)] = qtd_frames[int(data)] + 1
 
 
                 print(f'{data} - {ts}')
