@@ -191,6 +191,11 @@ if __name__ == '__main__':
 
     detector = cv2.QRCodeDetector()
 
+    total_frame = 0
+    total_qrcode = 0
+    total_decode = 0
+
+
     while True:
         # Wait for the next frame
         if video.frame_available():
@@ -202,8 +207,6 @@ if __name__ == '__main__':
             # frame.setflags(write=True)
             # publish.single(mqtt_topic, str(len(face_locations)), hostname=mqtt_hostname, port=int(mqtt_port))
             data, bbox, _ = detector.detectAndDecode(frame)
-            
-            del frame
 
             # if there is a QR code
             if bbox is not None:
@@ -215,15 +218,21 @@ if __name__ == '__main__':
                             print(f' {i};{val}')
                         ant = qrcode_time[i]
                     print(qtd_frames)
+
+                    print(f'QR Code Lidos: {total_decode} ')
+                    print(f'QR Code Somente Identificados: {total_qrcode} ')
+
                     sys.exit()
 
                 ts = time.time()
                 qrcode_time[data] = ts
+                total_frame += int(data)
                 if data == '':
+                    total_qrcode += 1
                     qtd_frames[0] = qtd_frames[0] + 1
                 else:
+                    total_decode += 1
                     qtd_frames[int(data)] = qtd_frames[int(data)] + 1
-
 
                 print(f'{data} - {ts}')
                 
