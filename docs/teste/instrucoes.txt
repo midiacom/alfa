@@ -1,3 +1,9 @@
+0 - Requisitos
+
+sudo apt-get install python-pip
+pip install paho-mqtt
+pip install opencv-python
+
 1 - Enviar o Vídeo para o VMS na edge e na cloud
 
 gst-launch-1.0 filesrc location=./out.mp4 \
@@ -7,6 +13,14 @@ gst-launch-1.0 filesrc location=./out.mp4 \
     ! x264enc \
     ! rtph264pay \
     ! udpsink host=3.236.140.158 port=5000
+
+gst-launch-1.0 filesrc location=./out.mp4 \
+    ! decodebin \
+    ! videoscale \
+    ! video/x-raw,width=200,height=200 \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=192.168.0.109 port=5000
 
 gst-launch-1.0 filesrc location=./out.mp4 \
     ! decodebin \

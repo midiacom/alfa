@@ -185,6 +185,9 @@ if __name__ == '__main__':
     mqtt_port = sys.argv[3]    
 
     qrcode_time = {}
+    qtd_frames = {}
+    for x in range(1, 10):
+        qtd_frames[x] = 0
 
     detector = cv2.QRCodeDetector()
 
@@ -192,7 +195,7 @@ if __name__ == '__main__':
         # Wait for the next frame
         if video.frame_available():
 
-            time.sleep(0.3)
+            time.sleep(0.04)
             
             frame = video.frame()          
 
@@ -211,10 +214,13 @@ if __name__ == '__main__':
                             val = 4 - (qrcode_time[i]-ant)
                             print(f' {i};{val}')
                         ant = qrcode_time[i]
+                    print(qtd_frames)
                     sys.exit()
 
                 ts = time.time()
                 qrcode_time[data] = ts
+                qtd_frames[int(data)] = qtd_frames[int(data)] + 1
+
 
                 print(f'{data} - {ts}')
                 
