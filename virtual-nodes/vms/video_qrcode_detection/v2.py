@@ -196,12 +196,24 @@ if __name__ == '__main__':
     total_decode = 0
 
     ant = ''
+    tdecode_ant = 0
+
+    first_frame_detected = 0
+    first_frame_detected_time = 0
 
     while True:
         
         # Wait for the next frame
         if video.frame_available():
 
+            if first_frame_detected == False:
+                print(f'\nFirst Frame Detected: {time.time()}\n')
+
+                # fields
+                print(f'Data \t Time Detect \t Time Decode \t Diff Time  \t Before Data \t Diff Before Detection ', flush=True)                
+
+            first_frame_detected = True
+            
             frame = video.frame()          
 
             # frame.setflags(write=True)
@@ -218,14 +230,17 @@ if __name__ == '__main__':
                     tdecode = time.time()
 
                 time_diff = tdecode - tdetect
+                
                 try:
                     if int(ant) < int(data[0]):
-                        print(f'{data[0]} ; {tdetect} ; {tdecode} ; {time_diff} ; {ant}')                    
+                        print(f'{data[0]} \t {tdetect} \t {tdecode} \t {time_diff} \t {ant} \t {tdecode - tdecode_ant}', flush=True)
+
                         time.sleep(0.5)
                 except ValueError:
                     pass      # or whatever1
 
                 ant = data[0]
+                tdecode_ant = tdecode
 
             # sleep
             time.sleep(0.1)
