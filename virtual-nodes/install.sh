@@ -146,6 +146,16 @@ function installUdpFlex {
     docker build . -t alfa/vms/udp_flex
 }
 
+function installVideoQrcode {
+    cecho "GREEN" 
+    cecho "GREEN" ----------------------
+    cecho "GREEN" "Build VMS Video QRCode Detector"
+    cecho "GREEN" ----------------------
+    cecho "GREEN" 
+    cd ./vms/video_qrcode_detection
+    docker build . -t alfa/vms/video_qrcode_detection
+}
+
 while [ 1 ]
 do
 CHOICE=$(
@@ -163,7 +173,8 @@ whiptail --title "Install VMS and Virtual Devices" --menu "What do you whant to 
     "10)" "Video Merge [VMS]."   \
     "11)" "Face Counter [VMS]."   \
     "12)" "UDP Flex [VMS]."   \
-	"13)" "Exit"  3>&2 2>&1 1>&3	
+    "13)" "Vide QRCode Detection [VMS]."   \
+	"14)" "Exit"  3>&2 2>&1 1>&3	
 )
 
 result=$(whoami)
@@ -223,6 +234,10 @@ case $CHOICE in
 	"12)")
         installUdpFlex
         result="UDP Flex Installed"
+        ;;
+	"13)")
+        installVideoQrcode
+        result="Video QRcode Detection Installed"
         ;;
 	*) exit
         ;;
