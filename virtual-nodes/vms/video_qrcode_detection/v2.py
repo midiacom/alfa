@@ -199,7 +199,6 @@ if __name__ == '__main__':
 
     while True:
         
-
         # Wait for the next frame
         if video.frame_available():
 
@@ -220,16 +219,16 @@ if __name__ == '__main__':
 
                 time_diff = tdecode - tdetect
                 try:
-                    if ant == '' or (int(ant) < int(data[0])):
+                    if int(ant) < int(data[0]):
                         print(f'{data[0]} ; {tdetect} ; {tdecode} ; {time_diff} ; {ant}')                    
+                        time.sleep(0.5)
                 except ValueError:
-                    print("s")
                     pass      # or whatever1
 
                 ant = data[0]
 
             # sleep
-            time.sleep(0.5)
+            time.sleep(0.1)
             # data, bbox, _ = detector.detectAndDecode(frame)
 
             # # if there is a QR code
