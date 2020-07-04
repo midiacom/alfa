@@ -142,6 +142,16 @@ const bootstrapController = {
             ports: '5000'
         }).save();
         
+        const vmsTypeVms7 = await new vmsTypeModel({
+            name: 'VMS = UDP Flex',
+            dockerImage: 'alfa/vms/video_qrcode_detection',
+            startupParameters: "IP PORT SEC| Example 172.17.0.1 10001 20",
+            description: 'Use this VMS to detect QRCodes in video (IN DEVELOPMENT YET)', 
+            src: 0,
+            sdp: '',
+            ports: '5000'
+        }).save();
+        
         // create the devices
         const device0 = await new deviceModel({
             name: 'Video Sample Ball #1',
