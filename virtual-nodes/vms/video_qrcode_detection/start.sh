@@ -7,7 +7,7 @@ export GST_DEBUG="*:0"
 # $3 = PORT in MQTT Server
 
 # inside container
-python /root/face_counter/face_counter.py $1 $2 $3
+python /root/video_qrcode_detection/v2.py $1 $2 $3
 
 # local
 # python3 face_counter.py $1 $2 $3

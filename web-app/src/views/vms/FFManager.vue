@@ -66,11 +66,10 @@ import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
 import {apiVms} from './api'
-import JsonViewer from 'vue-json-viewer'
 
 export default {
     name: 'vmsForwarding',
-    components: {Loading},    
+    components: {Loading},
     data() {
         return {
             vms: [],

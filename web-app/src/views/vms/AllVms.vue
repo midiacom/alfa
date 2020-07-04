@@ -91,8 +91,8 @@ gst-launch-1.0 \
                 <v-icon name="minimize-2"></v-icon>
             </b-button>
 
-            <b-button title="Recreate" variant="secondary" size="sm" @click="restartVms(row.item)" class="mr-2">
-                <v-icon name="play-circle"></v-icon>
+            <b-button title="Recreate" variant="info" size="sm" @click="restartVms(row.item)" class="mr-2">
+                <v-icon name="refresh-cw"></v-icon>
             </b-button>    
 
             <!-- <b-button title="View" variant="primary" size="sm" @click="showSdp(row.item)" class="mr-2">
@@ -121,7 +121,7 @@ gst-launch-1.0 \
                 <v-icon name="stop-circle"></v-icon>
             </b-button>
 
-            <b-dropdown size="sm" variant="primary" id="dropdown-1" text="Actions" class="m-md-2">
+            <b-dropdown size="sm" variant="secondary" id="dropdown-1" text="Actions" class="m-md-2">
                 <b-dropdown-item variant="primary" @click="showSdp(row.item)">
                     <v-icon name="eye"></v-icon> - VMS View
                 </b-dropdown-item>
@@ -302,10 +302,13 @@ export default {
         restartVms (vms) {
             this.isLoading = true
             
+            console.log(vms)
+
             let form = {
                 name: vms.name,
                 vmsType: vms.vmsType._id,
                 startupParameters: vms.startupParameters,
+                portForward: vms.portForward,
                 id: vms._id,
                 node: vms.node._id,
                 nodeIp: vms.node.ip

@@ -38,11 +38,11 @@ RUN apt-get install -y --fix-missing \
     gstreamer1.0-plugins-bad \ 
     && apt-get clean && rm -rf /tmp/* /var/tmp/*
 
-RUN cd ~ && \
-    mkdir -p dlib && \
-    git clone -b 'v19.9' --single-branch https://github.com/davisking/dlib.git dlib/ && \
-    cd  dlib/ && \
-    python3 setup.py install --yes USE_AVX_INSTRUCTIONS
+# RUN cd ~ && \
+#     mkdir -p dlib && \
+#     git clone -b 'v19.9' --single-branch https://github.com/davisking/dlib.git dlib/ && \
+#     cd  dlib/ && \
+#     python3 setup.py install --yes USE_AVX_INSTRUCTIONS
 
 
 # The rest of this file just runs an example script.
@@ -62,7 +62,6 @@ RUN python -m pip install --upgrade pip
 RUN pip3 install paho-mqtt
 RUN pip3 install opencv-python
 RUN pip3 install numpy==1.15.4
-RUN pip3 install face_recognition
 
 RUN apt-get install -y --fix-missing libgirepository1.0-dev
 RUN pip install --no-binary gobject PyGObject 
@@ -71,6 +70,6 @@ RUN apt-get install -y --fix-missing \
     tcpdump \
     net-tools
 
-COPY . /root/face_counter
+COPY . /root/video_qrcode_detection
 
-ENTRYPOINT ["./root/face_counter/start.sh"]
+ENTRYPOINT ["./root/video_qrcode_detection/start.sh"]

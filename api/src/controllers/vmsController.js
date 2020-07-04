@@ -152,7 +152,7 @@ const vmsController = {
       });
     },
 
-    // Start and recreate a VMS    
+    // Start or recreate a VMS
     post: async (req, res, next) => {
 
       let nodeIp = req.body.nodeIp; // Retrieve the actual ip
