@@ -33,7 +33,7 @@ function installAudioSample {
     cecho "GREEN" 
     cd ./device/audio_sample/
     docker build . -t alfa/device/audio_sample    
-    cd ..
+    cd ../../
 }
 
 function installUsbCamera {
@@ -44,7 +44,7 @@ function installUsbCamera {
     cecho "GREEN" 
     cd ./device/camera_usb/
     docker build . -t alfa/device/camera_usb    
-    cd ..
+    cd ../../
 }
 
 function installRtsp {
@@ -56,7 +56,7 @@ function installRtsp {
 
     cd ./device/rtsp_to_udp/
     docker build . -t alfa/device/rtsp_to_udp
-    cd ..
+    cd ../../
 } 
 
 function installVideoSample {
@@ -67,7 +67,7 @@ function installVideoSample {
     cecho "GREEN" 
     cd ./device/video_sample/
     docker build . -t alfa/device/video_sample
-    cd ..
+    cd ../../
 }
 
 function installMicUsb {
@@ -78,7 +78,7 @@ function installMicUsb {
     cecho "GREEN" 
     cd ./device/mic_device/
     docker build . -t alfa/device/mic_device
-    cd ..
+    cd ../../
 }
 
 function installUdpToUdp {
@@ -89,7 +89,7 @@ function installUdpToUdp {
     cecho "GREEN" 
     cd ./vms/udp_to_udp/
     docker build . -t alfa/vms/udp_to_udp
-    cd ..
+    cd ../../
 }
 
 function installGrayscale {
@@ -100,7 +100,7 @@ function installGrayscale {
     cecho "GREEN" 
     cd ./vms/udp_video_black_white/
     docker build . -t alfa/vms/udp_video_black_white    
-    cd ..
+    cd ../../
 }
 
 function installVideoCrop {
@@ -111,7 +111,7 @@ function installVideoCrop {
     cecho "GREEN" 
     cd ./vms/udp_video_crop
     docker build . -t alfa/vms/udp_video_crop
-    cd ..
+    cd ../../
 }
 
 function installNoiseDetector {
@@ -122,7 +122,7 @@ function installNoiseDetector {
     cecho "GREEN" 
     cd ./vms/noise_detector
     docker build . -t alfa/vms/noise_detector   
-    cd .. 
+    cd ../../ 
 }
 
 function installVideoMerge {
@@ -133,7 +133,7 @@ function installVideoMerge {
     cecho "GREEN" 
     cd ./vms/video_merge
     docker build . -t alfa/vms/video_merge    
-    cd ..
+    cd ../../
 }
 
 function installFaceCounter {
@@ -144,7 +144,7 @@ function installFaceCounter {
     cecho "GREEN" 
     cd ./vms/face_counter
     docker build . -t alfa/vms/face_counter   
-    cd .. 
+    cd ../../ 
 }
 
 function installUdpFlex {
@@ -155,7 +155,7 @@ function installUdpFlex {
     cecho "GREEN" 
     cd ./vms/udp_flex
     docker build . -t alfa/vms/udp_flex
-    cd ..
+    cd ../../
 }
 
 function installVideoQrcode {
@@ -166,7 +166,7 @@ function installVideoQrcode {
     cecho "GREEN" 
     cd ./vms/video_qrcode_detection
     docker build . -t alfa/vms/video_qrcode_detection
-    cd ..
+    cd ../../
 }
 
 while [ 1 ]
