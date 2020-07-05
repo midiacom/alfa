@@ -160,7 +160,8 @@ const bootstrapController = {
             connectionParameters: '18',
             description: '',
             location: loc._id,
-            node: edgeNodeLocal._id
+            node: edgeNodeLocal._id,
+            outputType: 'Video'
         }).save();
 
         const device1 = await new deviceModel({
@@ -170,7 +171,8 @@ const bootstrapController = {
             connectionParameters: '13',
             description: '',
             location: loc._id,
-            node: edgeNodeLocal._id
+            node: edgeNodeLocal._id,
+            outputType: 'Video'
         }).save();
 
         const device2 = await new deviceModel({
@@ -180,7 +182,8 @@ const bootstrapController = {
             connectionParameters: '',
             description: '',
             location: loc._id,
-            node: edgeNodeLocal._id
+            node: edgeNodeLocal._id,
+            outputType: 'Video'
         }).save();
 
         const device3 = await new deviceModel({
@@ -190,7 +193,8 @@ const bootstrapController = {
             connectionParameters: '/dev/video0',
             description: '',
             location: loc._id,
-            node: edgeNodeLocal._id
+            node: edgeNodeLocal._id,
+            outputType: 'Video'
         }).save();
 
         const device4 = await new deviceModel({
@@ -200,7 +204,8 @@ const bootstrapController = {
             connectionParameters: 'rtsp://192.168.0.102:8080/h264_ulaw.sdp',
             description: '',
             location: loc._id,
-            node: edgeNodeLocal._id
+            node: edgeNodeLocal._id,
+            outputType: 'Video'
         }).save();
 
         const device5 = await new deviceModel({
@@ -210,7 +215,8 @@ const bootstrapController = {
             connectionParameters: 'hw:0',
             description: '',
             location: loc._id,
-            node: edgeNodeLocal._id
+            node: edgeNodeLocal._id,
+            outputType: 'Video'
         }).save();
         
         return res.status(201).json("{ok:ok}");
