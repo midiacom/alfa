@@ -70,6 +70,11 @@ RUN apt-get install -y --fix-missing \
     tcpdump \
     net-tools
 
+RUN apt-get install -y \
+    net-tools \
+    iputils-ping \
+    iproute
+
 COPY . /root/video_qrcode_detection
 
 ENTRYPOINT ["./root/video_qrcode_detection/start.sh"]
