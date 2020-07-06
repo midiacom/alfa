@@ -32,7 +32,7 @@ d2 = net.addDocker(
     port_bindings={'5000/udp':11002},
     ports=[(5000, 'udp')],
     publish_all_ports=True,
-    cpuset_cpus="4")
+    cpuset_cpus="1")
 
 d3 = net.addDocker(
     'd3', 
@@ -42,7 +42,7 @@ d3 = net.addDocker(
     port_bindings={'5000/udp':11003},
     ports=[(5000, 'udp')],
     publish_all_ports=True,
-    cpuset_cpus="2")
+    cpuset_cpus="1")
 
 d4 = net.addDocker(
     'd4', 
@@ -61,10 +61,10 @@ info('*** Creating links\n')
 # net.addLink(s1, s2, cls=TCLink, bw=1, delay='0ms', loss=5)
 # net.addLink(s1, s2, cls=TCLink, bw=1, delay='0ms')
 
-net.addLink(d1, s1, cls=TCLink, bw=100,     delay='1ms')
-net.addLink(d2, s1, cls=TCLink, bw=0.1,     delay='400ms')
-net.addLink(d3, s1, cls=TCLink, bw=0.5,     delay='800ms')
-net.addLink(d4, s1, cls=TCLink, bw=5,       delay='20ms')
+net.addLink(d1, s1, cls=TCLink, bw=100,     delay='0ms')
+net.addLink(d2, s1, cls=TCLink, bw=100,       delay='50ms')
+net.addLink(d3, s1, cls=TCLink, bw=100,       delay='50ms')
+net.addLink(d4, s1, cls=TCLink, bw=100,       delay='50ms')
 
 info('*** Starting network\n')
 net.start()
@@ -74,6 +74,7 @@ net.pingAll()
 
 time.sleep(2)
 
+# colocar aqui um loop e coletar os dados de log dos containers para fazer vários testes
 d1.cmd("/vol1/send_video.sh")
 
 info('*** Running CLI\n')

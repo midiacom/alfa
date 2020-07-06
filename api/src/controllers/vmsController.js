@@ -686,9 +686,9 @@ const vmsController = {
     vmsModel.findOne(filter)
     .then(vms => {
       // store only the last 60 monit messages
-      if (vms.monitor && vms.monitor.length > 60) {
-        let a = vms.monitor.shift()
-      }
+      // if (vms.monitor && vms.monitor.length > 60) {
+      //   let a = vms.monitor.shift()
+      // }
 
       vms.monitor.push(monitTmp)
 
