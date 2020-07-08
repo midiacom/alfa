@@ -61,7 +61,7 @@ info('*** Creating links\n')
 # net.addLink(s1, s2, cls=TCLink, bw=1, delay='0ms', loss=5)
 # net.addLink(s1, s2, cls=TCLink, bw=1, delay='0ms')
 
-net.addLink(d1, s1, cls=TCLink, bw=100,     delay='0ms')
+net.addLink(d1, s1, cls=TCLink, bw=100,       delay='0ms', loss=5)
 net.addLink(d2, s1, cls=TCLink, bw=100,       delay='50ms')
 net.addLink(d3, s1, cls=TCLink, bw=100,       delay='50ms')
 net.addLink(d4, s1, cls=TCLink, bw=100,       delay='50ms')

@@ -32,7 +32,7 @@ gst-launch-1.0 filesrc location=/home/battisti/versionado/alfa/docs/teste/out.mp
     ! video/x-raw,framerate=5/1, width=200,height=200 \
     ! x264enc \
     ! rtph264pay \
-    ! udpsink host=34.228.235.248 port=10002
+    ! udpsink host=34.229.238.4 port=10003
 
 gst-launch-1.0 filesrc location=./out.mp4 \
     ! decodebin \

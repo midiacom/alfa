@@ -60,8 +60,16 @@ gst-launch-1.0 \
         striped 
         responsive="sm">
 
-        <template v-slot:cell(vmsType)="row" align-v="center">
-            {{row.item.vmsType.name}}
+        <template v-slot:cell(vmsType)="row" align-v="center">            
+            <span v-if="row.item.vmsType">
+                {{ row.item.vmsType.name }}
+            </span>
+            <span v-else>
+                <b-alert show variant="warning">
+                    VMS Type not found
+                </b-alert>                
+            </span>
+
         </template>
 
         <template v-slot:cell(startupParameters)="row">
@@ -81,9 +89,10 @@ gst-launch-1.0 \
         </template>
 
         <template v-slot:cell(node)="row">
-            {{ row.item.node.name }} / {{ row.item.node.ip }}
+            <span v-if="row.item.node">
+                {{ row.item.node.name }} / {{ row.item.node.ip }}
+            </span>
         </template>
-
 
       <template v-slot:cell(actions)="row">
             
