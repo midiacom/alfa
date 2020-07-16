@@ -59,7 +59,7 @@ gst-launch-1.0 \
     ! udpsink host=localhost port=10001
 
 Consume audio data 
-gst-launch-1.0 -v udpsrc port=15001 \
+gst-launch-1.0 -v udpsrc port=10001 \
 	! rawaudioparse use-sink-caps=false format=pcm pcm-format=s16le sample-rate=16000 num-channels=1 \
 	! queue \
 	! audioconvert \
@@ -74,7 +74,7 @@ Lauch program
 
 To create de dockerfile
 
-docker build . -t alfa/src/audio_sample
+docker build . -t alfa/device/audio_sample
 
 docker run alfa/src/audio_sample 123456
 
@@ -410,15 +410,21 @@ int addQueue(char* host, int port, char* dockerId) {
 int main(int argc, char *argv[])
 {
 
-	if (argc != 2)
+	if (argc != 3)
 	{
-		g_printerr("Usage: deviceId\n");
+		g_printerr("Usage: deviceId mp3_file_name\n");
 		return -1;
 	}
 
 	const char *addr = "mosquitto";
 	const char *port = "1883";
 	const char *topic = argv[1]; // this is the ID of
+	const char *mp3file = argv[2]; // this is the ID of
+
+	printf("-----");
+	printf("%s\n", topic);
+	printf("%s\n", mp3file);
+
 
 	/* open the non-blocking TCP socket (connecting to the broker) */
 	int sockfd = open_nb_socket(addr, port);
@@ -461,7 +467,7 @@ int main(int argc, char *argv[])
 	src = gst_element_factory_make("multifilesrc", NULL);
 	my_tee = gst_element_factory_make("tee", "tee");
 
-	g_object_set(src, "location", "sample.mp3", NULL);
+	g_object_set(src, "location", mp3file, NULL);
 
 	if (!pipeline || !src || !my_tee)
 	{

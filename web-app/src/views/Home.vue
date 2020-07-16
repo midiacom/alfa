@@ -64,6 +64,7 @@
               VMS
             </strong>
         </b-card-title>
+        <hr/>
         <b-card-text>
           <ul>
             <li>
@@ -76,9 +77,63 @@
         </b-button>
       </b-card>
 
+      <b-card bg-variant="light" text-variant="black">
+        <b-card-title>            
+            <strong>
+              <v-icon name="command"></v-icon>
+              Edge Nodes
+            </strong>
+        </b-card-title>
+        <hr/>
+        <b-card-text>
+          <ul>
+            <li>
+              <strong>Deployed:</strong> {{ node.total }}
+            </li>
+            <li>
+              <strong>Running:</strong> {{ node.running }}
+            </li>
+          </ul>
+        </b-card-text>
+        <b-button to="/vms/allvms" variant="success" class="mr-2">
+          List Edge Nodes
+        </b-button>
+      </b-card>
+
    </b-card-group>
 
+  <hr/>
 
+  <div>
+  <b-row>
+    <b-col style="text-align:center">
+      <b-button variant="info"  v-b-toggle.sidebar-right>
+        <v-icon name="help-circle"></v-icon>
+        More Informations
+      </b-button>
+      <b-sidebar width="30%" id="sidebar-right" title="" right shadow>
+        <div class="px-3 py-2">
+          <h4 style="text-align:center">ALFA - IoMT Manager</h4>
+          <h5 style="text-align:center">A V-PRISM Implementation</h5>
+          <p style="text-align:center">
+            <b-img src="logo_vprism_color.png" width="100%"></b-img>
+          </p>
+          <p>
+            Multimedia sensors have recently become a major data source in the Internet of Things (IoT), 
+            giving rise to the Internet of Media Things (IoMT). Since multimedia applications are usually latency-sensitive, 
+            data processing in the cloud is not always practical. A strategy to minimize delay is to
+            process the multimedia streams closer to the data sources, 
+            exploiting the resources at the edge of the network. V-PRISM, is an architecture to virtualize 
+            and manage multimedia sensors with components deployed and executed in multiples edge nodes.
+            The entity that processes the multimedia stream is called Virtual Multimedia Sensor (VMS),
+            and they can be dynamically allocated by the execution of different types of resource allocation algorithm.
+          </p>
+          <a href="https://github.com/anselmobattisti/alfa" class="card-link">More Informations </a>
+        </div>
+      </b-sidebar>
+    </b-col>
+  </b-row>      
+  </div>
 
   </div>
     
@@ -101,6 +156,7 @@
 
 import {apiLocation} from './location/api'
 import {apiDevice} from './device/api'
+import {apiNode} from './node/api'
 import {apiVms} from './vms/api'
 import {config} from '../config'
 
@@ -117,6 +173,10 @@ export default {
           vms: {
             total: 0,
             started: 0
+          },
+          node: {
+            total: 0,
+            running: 0
           }
       }
   },  
@@ -151,6 +211,17 @@ export default {
         .then((data) => {
           this.vms.total = data.length
         })*/
+
+      apiNode.getNodes()
+        .then((data) => {
+          this.node.total = data.length
+
+          data.forEach((value) => {
+            if (value.online == true) {
+              this.node.running++;
+            }
+          });
+        })
 
       apiLocation.getLocations()
           .then((data) => {

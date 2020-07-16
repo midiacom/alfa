@@ -4,7 +4,7 @@
       <b-row id="head">
         <div>
           <img style="float:left;" src="prism.png"> 
-          <div style="font-size: 40px; float:left; margin-top:3px;"><em>&nbsp;V-PRISM Manager</em></div>
+          <div style="font-size: 40px; float:left; margin-top:3px;"><em>&nbsp;ALFA - IoMT Manager </em></div>
         </div>
       </b-row>
       <b-row>        
