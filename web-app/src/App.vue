@@ -64,8 +64,6 @@
                 </li>                             
               </ul>
             </li>
-
-            <hr/>
             <li>
               <a target="_blank" href="https://github.com/anselmobattisti/alfa">
                 <v-icon name="github"></v-icon>

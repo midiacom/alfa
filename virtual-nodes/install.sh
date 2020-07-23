@@ -172,8 +172,8 @@ function installVideoQrcode {
 while [ 1 ]
 do
 CHOICE=$(
-whiptail --title "Install VMS and Virtual Devices" --menu "What do you whant to install?" 17 50 8 \
-    "0)" "All Virtual Device  & VMS."   \
+whiptail --title "Install VMS and Virtual Devices" --menu "What do you want to install?" 17 50 8 \
+    "0)" "All Virtual Device and VMS."   \
 	"1)" "Audio Sample [Virtual Device]."   \
     "2)" "USB Camera [Virtual Device]."   \
 	"3)" "RTSP to USP [Virtual Device]."   \

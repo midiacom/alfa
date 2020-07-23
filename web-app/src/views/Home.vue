@@ -2,9 +2,9 @@
   <div class="home">
 
     <h2 class="text-center">
-      <v-icon style="width: 48px;" name="bar-chart"></v-icon>
       Dashboard
     </h2>
+    <hr>
 
     <b-alert :show="showMsg" variant="danger">
       <h3>Important!</h3>
@@ -70,9 +70,12 @@
             <li>
               <strong>Created:</strong> {{ vms.started }}
             </li>
+            <li>
+              <strong>Running:</strong> #
+            </li>
           </ul>
         </b-card-text>
-        <b-button to="/vms/allvms" variant="success" class="mr-2">
+        <b-button to="/vms/allvms" variant="success" class="mr-2 center">
           List VMS
         </b-button>
       </b-card>
@@ -80,7 +83,7 @@
       <b-card bg-variant="light" text-variant="black">
         <b-card-title>            
             <strong>
-              <v-icon name="command"></v-icon>
+              <v-icon name="git-commit"></v-icon>
               Edge Nodes
             </strong>
         </b-card-title>

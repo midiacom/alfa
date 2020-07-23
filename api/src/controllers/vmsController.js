@@ -213,8 +213,14 @@ const vmsController = {
               // programns running outside ALFA
               let containerPorts = {}
               let exposePorts = {}
-              if (portForward != undefined) {
+              console.log('sssssssssssss');
+
+              if (portForward.trim()) {
+                console.log('entrou errado');
+                
                 let ports = portForward.split(";")
+                console.log(ports);
+                
                 ports.forEach(port => {
                   let p = port.split(":")
                   let aux_index = `${p[1]}/udp`
