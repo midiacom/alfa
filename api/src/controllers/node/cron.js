@@ -57,13 +57,13 @@ const cron = {
                                     node.save()
                                 })
                                 .catch(err => {
-                                    console.log('A');                                    
-                                    // console.log(err)
+                                    // console.log('A');                                    
+                                    console.log(err)
                                 });
                             })
                             .catch(err => {
-                                console.log('B');
-                                // console.log(err)
+                                // console.log('B');
+                                console.log(err)
                             });
 
                     })     
