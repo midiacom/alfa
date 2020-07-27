@@ -28,7 +28,8 @@ const bootstrapController = {
             description: 'This will get the video from usb and send via UDP to the VMS',
             src: 1,
             sdp: '',
-            outputType: 'video'
+            outputType: 'video',
+            node: edgeNodeLocal._id
         }).save();
         
         const vmsTypeSrc1 = await new vmsTypeModel({
@@ -38,7 +39,8 @@ const bootstrapController = {
             description: 'This will get the video from as RTSP server and send via UDP to the VMS',
             src: 1,
             sdp: '',
-            outputType: 'video'
+            outputType: 'video',
+            node: edgeNodeLocal._id
         }).save();
 
         const vmsTypeSrc2 = await new vmsTypeModel({
@@ -48,7 +50,8 @@ const bootstrapController = {
             description: 'This is a simple video sample test',
             src: 1,
             sdp: '',
-            outputType: 'video'
+            outputType: 'video',
+            node: edgeNodeLocal._id
         }).save();
 
         const vmsTypeSrc3 = await new vmsTypeModel({
@@ -58,7 +61,8 @@ const bootstrapController = {
             description: 'This is a simple audio sample test',
             src: 1,
             sdp: '',
-            outputType: 'audio'
+            outputType: 'audio',
+            node: edgeNodeLocal._id
         }).save();
 
         const vmsTypeSrc4 = await new vmsTypeModel({
@@ -68,7 +72,8 @@ const bootstrapController = {
             description: 'This is get the audio from a local mic',
             src: 1,
             sdp: '',
-            outputType: 'audio'
+            outputType: 'audio',
+            node: edgeNodeLocal._id
         }).save();
 
         // Create the VMS types
