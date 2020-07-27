@@ -31,6 +31,8 @@ The final result of this project can be seen in the above images.
 
 *Note:*  If you are installing ALFA in a Raspberry, you will need to make some changes in environments variables. Follow this steps https://github.com/midiacom/alfa/wiki/Install-in-a-Raspberry-3
 
+For more information consult the WIKI https://github.com/midiacom/alfa/wiki
+
 ## NPM
 You will need to install NPM in the machine that will run the api.
 
@@ -82,7 +84,6 @@ Be default the Docker API to port: 2375 if you need another port then change the
 ```
 docker network create --driver overlay --attachable alfa_swarm_overlay1
 ```
-
 
 ### Docker Compose
 
@@ -181,7 +182,9 @@ a=fmtp:96 media=video; clock-rate=90000; encoding-name=H264; sprop-parameter-set
 Install GStreamer on Ubuntu or Debian
 Run the following command:
 
+```
 apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio gstreamer1.0-libav
+```
 
 More details here 
 https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-language=c
@@ -210,14 +213,6 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 * Create a way do remove gst_bin_remove_many elements from SRC queue (when stop the VMS)
 * Test if using TCP instead of UDP is a better way to communicate VMS and SRC. In this scenario VMS will be the client and SRC will be the server and the bind function will call the VMS to start a new TCP communication with the SRC.
 * The binded to column needs to be changed because now a vms can be binded to two or more SRC
-
-## Roadmap
-
-* API
-* Web Interface
-* Plugins: here are some essential plugins that can be used as a template to your own plugins
-* FIWARE Integration
-* Cli
 
 # How to Cite This Work 
 
