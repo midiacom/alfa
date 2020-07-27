@@ -228,6 +228,12 @@ https://gstreamer.freedesktop.org/documentation/installing/on-linux.html?gi-lang
 }
 </pre>
 
+# Team 
+
+* Anselmo Luiz Éden Battisti - http://lattes.cnpq.br/6937214674204474
+* Flávia Coimbra Delicato - http://lattes.cnpq.br/5386282151810710
+* Debora Christina Muchaluat Saade - http://lattes.cnpq.br/2448703093928632
+
 # Video Tutorials (in Portuguese)
 
 ## Quick demo
@@ -255,6 +261,5 @@ https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be
 
 * http://tordwessman.blogspot.com/2013/06/gstreamer-tee-code-example.html
 Example dynamic pad
-
 
 * https://stackoverflow.com/questions/45700653/can-my-docker-container-app-access-the-hosts-microphone-and-speaker-mac-wind/48795232 Map a mic inside a docker container
