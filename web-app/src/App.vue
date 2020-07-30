@@ -59,7 +59,7 @@
                 <li class="subMenu">
                   <router-link to="/vmsType/indexSrc">
                     <v-icon name="cast"></v-icon>
-                    Devices
+                    VD
                   </router-link>
                 </li>                             
               </ul>
