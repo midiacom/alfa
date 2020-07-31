@@ -1,12 +1,28 @@
+const docker = require("../util/dockerApi")
 const deviceModel = require("../models/deviceModel")
+const vmsModel = require("../models/vmsModel")
 const locationModel = require("../models/locationModel")
 const vmsTypeModel = require("../models/vmsTypeModel")
 const nodeModel = require("../models/nodeModel")
 
-const docker = require("../util/dockerApi")
+const configurationController = {
 
-const bootstrapController = {
-    boot: async (req, res, next) => {
+    cleanDb: async (req, res, next) => {
+
+        await deviceModel.deleteMany()
+
+        await vmsModel.deleteMany()
+        
+        await locationModel.deleteMany();
+        
+        await vmsTypeModel.deleteMany();
+        
+        await nodeModel.deleteMany()
+
+        return res.status(201).json("ok");
+    },
+
+    bootstrap: async (req, res, next) => {
 
         // create the location 
         let loc = await new locationModel({
@@ -245,6 +261,7 @@ const bootstrapController = {
         }).save();
         
         return res.status(201).json("{ok:ok}");
-    }
-}    
-module.exports = bootstrapController
+    }    
+}
+
+module.exports = configurationController

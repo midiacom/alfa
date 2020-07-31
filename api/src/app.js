@@ -14,6 +14,7 @@ const vmsTypeRoutes  = require('./routes/vmsTypeRoutes');
 const vmsRoutes      = require('./routes/vmsRoutes');
 const nodesRoutes    = require('./routes/nodeRoutes');
 const maestroRoutes    = require('./routes/maestroRoutes');
+const configurationRoutes    = require('./routes/configurationRoutes');
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
@@ -40,6 +41,8 @@ app.use('/vms', vmsRoutes);
 app.use('/node', nodesRoutes);
 
 app.use('/maestro', maestroRoutes);
+
+app.use('/configuration', configurationRoutes);
 
 app.use('/', index);
 

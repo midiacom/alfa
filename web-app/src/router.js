@@ -11,6 +11,12 @@ export default new Router({
       name: 'home',
       component: Home
     },
+    // Configurations ROUTES    
+    {
+      path: '/configuration',
+      name: 'configurationIndex',
+      component: () => import(/* webpackChunkName: "locationIndex" */ './views/configuration/Index.vue')
+    },
     // LOCATION ROUTES    
     {
       path: '/location',

@@ -64,6 +64,14 @@
                 </li>                             
               </ul>
             </li>
+            
+            <li>
+              <router-link to="/configuration">
+                <v-icon name="settings"></v-icon>
+                Configurations
+              </router-link>
+            </li>
+
             <li>
               <a target="_blank" href="https://github.com/anselmobattisti/alfa">
                 <v-icon name="github"></v-icon>
