@@ -185,7 +185,7 @@ export default {
   },  
   methods: {
     bootstrap () {
-      config.api.get(`/bootstrap`)
+      config.api.get(`/configuration/bootstrap`)
         .then(() => {
           this.showMsg = false;
           this.refresh()

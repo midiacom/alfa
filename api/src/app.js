@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser')
 const db = require('./db/connect');
-const bootstrap = require('./controllers/bootstrap');
 
 const router = express.Router();
 
@@ -45,11 +44,5 @@ app.use('/maestro', maestroRoutes);
 app.use('/configuration', configurationRoutes);
 
 app.use('/', index);
-
-app.get('/bootstrap', (req, res, next) => {
-
-  return bootstrap.boot(req, res, next)
-
-});
 
 module.exports = app;

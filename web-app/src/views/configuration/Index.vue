@@ -27,7 +27,7 @@
                 </b-card>
 
                 <b-card title="Import Data">
-                    <b-card-text>Import Data.</b-card-text>
+                    <b-card-text>Import the basic data from running ALFA, VMS Types, VD Types, Devices, Locations and Edge Nodes.</b-card-text>
                     <b-button variant="success" class="mr-2" @click="bootstrap()">
                         <v-icon name="trash"></v-icon>
                         Bootstrap
