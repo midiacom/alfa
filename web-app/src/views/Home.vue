@@ -38,7 +38,7 @@
         <b-card-title>            
             <strong>
               <v-icon name="cast"></v-icon>
-              Devices
+              Virtual Devices
             </strong>
         </b-card-title>
         <hr/>
@@ -53,7 +53,7 @@
           </ul>
         </b-card-text>
         <b-button to="/device" variant="success" class="mr-2">
-          List Devices
+          List Virtual Devices
         </b-button>
       </b-card>
 

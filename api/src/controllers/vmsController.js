@@ -215,7 +215,7 @@ const vmsController = {
               let exposePorts = {}
               console.log('sssssssssssss');
 
-              if (portForward.trim()) {
+              if (portForward && portForward.trim()) {
                 console.log('entrou errado');
                 
                 let ports = portForward.split(";")

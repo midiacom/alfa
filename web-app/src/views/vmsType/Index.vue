@@ -27,17 +27,15 @@
       <template v-slot:cell(actions)="row">
             <b-button variant="success" size="sm" @click="newVms(row.item)" class="mr-2">
                 <v-icon name="play-circle"></v-icon>
-                New VMS
+                Start
             </b-button>
 
             <b-button variant="primary" size="sm" @click="editVmsType(row.item)" class="mr-2">
                 <v-icon name="edit-2"></v-icon>
-                Edit
             </b-button>
 
             <b-button variant="danger" size="sm" @click="removeVmsType(row.item)" class="mr-2">
                 <v-icon name="trash"></v-icon>
-                Remove
             </b-button>
       </template>        
 
@@ -128,7 +126,7 @@ export default {
 
 <style>
     .vmsTypeIndexActions {
-        width: 430px;
+        width: 240px;
         text-align: center;
     }
 </style>

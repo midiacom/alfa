@@ -10,7 +10,7 @@
         <b-col class="text-right">
             <b-button to="/location/new" variant="success" class="mr-2">
                 <v-icon name="plus"></v-icon>
-                New
+                New Location
             </b-button>    
         </b-col>
     </b-row>
@@ -23,18 +23,16 @@
       <template v-slot:cell(actions)="row">
         <b-button variant="primary" size="sm" @click="editLocation(row.item)" class="mr-2">
             <v-icon name="edit-2"></v-icon>
-            Edit
+        </b-button>
+
+        <b-button variant="danger" size="sm" @click="removeLocation(row.item)" class="mr-2">
+            <v-icon name="trash"></v-icon>
         </b-button>
 
         <b-button variant="warning" size="sm" @click="devicesLocation(row.item)" class="mr-2">
             <v-icon name="cpu"></v-icon>
             Devices
-        </b-button>
-
-        <b-button variant="danger" size="sm" @click="removeLocation(row.item)" class="mr-2">
-            <v-icon name="trash"></v-icon>
-            Remove
-        </b-button>
+        </b-button>        
       </template>        
 
         <div slot="table-busy" class="text-center text-danger my-2">
@@ -122,7 +120,7 @@ export default {
 
 <style>
     .locationIndexActions {
-        width: 380px;
+        width: 285px;
         text-align: center;
     }
 </style>

@@ -389,7 +389,7 @@ export default {
 
 <style>
     .vmsIndexActionsStopped {
-        width: 310px;
+        width: 315px;
         text-align: center;
     }
 </style>

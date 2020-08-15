@@ -32,7 +32,7 @@
       </template>
       
       <template v-slot:cell(node)="data">
-          {{ data.item.node.name }} / {{ data.item.node.ip }}
+          <span v-b-tooltip.hover :title=data.item.node.name>{{ data.item.node.ip }}</span>
       </template>
 
       <template v-slot:cell(actions)="row">
@@ -99,7 +99,8 @@ export default {
                 key:'location'
             },{
                 key:'node',
-                label: 'Edge Node'
+                label: 'Edge Node',
+                class: 'edgeNodeCol'
             },{
                 key:'actions',
                 class: 'deviceIndexActions'
@@ -122,7 +123,7 @@ export default {
             apiDevice.stopSrcDevice(device._id)
                 .then(() => {
                     this.refresh()
-                    this.msg.text = "Device SRC stopped"
+                    this.msg.text = "Virtual Device Stopped"
                     this.msg.type = "success"
                     this.msg.show = true
 
@@ -139,7 +140,7 @@ export default {
             apiDevice.starSrcDevice(device._id)
                 .then(() => {
                     this.refresh()
-                    this.msg.text = "Device SRC started"
+                    this.msg.text = "Virtual Device started"
                     this.msg.type = "success"
                     this.msg.show = true
                 })
@@ -205,4 +206,8 @@ export default {
         width: 250px;
         text-align: center;
     }
+    .edgeNodeCol {
+        width: 150px;
+        text-align: center;
+    }    
 </style>
