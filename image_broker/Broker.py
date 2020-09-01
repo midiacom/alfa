@@ -2,7 +2,7 @@
 # docker build . -t alfa/component/image_broker
 
 # Run container
-# docker run --name image_broker alfa/component/image_broker
+# docker run --name image_broker alfa/component/image_broker "tcp://172.17.0.1:5565" "tcp://172.17.0.1:5575"
 
 # docker 
 # This is the Broker component managing the communications among nodes
@@ -26,14 +26,16 @@ parser.add_argument("--dlo", help="List of IP where the DLO VMSs are running, ex
 
 args = parser.parse_args()
 
-# print(args.flo)
-# print(args.dlo)
-
 flo_urls = args.flo.split(';')
 dlo_urls = args.dlo.split(';')
 
-# print(flo_urls)
-# print(dlo_urls)
+# print("FLO")
+# print(args.flo, flush=True)
+# print(flo_urls, flush=True)
+
+# print("DLO")
+# print(args.dlo, flush=True)
+# print(dlo_urls, flush=True)
 
 # sys.exit()
 
@@ -123,7 +125,6 @@ def main(mode=UNICAST):
     try:
         while True:
             node_name, jpg_buffer = image_hub.recv_jpg()
-            print("1")
             image_hub.send_reply()
             if mode == UNICAST:
                 imq.put((node_name, jpg_buffer))

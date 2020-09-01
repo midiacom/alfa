@@ -2,6 +2,8 @@ FROM python:3.6-slim-stretch
 
 RUN apt-get -y update
 RUN apt-get -y install iputils-ping
+RUN apt-get -y install procps
+
 RUN pip3 install imagezmq
 
 COPY ./start.sh .
