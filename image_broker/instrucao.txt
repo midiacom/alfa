@@ -1,0 +1,12 @@
+1 - iniciar o broker
+    python3 Broker.py
+
+2 - iniciar o mlo
+    captura a imagem da camera e enviar para o hub dentro do broker
+
+3 - iniciar o flo 
+    se conecta ao broker e pega a imagem dele processa e republica no broker
+
+4 - iniciar o dlo 
+    recebe a imagem do broker e 
+    Exibe a imagem 
