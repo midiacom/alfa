@@ -1,3 +1,16 @@
+'''
+Send video
+gst-launch-1.0  videotestsrc pattern=ball \
+     ! tee name=t \
+     ! queue \
+     ! decodebin \
+     ! x264enc \
+     ! rtph264pay \
+     ! udpsink host=localhost port=5000
+
+python3 mlo.py --IP=tcp://172.17.0.1:5555
+'''
+
 import cv2
 import numpy as np
 import gi
