@@ -1,54 +1,13 @@
-'''
-send video to container
-gst-launch-1.0 filesrc location=/home/battisti/versionado/alfa/alfa/plugins/face_counter/test4.mp4 \
-    ! decodebin \
-    ! videoscale \
-    ! video/x-raw,width=800,height=600 \
-    ! x264enc \
-    ! rtph264pay \
-    ! udpsink port=10001 host=172.17.0.2
-
-send video to machine
-gst-launch-1.0 filesrc location=/home/battisti/versionado/alfa/alfa/plugins/face_counter/test4.mp4 \
-    ! decodebin \
-    ! videoscale \
-    ! video/x-raw,width=800,height=600 \
-    ! x264enc \
-    ! rtph264pay \
-    ! udpsink port=10001
-
-play video
-gst-launch-1.0 \
-    udpsrc port=10001 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" \
-    ! queue2 max-size-bytes=65536 max-size-buffers=65536 max-size-time=10 \
-    ! rtph264depay \
-    ! decodebin \
-    ! videoconvert \
-    ! autovideosink
-
-docker build . -t alfa/plugin/face_counter
-docker run --name face_counter alfa/plugin/face_counter
-docker run -it alfa/plugin/face_counter sh 
-
-docker run alfa/plugin/face_counter 172.17.0.1 5000
-
-python /root/face_counter/face_counter.py xyz 172.17.0.1 1883
-
-python3 face_counter.py tx 172.17.0.1 1883
-
-
-# start python server python3 -m http.server 80
-# CMD python3 /root/face_recognition/face_counter.py
-# python /root/face_counter/face_counter.py
-
-'''
-
 import cv2
 import numpy as np
-import face_recognition
-import paho.mqtt.publish as publish
 import gi
 import sys
+import socket
+import time
+import traceback
+import argparse
+import imagezmq
+
 
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
@@ -180,27 +139,29 @@ if __name__ == '__main__':
     # Add port= if is necessary to use a different one
     video = Video()
 
-    mqtt_topic = sys.argv[1]
-    mqtt_hostname = sys.argv[2]
-    mqtt_port = sys.argv[3]    
+    parser = argparse.ArgumentParser("MLO Example")
+    parser.add_argument("--IP", help="IP and PORT where the image broker is running. Example: tcp://IP:PORT;IP:PORT.", type=str)
+    args = parser.parse_args()
+
+    sender = imagezmq.ImageSender(connect_to=args.IP)
+
+    node_name = socket.gethostname()  # send RPi hostname with each image
+
+    jpeg_quality = 90  # 0 to 100, higher is better quality, 95 is cv2 default
 
     while True:
         # Wait for the next frame
         if not video.frame_available():
             continue
 
+        time.sleep(0.1)
+
         frame = video.frame()
         
-        frame.setflags(write=True)
+        ret_code, jpg_buffer = cv2.imencode(
+            ".jpg", frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])                
 
-        # Find all the faces in the image using the default HOG-based model.
-        # This method is fairly accurate, but not as accurate as the CNN model and not GPU accelerated.
-        # See also: find_faces_in_picture_cnn.py
-        face_locations = face_recognition.face_locations(frame)
-        
-        print("I found {} face(s) in this photograph.".format(len(face_locations)))
-
-        publish.single(mqtt_topic, str(len(face_locations)), hostname=mqtt_hostname, port=int(mqtt_port))
+        sender.send_jpg(node_name, jpg_buffer)
 
         # cv2.imshow('frame', frame)
         # if cv2.waitKey(1) & 0xFF == ord('q'):

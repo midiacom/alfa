@@ -21,8 +21,6 @@ args = parser.parse_args()
 
 broker_url = args.IP
 
-print(broker_url)
-
 # broker_url = 'tcp://172.17.0.1:5555'
 sender = imagezmq.ImageSender(connect_to=broker_url)
 
