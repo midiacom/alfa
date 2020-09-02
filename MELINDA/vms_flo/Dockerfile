@@ -1,6 +1,6 @@
 # This is a sample Dockerfile you can modify to deploy your own app based on face_recognition
 
-FROM python:3.6-slim-stretch
+FROM python:3.6.12-stretch
 
 RUN apt-get -y update
 RUN apt-get install -y --fix-missing \
@@ -23,6 +23,7 @@ RUN apt-get install -y --fix-missing \
     python3-dev \
     python3-numpy \
     software-properties-common \
+    zip \
     bash \
     python-gi \
     python-gi-cairo \
@@ -36,7 +37,7 @@ RUN apt-get install -y --fix-missing \
     gstreamer1.0-pulseaudio \
     gstreamer1.0-plugins-bad \ 
     && apt-get clean && rm -rf /tmp/* /var/tmp/*
-
+    
 RUN apt-get install -y --fix-missing \
     python3-gi \
     python3-gst-1.0
@@ -53,6 +54,10 @@ RUN apt-get install -y --fix-missing \
     tcpdump \
     net-tools
 
-COPY . /root/vms_mlo
+RUN pip3 install imagezmq
 
-ENTRYPOINT ["./root/vms_mlo/start.sh"]
+RUN pip3 install imutils
+
+COPY . /root/vms_flo
+
+ENTRYPOINT ["./root/vms_flo/start.sh"]
