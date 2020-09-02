@@ -23,7 +23,6 @@ RUN apt-get install -y --fix-missing \
     python3-dev \
     python3-numpy \
     software-properties-common \
-    zip \
     bash \
     python-gi \
     python-gi-cairo \
