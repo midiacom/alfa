@@ -213,13 +213,10 @@ const vmsController = {
               // programns running outside ALFA
               let containerPorts = {}
               let exposePorts = {}
-              console.log('sssssssssssss');
 
               if (portForward && portForward.trim()) {
-                console.log('entrou errado');
                 
                 let ports = portForward.split(";")
-                console.log(ports);
                 
                 ports.forEach(port => {
                   let p = port.split(":")

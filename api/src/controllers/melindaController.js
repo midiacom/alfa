@@ -6,6 +6,25 @@ const docker = require("../util/dockerApi")
 const melindaController = {
 
     /**
+     * startWorkflow
+     * 
+     * Save the maximum FPS of each VMS for each Edge Node
+     */
+    startWorkflow: async (req, res, next) => {
+        console.log(req.body);
+        
+        // a) Create the DLO VMSs
+
+        // b) Create the FLO VMSs
+
+        // c) Create the Image Broker using the ips as parameter
+
+        // d) Create the MLO VMSs
+
+        // e) Bind with the selected virtual device
+    },
+
+    /**
      * saveEdgeNodeFPS
      * 
      * Save the maximum FPS of each VMS for each Edge Node
@@ -27,7 +46,7 @@ const melindaController = {
                 node: nodeId,
                 vmsType: vmsTypeId
             })
-            
+
             await melindaFPS.save((err,node) => {
                 if (err) {
                     console.log(err)

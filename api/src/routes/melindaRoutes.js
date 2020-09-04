@@ -10,6 +10,8 @@ router.get('/vmstypes/:melindaType', melindaController.getMelindaVMS);
 
 router.get('/vmstypesfps/:vmsTypeId', melindaController.getMelindaVMSFPS);
 
+router.post('/startworkflow/', melindaController.startWorkflow);
+
 /*
 router.get('/', vmsTypeController.list);
 

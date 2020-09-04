@@ -9,7 +9,91 @@
             {{ msg.text }}
         </b-alert>
 
-        <h3>Configuratinos</h3>
+        <hr/>
+
+        <h3>Create a New Workflow</h3>
+
+        <b-form @submit="onSubmitStartWorkFlow">
+            <b-container class="bv-example-row">            
+                <!-- VMS MLO Type-->            
+                <b-row>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="MLO VMS:" label-for="mlo">
+                                            <b-form-select 
+                                    @input="onChangeVMSType(mloSelected, 'mlo')"
+                                    v-model="mloSelected" 
+                                    :options="MelindaVMSMlo" 
+                                    size="sm" ></b-form-select>
+                        </b-form-group>            
+                    </b-col>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="MLO Number:" label-for="mlo">
+                            <b-form-input style="width:100px" id="mlo_number" v-model="form.mlo_number" type="number" required/>
+                        </b-form-group>
+                    </b-col>
+                </b-row>
+
+                <!-- VMS FLO Type-->
+                <b-row>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="FLO VMS:" label-for="flo">
+                            <b-form-select 
+                                    @input="onChangeVMSType(floSelected, 'flo')"
+                                    v-model="floSelected" 
+                                    :options="MelindaVMSFlo" 
+                                    size="sm" ></b-form-select>
+                        </b-form-group>            
+                    </b-col>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="FLO Number:" label-for="flo">
+                            <b-form-input style="width:100px" id="flo_number" v-model="form.flo_number" type="number" required/>
+                        </b-form-group>
+                    </b-col>
+                </b-row>
+
+                <!-- VMS DLO Type-->
+                <b-row>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="DLO VMS:" label-for="dlo">
+                            <b-form-select 
+                                    @input="onChangeVMSType(dloSelected, 'dlo')"
+                                    v-model="dloSelected" 
+                                    :options="MelindaVMSDlo" 
+                                    size="sm" ></b-form-select>
+                        </b-form-group>            
+                    </b-col>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="DLO Number:" label-for="dlo">
+                            <b-form-input style="width:100px" id="dlo_number" v-model="form.dlo_number" type="number" required/>
+                        </b-form-group>
+                    </b-col>
+                </b-row>
+
+                <!-- VMS DLO Type-->
+                <b-row>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="Maximum FPS:" label-for="fps">
+                            <b-form-input style="width:100px" id="dlo_number" v-model="form.maxFPS" type="number" required/>
+                        </b-form-group>            
+                    </b-col>
+                    <b-col>
+                        <!-- <b-form-group id="input-group-1" label="DLO Number:" label-for="dlo">
+                            <b-form-input style="width:100px" id="dlo_number" v-model="form.dlo_number" type="number" required/>
+                        </b-form-group> -->
+                    </b-col>
+                </b-row>
+            </b-container>                
+
+            <b-row class="text-center">
+                <b-col>
+                    <b-button type="submit" variant="primary">Create Workflow</b-button>
+                </b-col>
+            </b-row>
+        </b-form>
+
+        <hr/>
+
+        <h3>Configurations</h3>
 
         <b-card-group deck>
             <b-card bg-variant="light"  text-variant="black">
@@ -81,38 +165,36 @@
 
             <b-card bg-variant="light"  text-variant="black">
                 <b-card-title>
-                    <strong>
-                        VMS DLO
-                    </strong>
+                    <strong>VMS DLO </strong>
+                    <b-form-select 
+                        @input="onChangeVMSType(dloSelected, 'dlo')"
+                        v-model="dloSelected" 
+                        :options="MelindaVMSDlo"
+                        size="sm" 
+                        class="mt-3"></b-form-select>
                 </b-card-title>
                 <hr/>
-                <b-card-text>
-                
-                </b-card-text>
-                <b-button to="/device" variant="success" class="mr-2">
-                    Salvar
-                </b-button>
+                    <b-form @submit="onSubmitDlo">
+                        <b-row v-for="node in nodes" :key="node.id">
+                            <b-col>
+                                <b-form-group :label="node.text">
+                                    <b-form-input 
+                                        type="text" 
+                                        size="sm" 
+                                        :value="edge_dlo[node.id]" 
+                                        @change="changeFPS(node, $event, 'dlo')"
+                                        required/>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                        <b-row class="text-center">
+                            <b-col>
+                                <b-button type="submit" variant="primary">Save DLO</b-button>
+                            </b-col>
+                        </b-row>
+                    </b-form>                
             </b-card>
-        </b-card-group>
-
-        <hr/>
-
-        <h3>New Workflow</h3>
-
-        <b-form @submit="onSubmitStartWorkFlow">
-            <b-form-group id="input-group-1" label="Name:" label-for="name">
-                <b-form-input id="name" v-model="form.name" type="text" required/>
-            </b-form-group>
-            
-            <b-row>
-                <b-col>
-                    <b-button type="submit" variant="primary">Save</b-button>
-                </b-col>
-                <b-col class="text-right">
-                    <b-button to="/device" variant="secondary">Back</b-button>        
-                </b-col>
-            </b-row>
-        </b-form>
+        </b-card-group>      
   </div>
 </template>
 
@@ -130,11 +212,18 @@ export default {
             MelindaVMSDlo: [],
             mloSelected: null,
             floSelected: null,
+            dloSelected: null,
             edge_mlo:{},
             edge_flo:{},
             edge_dlo:{},
             form: {
-                name: ''
+                maxFPS: 20,
+                mlo_number: 1,
+                flo_number: 1,
+                dlo_number: 1,
+                mloSelected: null,
+                floSelected: null,
+                dloSelected: null                
             },
             msg: {
                 text: false,
@@ -145,23 +234,44 @@ export default {
     },
 
     methods: {
+        
+        onSubmitStartWorkFlow(evt) {
+            evt.preventDefault()
+
+            this.form.mloSelected = this.mloSelected
+            this.form.floSelected = this.floSelected
+            this.form.dloSelected = this.dloSelected
+
+            apiMELINDA.startWorkflow(this.form)
+                .then(() => {
+                    this.msg.text = "Workflow created"
+                    this.msg.type = "success"
+                    this.msg.show = true
+                })
+                .catch((e) => {
+                    this.msg.text = `Error when creating the workflow ${e}`
+                    this.msg.type = "danger"
+                    this.msg.show = true
+                })
+        },
 
         changeFPS: function(node, FPS, melindaType){
             if (melindaType == "flo")  {
                 this.$set(this.edge_flo, node.id, parseInt(FPS))
                 return
             }
+
             if (melindaType == "dlo") {
                 this.$set(this.edge_dlo, node.id, parseInt(FPS))
                 return
             }
+
             this.$set(this.edge_mlo, node.id, parseInt(FPS))
         }, 
         
         onChangeVMSType(vmsTypeId, melindaType) {
-            if (!vmsTypeId) return
 
-            console.log(melindaType);
+            if (!vmsTypeId) return
 
             apiMELINDA.getMelindaVMSFPS(vmsTypeId)
                 .then((result) => {
@@ -169,16 +279,18 @@ export default {
                         if (melindaType == 'mlo') {
                             this.$set(this.edge_mlo, e.node, parseInt(e.FPS))                            
                         }
+
                         if (melindaType == 'flo') {
                             this.$set(this.edge_flo, e.node, parseInt(e.FPS))                            
+                        }
+
+                        if (melindaType == 'dlo') {
+                            this.$set(this.edge_dlo, e.node, parseInt(e.FPS))                            
                         }
                     });
                 })
         },
 
-        onSubmitStartWorkFlow(evt) {
-            evt.preventDefault()
-        },
 
         onSubmitMlo(evt) {
             evt.preventDefault()
@@ -196,6 +308,27 @@ export default {
                 })
                 .catch((e) => {
                     this.msg.text = `Error when saving MLO FPS ${e}`
+                    this.msg.type = "danger"
+                    this.msg.show = true
+                })
+        },
+
+        onSubmitDlo(evt) {
+            evt.preventDefault()
+            let payload = {
+                edge_nodes: this.edge_dlo,
+                vmsTypeId: this.dloSelected
+            }
+
+            // Save the FPS for the VMS in a particular edge node
+            apiMELINDA.saveEdgeNodeFPS(payload)
+                .then(() => {
+                    this.msg.text = "The total of FPS for the DLO in the Edge Nodes was Saved"
+                    this.msg.type = "success"
+                    this.msg.show = true
+                })
+                .catch((e) => {
+                    this.msg.text = `Error when saving DLO FPS ${e}`
                     this.msg.type = "danger"
                     this.msg.show = true
                 })

@@ -2,6 +2,25 @@ import { config } from '../../../config'
 
 export const apiMELINDA = {
   
+    startWorkflow (data) {
+        
+        console.log(data);
+
+        if (!data) {
+            return Promise.reject(new Error('Data not informed'))
+        }
+
+        return new Promise((resolve, reject) => {
+            config.api.post(`/plugins/melinda/startworkflow`,data)
+                .then(resp => {
+                    resolve(resp.data)
+                })
+                .catch((e) => {
+                    reject(new Error(`Error when creating the workflow ${e}`))
+                })
+            })
+    },
+
     saveEdgeNodeFPS (nodes) {
         
         console.log(nodes);
