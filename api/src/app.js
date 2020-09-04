@@ -15,6 +15,9 @@ const nodesRoutes    = require('./routes/nodeRoutes');
 const maestroRoutes    = require('./routes/maestroRoutes');
 const configurationRoutes    = require('./routes/configurationRoutes');
 
+// Plugins Routes
+const melindaRoutes    = require('./routes/melindaRoutes');
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
     extended: true
@@ -42,6 +45,8 @@ app.use('/node', nodesRoutes);
 app.use('/maestro', maestroRoutes);
 
 app.use('/configuration', configurationRoutes);
+
+app.use('/plugins/melinda', melindaRoutes);
 
 app.use('/', index);
 

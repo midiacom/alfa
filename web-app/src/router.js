@@ -70,7 +70,7 @@ export default new Router({
     },
     {
       path: '/vmsType/indexSrc',
-      name: 'vmsTypeIndex',
+      name: 'vmsTypeIndexSrc',
       component: () => import(/* webpackChunkName: "vmsTypeIndexSrc" */ './views/vmsType/IndexSrc.vue')
     },
     {
@@ -160,6 +160,12 @@ export default new Router({
       path: '/node/:id/status',
       name: 'nodeStatus',
       component: () => import(/* webpackChunkName: "nodeImages" */ './views/node/Status.vue')
-    },        
+    },
+    // plugins
+    {
+      path: '/plugins/melinda',
+      name: 'pluginsMelindaConfig',
+      component: () => import(/* webpackChunkName: "nodeImages" */ './views/plugins/MELINDA/Melinda.vue')
+    },    
   ]
 })

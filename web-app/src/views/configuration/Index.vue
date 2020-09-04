@@ -72,6 +72,7 @@ export default {
                     that.isLoading = true
                     apiConfiguration.cleanDb()
                         .then((e) => {
+                            console.log(e);
                             that.isLoading = false                            
                             that.msg.show = true
                             that.msg.text = "Database cleaned"
@@ -98,6 +99,7 @@ export default {
                     // that.isLoading = true
                     apiConfiguration.bootstrap()
                         .then((e) => {
+                            console.log(e);
                             that.isLoading = false                            
                             that.msg.show = true
                             that.msg.text = "Data imported"

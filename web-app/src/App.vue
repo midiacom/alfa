@@ -66,6 +66,18 @@
             </li>
             
             <li>
+              <v-icon name="cpu"></v-icon>
+              Plugins
+              <ul>
+                <li class="subMenu">
+                  <router-link to="/plugins/melinda">
+                    <v-icon name="codesandbox"></v-icon>
+                    MELINDA
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+            <li>
               <router-link to="/configuration">
                 <v-icon name="settings"></v-icon>
                 Configurations

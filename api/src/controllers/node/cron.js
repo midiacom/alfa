@@ -38,7 +38,7 @@ const cron = {
                                 // if the node was not founded then mark it as offline
                                 node.online = false
                                 node.save()
-                                console.log(err)
+                                // console.log(err)
                             });
 
                         // update the container number                    
@@ -58,12 +58,12 @@ const cron = {
                                 })
                                 .catch(err => {
                                     // console.log('A');                                    
-                                    console.log(err)
+                                    // console.log(err)
                                 });
                             })
                             .catch(err => {
                                 // console.log('B');
-                                console.log(err)
+                                // console.log(err)
                             });
 
                     })     
