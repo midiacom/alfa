@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <h2>
             <v-icon style="width: 32px;"  name="codesandbox"></v-icon>
             MELINDA Workflow and Configurations
@@ -19,7 +18,7 @@
                         VMS MLO
                     </strong>
                     <b-form-select 
-                        :change="onChangeVMSType(mloSelected)"
+                        :change="onChangeVMSType(mloSelected, 'mlo')"
                         v-model="mloSelected" 
                         :options="MelindaVMSMlo" 
                         size="sm" 
@@ -94,10 +93,9 @@
                 </b-col>
             </b-row>
         </b-form>
-
-aa {{ mloSelected }} aa 
-
-
+aaa
+        {{ form.edge_mlo }}
+aaa
   </div>
 </template>
 
@@ -115,9 +113,9 @@ export default {
             MelindaVMSDlo: [],
             mloSelected: null,
             form: {
-                edge_mlo:{},
-                edge_flo:{},
-                edge_dlo:{},
+                edge_mlo:[],
+                edge_flo:[],
+                edge_dlo:[],
                 name: ''
             },
             msg: {
@@ -130,14 +128,15 @@ export default {
 
     methods: {
 
-        onChangeVMSType(vmsTypeId) {
+        onChangeVMSType(vmsTypeId, melindaType) {
+            if (!vmsTypeId) return
+
             apiMELINDA.getMelindaVMSFPS(vmsTypeId)
                 .then((result) => {
                     result.forEach(e => {
-                        this.MelindaVMSMlo.push({                        
-                            text: e.name,
-                            value: e._id
-                        })
+                        if (melindaType == 'mlo') {
+                            this.$set(this.form.edge_mlo, e.node, parseInt(e.FPS))
+                        }
                     });
                 })
         }, 
@@ -178,6 +177,17 @@ export default {
 
         apiNode.getNodesForSelect()
             .then((nodes) => {
+                let that = this
+                nodes.forEach(node => {
+                    console.log('aasa');
+                    
+                    this.$set(that.form.edge_mlo, node.id, 0)
+                    this.$set(that.form.edge_flo, node.id, 0)
+                    this.$set(that.form.edge_dlo, node.id, 0)
+                    
+                    // this.form.edge_mlo[node.id] = 0
+                })
+
                 this.nodes = nodes
             })
 

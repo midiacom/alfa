@@ -80,18 +80,11 @@ const melindaController = {
      */
     getMelindaVMSFPS: (req, res, next) => {
 
-       vmsTypeId = req.body.vmsTypeId
-
+       vmsTypeId = req.params.vmsTypeId
+       
         melindaFPSModel.find({vmsType:vmsTypeId})
-            .then(melindaFPS => {
-                console.log(melindaFPS);
-
-                let ret = []
-                vmsTypes.forEach(e => {
-                    if (e.dockerImage.search(melindaType) != -1)
-                        ret.push(e)                        
-                    });
-                return res.status(201).json(ret);
+            .then(melindaFPS => {                
+                return res.status(201).json(melindaFPS);
             })
             .catch(err => {
                 /* istanbul ignore next */ 
