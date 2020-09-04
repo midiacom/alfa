@@ -12,22 +12,22 @@ const melindaController = {
      */
     saveEdgeNodeFPS: async (req, res, next) => {
 
-        edge_mlo = req.body.edge_mlo
+        edge_nodes = req.body.edge_nodes
         vmsTypeId = req.body.vmsTypeId
 
         // Remove all the previous values for FPS for the VMS Type Selected
         await melindaFPSModel.deleteMany({vmsType: vmsTypeId})
 
         // Iterate over the keys that are the edge nodes id's
-        Object.keys(edge_mlo).forEach(async function(nodeId) {
-            var fpsNode = edge_mlo[nodeId];
+        Object.keys(edge_nodes).forEach(async function(nodeId) {
+            var fpsNode = edge_nodes[nodeId];
 
             const melindaFPS = new melindaFPSModel({
                 FPS: fpsNode,
                 node: nodeId,
                 vmsType: vmsTypeId
-            })                
-
+            })
+            
             await melindaFPS.save((err,node) => {
                 if (err) {
                     console.log(err)

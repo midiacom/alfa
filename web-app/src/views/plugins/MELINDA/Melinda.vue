@@ -14,11 +14,9 @@
         <b-card-group deck>
             <b-card bg-variant="light"  text-variant="black">
                 <b-card-title>
-                    <strong>
-                        VMS MLO
-                    </strong>
+                    <strong>VMS MLO </strong>
                     <b-form-select 
-                        :change="onChangeVMSType(mloSelected, 'mlo')"
+                        @input="onChangeVMSType(mloSelected, 'mlo')"
                         v-model="mloSelected" 
                         :options="MelindaVMSMlo" 
                         size="sm" 
@@ -31,7 +29,12 @@
                         <b-row v-for="node in nodes" :key="node.id">
                             <b-col>
                                 <b-form-group :label="node.text">
-                                    <b-form-input type="number" size="sm" v-model="form.edge_mlo[node.id]" required/>
+                                    <b-form-input 
+                                        type="text" 
+                                        size="sm" 
+                                        :value="edge_mlo[node.id]" 
+                                        @change="changeFPS(node, $event, 'mlo')"
+                                        required/>
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -46,17 +49,34 @@
 
             <b-card bg-variant="light"  text-variant="black">
                 <b-card-title>
-                    <strong>
-                        VMS FLO
-                    </strong>
+                    <strong>VMS FLO </strong>
+                    <b-form-select 
+                        @input="onChangeVMSType(floSelected, 'flo')"
+                        v-model="floSelected" 
+                        :options="MelindaVMSFlo"
+                        size="sm" 
+                        class="mt-3"></b-form-select>
                 </b-card-title>
                 <hr/>
-                <b-card-text>
-                
-                </b-card-text>
-                <b-button to="/device" variant="success" class="mr-2">
-                    Salvar
-                </b-button>
+                    <b-form @submit="onSubmitFlo">
+                        <b-row v-for="node in nodes" :key="node.id">
+                            <b-col>
+                                <b-form-group :label="node.text">
+                                    <b-form-input 
+                                        type="text" 
+                                        size="sm" 
+                                        :value="edge_flo[node.id]" 
+                                        @change="changeFPS(node, $event, 'flo')"
+                                        required/>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                        <b-row class="text-center">
+                            <b-col>
+                                <b-button type="submit" variant="primary">Save FLO</b-button>
+                            </b-col>
+                        </b-row>
+                    </b-form>                
             </b-card>
 
             <b-card bg-variant="light"  text-variant="black">
@@ -93,9 +113,6 @@
                 </b-col>
             </b-row>
         </b-form>
-aaa
-        {{ form.edge_mlo }}
-aaa
   </div>
 </template>
 
@@ -112,10 +129,11 @@ export default {
             MelindaVMSFlo: [],
             MelindaVMSDlo: [],
             mloSelected: null,
+            floSelected: null,
+            edge_mlo:{},
+            edge_flo:{},
+            edge_dlo:{},
             form: {
-                edge_mlo:[],
-                edge_flo:[],
-                edge_dlo:[],
                 name: ''
             },
             msg: {
@@ -128,18 +146,35 @@ export default {
 
     methods: {
 
+        changeFPS: function(node, FPS, melindaType){
+            if (melindaType == "flo")  {
+                this.$set(this.edge_flo, node.id, parseInt(FPS))
+                return
+            }
+            if (melindaType == "dlo") {
+                this.$set(this.edge_dlo, node.id, parseInt(FPS))
+                return
+            }
+            this.$set(this.edge_mlo, node.id, parseInt(FPS))
+        }, 
+        
         onChangeVMSType(vmsTypeId, melindaType) {
             if (!vmsTypeId) return
 
+            console.log(melindaType);
+
             apiMELINDA.getMelindaVMSFPS(vmsTypeId)
                 .then((result) => {
-                    result.forEach(e => {
+                    result.forEach(e => {                        
                         if (melindaType == 'mlo') {
-                            this.$set(this.form.edge_mlo, e.node, parseInt(e.FPS))
+                            this.$set(this.edge_mlo, e.node, parseInt(e.FPS))                            
+                        }
+                        if (melindaType == 'flo') {
+                            this.$set(this.edge_flo, e.node, parseInt(e.FPS))                            
                         }
                     });
                 })
-        }, 
+        },
 
         onSubmitStartWorkFlow(evt) {
             evt.preventDefault()
@@ -147,19 +182,12 @@ export default {
 
         onSubmitMlo(evt) {
             evt.preventDefault()
-
-           // find the node with the ip
-            // for(let i = 0; i < this.nodes.length; i++) {
-            //     if (this.nodes[i].value == this.form.nodeIp) {
-            //         this.form.node = this.nodes[i].id
-            //     }
-            // }
-
             let payload = {
-                edge_mlo: this.form.edge_mlo,
+                edge_nodes: this.edge_mlo,
                 vmsTypeId: this.mloSelected
             }
 
+            // Save the FPS for the VMS in a particular edge node
             apiMELINDA.saveEdgeNodeFPS(payload)
                 .then(() => {
                     this.msg.text = "The total of FPS for the MLO in the Edge Nodes was Saved"
@@ -171,26 +199,44 @@ export default {
                     this.msg.type = "danger"
                     this.msg.show = true
                 })
+        },
+
+        onSubmitFlo(evt) {
+            evt.preventDefault()
+            let payload = {
+                edge_nodes: this.edge_flo,
+                vmsTypeId: this.floSelected
+            }
+
+            // Save the FPS for the VMS in a particular edge node
+            apiMELINDA.saveEdgeNodeFPS(payload)
+                .then(() => {
+                    this.msg.text = "The total of FPS for the FLO in the Edge Nodes was Saved"
+                    this.msg.type = "success"
+                    this.msg.show = true
+                })
+                .catch((e) => {
+                    this.msg.text = `Error when saving FLO FPS ${e}`
+                    this.msg.type = "danger"
+                    this.msg.show = true
+                })
         }
     },
     created() {
 
+        // Get all the edge nodes and put in a array 
         apiNode.getNodesForSelect()
             .then((nodes) => {
-                let that = this
                 nodes.forEach(node => {
-                    console.log('aasa');
-                    
-                    this.$set(that.form.edge_mlo, node.id, 0)
-                    this.$set(that.form.edge_flo, node.id, 0)
-                    this.$set(that.form.edge_dlo, node.id, 0)
-                    
-                    // this.form.edge_mlo[node.id] = 0
+                    this.$set(this.edge_mlo, node.id, 0)
+                    this.$set(this.edge_flo, node.id, 0)
+                    this.$set(this.edge_dlo, node.id, 0)
                 })
 
                 this.nodes = nodes
             })
 
+        // get all the VMS tha are mlo's
         apiMELINDA.getMelindaVMS('mlo')
             .then((result) => {
                 result.forEach(e => {
@@ -203,12 +249,22 @@ export default {
 
         apiMELINDA.getMelindaVMS('flo')
             .then((result) => {
-                this.MelindaVMSFlo = result
+                result.forEach(e => {
+                    this.MelindaVMSFlo.push({
+                        text: e.name,
+                        value: e._id
+                    })
+                });
             })
 
         apiMELINDA.getMelindaVMS('dlo')
             .then((result) => {
-                this.MelindaVMSDlo = result
+                result.forEach(e => {
+                    this.MelindaVMSDlo.push({
+                        text: e.name,
+                        value: e._id
+                    })
+                });
             })
     }
 }
