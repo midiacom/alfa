@@ -11,10 +11,26 @@
 
         <hr/>
 
-        <h3>Create a New Workflow</h3>
-
         <b-form @submit="onSubmitStartWorkFlow">
+
             <b-container class="bv-example-row">            
+
+                <h3>Create a New Workflow</h3>
+
+                <!-- Meta Data -->
+                <b-row>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="Application Name:" label-for="name">
+                            <b-form-input style="width:350px" id="name" v-model="form.name" type="text" required/>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="Maximum FPS:" label-for="fps">
+                            <b-form-input style="width:100px" id="fps" v-model="form.maxFPS" type="number" required/>
+                        </b-form-group>
+                    </b-col>
+                </b-row>
+
                 <!-- VMS MLO Type-->            
                 <b-row>
                     <b-col>
@@ -23,11 +39,16 @@
                                     @input="onChangeVMSType(mloSelected, 'mlo')"
                                     v-model="mloSelected" 
                                     :options="MelindaVMSMlo" 
-                                    size="sm" ></b-form-select>
+                                    ></b-form-select>
                         </b-form-group>            
                     </b-col>
                     <b-col>
-                        <b-form-group id="input-group-1" label="MLO Number:" label-for="mlo">
+                        <b-form-group id="input-group-1" label="Parameters:" label-for="mlo_parameters">
+                            <b-form-input style="width:400px" id="mlo_parameters" v-model="form.mlo_parameters" type="text" required/>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="MLO Number:" label-for="mlo_number">
                             <b-form-input style="width:100px" id="mlo_number" v-model="form.mlo_number" type="number" required/>
                         </b-form-group>
                     </b-col>
@@ -41,11 +62,16 @@
                                     @input="onChangeVMSType(floSelected, 'flo')"
                                     v-model="floSelected" 
                                     :options="MelindaVMSFlo" 
-                                    size="sm" ></b-form-select>
+                                    ></b-form-select>
                         </b-form-group>            
                     </b-col>
                     <b-col>
-                        <b-form-group id="input-group-1" label="FLO Number:" label-for="flo">
+                        <b-form-group id="input-group-1" label="Parameters:" label-for="flo_parameters">
+                            <b-form-input style="width:400px" id="flo_parameters" v-model="form.flo_parameters" type="text" required/>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="FLO Number:" label-for="flo_number">
                             <b-form-input style="width:100px" id="flo_number" v-model="form.flo_number" type="number" required/>
                         </b-form-group>
                     </b-col>
@@ -59,9 +85,14 @@
                                     @input="onChangeVMSType(dloSelected, 'dlo')"
                                     v-model="dloSelected" 
                                     :options="MelindaVMSDlo" 
-                                    size="sm" ></b-form-select>
+                                    ></b-form-select>
                         </b-form-group>            
                     </b-col>
+                    <b-col>
+                        <b-form-group id="input-group-1" label="Parameters:" label-for="dlo_parameters">
+                            <b-form-input style="width:400px" id="dlo_parameters" v-model="form.dlo_parameters" type="text" required/>
+                        </b-form-group>
+                    </b-col>                    
                     <b-col>
                         <b-form-group id="input-group-1" label="DLO Number:" label-for="dlo">
                             <b-form-input style="width:100px" id="dlo_number" v-model="form.dlo_number" type="number" required/>
@@ -69,26 +100,14 @@
                     </b-col>
                 </b-row>
 
-                <!-- VMS DLO Type-->
-                <b-row>
+                <b-row class="text-center">
                     <b-col>
-                        <b-form-group id="input-group-1" label="Maximum FPS:" label-for="fps">
-                            <b-form-input style="width:100px" id="dlo_number" v-model="form.maxFPS" type="number" required/>
-                        </b-form-group>            
-                    </b-col>
-                    <b-col>
-                        <!-- <b-form-group id="input-group-1" label="DLO Number:" label-for="dlo">
-                            <b-form-input style="width:100px" id="dlo_number" v-model="form.dlo_number" type="number" required/>
-                        </b-form-group> -->
+                        <b-button type="submit" variant="primary">Create Workflow</b-button>
                     </b-col>
                 </b-row>
+
             </b-container>                
 
-            <b-row class="text-center">
-                <b-col>
-                    <b-button type="submit" variant="primary">Create Workflow</b-button>
-                </b-col>
-            </b-row>
         </b-form>
 
         <hr/>
@@ -217,10 +236,14 @@ export default {
             edge_flo:{},
             edge_dlo:{},
             form: {
+                name: 'WF Teste',
                 maxFPS: 20,
                 mlo_number: 1,
                 flo_number: 1,
                 dlo_number: 1,
+                mlo_parameters: '',
+                dlo_parameters: '',
+                flo_parameters: '',
                 mloSelected: null,
                 floSelected: null,
                 dloSelected: null                
