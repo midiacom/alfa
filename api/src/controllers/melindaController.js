@@ -49,14 +49,25 @@ const melindaController = {
          * it will be executed by another allocation function
         */
         let edge_nodes_selected = {
-            mlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}],
+            mlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'},],
             flo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}],
-            dlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}]
+            dlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}, {id:'5f2484b37c803900291ea3d6', ip:'localhost'}]
         }
+
+        let mlo_names = []
+        let flo_names = []
+        let dlo_names = []
 
         // a) Create the DLO VMSs
         for (let i = 0; i < dlo_number; i++) {
+            // the name of the container will be used as paramter to start the image broker
+            let aux_name = `dlo_${i}`
+            
+            // array with the names of the dlo container                       
+            dlo_names.push(aux_name)
+
             let conf_container_dlo = {
+                name: aux_name,
                 Image: dlo_type.dockerImage,
                 Cmd: [dlo_parameters],
                 HostConfig: {
@@ -66,57 +77,107 @@ const melindaController = {
 
             let dlo_created = await docker.api(edge_nodes_selected.dlo[i].ip)
                 .then(async (api) => {
-                    console.log(api);
-                    
                     // ----------
-                    await api.createContainer(conf_container_dlo).then(async (container) => {
-                        console.log(container);
-                        
+                    await api.createContainer(conf_container_dlo).then(async (container) => {                        
                         container.start()
                         .then(async (data) => { 
-                            console.log(data);
                             
                             let vms = new vmsModel({
-                                name: name,
+                                name: aux_name,
                                 dockerId: data.id,
                                 startupParameters: dlo_parameters,
                                 vmsType: dlo_type,
                                 node: edge_nodes_selected.dlo[i].id,
                                 outputType: 'Image',
                                 bindedTo: []
-                            })
-        
-                            console.log(vms);
+                            })        
                             
-                            // save the Mlo VMS 
+                            console.log(vms);
+                            // save the Dlo VMS 
                             await vms.save((err,vms) => {
-                              /* istanbul ignore next */ 
                                 if (err) {
-                                    console.log(err)
                                     return res.status(500).json({
-                                    message: 'Error when creating vmsType',
-                                    error: err
+                                        message: 'Error when creating VMS DLO',
+                                        error: err
                                     });
                                 }
                             })
-                        }).catch(function(err) {                        
-                            console.log('---------------')
-                            console.log(err)
-                            console.log('---------------')
+                        }).catch(function(err) {
                             return res.status(500).json({
-                                message: 'Erro ao instanciar o VMS',
+                                message: 'Error when initiate the VMS',
                                 error: err
                             });
                         })
                     })
-                })
+                })            
         }
 
-        console.log(dlo_created);
-        console.log('aaaaaaaaa');
-        
+        // select the IPs that is running this VMS
+        // console.log(dlo_names);
+        // console.log('aaaaaaaaa');
+        // <- End (a)
 
         // b) Create the FLO VMSs
+        for (let i = 0; i < flo_number; i++) {
+            // the name of the container will be used as paramter to start the image broker
+            let aux_name = `flo_${i}`
+
+            // array with the names of the flo container
+            flo_names.push(aux_name)
+
+            let conf_container_flo = {
+                name: aux_name,
+                Image: flo_type.dockerImage,
+                Cmd: [flo_parameters],
+                HostConfig: {
+                  NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
+                }
+            }
+
+            let flo_created = await docker.api(edge_nodes_selected.flo[i].ip)
+                .then(async (api) => {
+                    // ----------
+                    await api.createContainer(conf_container_flo).then(async (container) => {
+                        container.start()
+                        .then(async (data) => {
+                            let vms = new vmsModel({
+                                name: aux_name,
+                                dockerId: data.id,
+                                startupParameters: flo_parameters,
+                                vmsType: flo_type,
+                                node: edge_nodes_selected.flo[i].id,
+                                outputType: 'Image',
+                                bindedTo: []
+                            })        
+                            
+                            console.log(vms);
+
+                            // save the Flo VMS 
+                            await vms.save((err,vms) => {
+                                if (err) {
+                                    return res.status(500).json({
+                                        message: 'Error when creating VMS FLO',
+                                        error: err
+                                    });
+                                }
+                            })
+                        }).catch(function(err) {
+                            return res.status(500).json({
+                                message: 'Error when initiate the VMS FLO',
+                                error: err
+                            });
+                        })
+                    })
+                })            
+        }
+
+        console.log(flo_names);
+        
+        // <- End (b)
+
+        // select the IPs that is running this VMS
+        // console.log(dlo_names);
+        // console.log('aaaaaaaaa');
 
         // c) Create the Image Broker using the ips as parameter
 
