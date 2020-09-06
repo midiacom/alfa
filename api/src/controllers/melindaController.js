@@ -1,6 +1,7 @@
 const melindaFPSModel = require("../models/melindaFPS")
 const vmsTypeModel = require("../models/vmsTypeModel")
 const vmsModel = require("../models/vmsModel")
+const nodeModel = require("../models/nodeModel")
 
 const docker = require("../util/dockerApi")
 
@@ -54,30 +55,7 @@ const melindaController = {
             flo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}],
             dlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}, {id:'5f2484b37c803900291ea3d6', ip:'localhost'}]
         }
-
-        // Stop all VMS mlo, flo and dlo, besides the image broker
-        // stop image broker
-        await docker.api(edge_nodes_selected.image_broker.ip)
-            .then(async (api) => {
-                var opts = {
-                    "filters": `{"name": ["image_broker"]}`
-                }
-                await api.listContainers(opts).then(async (result) => {
-                    if (result.length) {
-                        let container = await api.getContainer(result[0]['Id'])
-                        await container.stop(async function (err, data) {
-                            await container.remove()
-                        });
-                    }
-                })
-            }).catch((err) => {
-                return res.status(500).json({
-                    message: 'Error stopping image broker',
-                    error: err
-                });
-            })
-        // ----------
-            
+   
         let mlo_names = []
         let flo_names = []
         let dlo_names = []
@@ -90,6 +68,7 @@ const melindaController = {
             // array with the names of the dlo container                       
             dlo_names.push(aux_name)
 
+            // all the DLO are listening in the port 5575
             let conf_container_dlo = {
                 name: aux_name,
                 Image: dlo_type.dockerImage,
@@ -143,20 +122,17 @@ const melindaController = {
                     })
                 })  
         }
-
-        // select the IPs that is running this VMS
-        // console.log(dlo_names);
-        // console.log('aaaaaaaaa');
         // <- End (a)
 
         // b) Create the FLO VMSs
         for (let i = 0; i < flo_number; i++) {
             // the name of the container will be used as paramter to start the image broker
             let aux_name = `flo_${i}`
-
+            
             // array with the names of the flo container
             flo_names.push(aux_name)
-
+            
+            // all the FLO are listening in the port 5565
             let conf_container_flo = {
                 name: aux_name,
                 Image: flo_type.dockerImage,
@@ -206,25 +182,20 @@ const melindaController = {
         }
         // <- End (b)
 
-        // select the IPs that is running this VMS
-        // console.log(dlo_names);
-        // console.log('aaaaaaaaa');
-
-        // c) Create the Image Broker using the ips as parameter
-        // python3 ./Broker.py --flo="tcp://172.17.0.1:5565" --dlo="tcp://172.17.0.1:5575"
-        // docker run --network alfa_swarm_overlay3 --name image_broker -p 5555:5555/tcp alfa/component/image_broker "tcp://vms_flo:5565" "tcp://vms_dlo:5575"
+        // c) Create the Image Broker using the ips as parameter        
         let flo_parameter = `tcp://${flo_names[0]}:5565`
         for(let i = 1; i < flo_names.length; i++){
             flo_parameter = `${flo_parameter};tcp://${flo_names[i]}:5565`
         }
-
+        
+        // list of all the dlo vms names (used as ip in the start of the image broker)
         let dlo_parameter = `tcp://${dlo_names[0]}:5575`
         for(let i = 1; i < dlo_names.length; i++){
             dlo_parameter = `${dlo_parameter};tcp://${dlo_names[i]}:5575`            
         }
 
         image_broker_parameters = [flo_parameter, dlo_parameter]
-
+        
         let conf_container_image_broker = {
             name: 'image_broker',
             Image: 'alfa/component/image_broker',
@@ -240,28 +211,6 @@ const melindaController = {
                 await api.createContainer(conf_container_image_broker).then(async (container) => {
                     container.start()
                     .then(async (data) => {
-                        // console.log(data);
-                        
-                        /*
-                        let vms = new vmsModel({
-                            name: aux_name,
-                            dockerId: data.id,
-                            startupParameters: flo_parameters,
-                            vmsType: flo_type,
-                            node: edge_nodes_selected.flo[i].id,
-                            outputType: 'Image',
-                            bindedTo: []
-                        })        
-
-                        // save the Flo VMS 
-                        await vms.save((err,vms) => {
-                            if (err) {
-                                return res.status(500).json({
-                                    message: 'Error when creating VMS FLO',
-                                    error: err
-                                });
-                            }
-                        })*/
                     }).catch(function(err) {
                         console.log(err);
                         return res.status(500).json({
@@ -277,7 +226,7 @@ const melindaController = {
                     });
                 })
             })       
-        // <- FIM IMAGE BROKER
+        // <- IMAGE BROKER CREATION 
 
         // d) Create the MLO VMSs
         for (let i = 0; i < mlo_number; i++) {
@@ -331,9 +280,90 @@ const melindaController = {
                         })
                     })
                 })
-        }        
+        }
+        return res.status(201).json("{ok:ok}")
+    },
 
-        // e) Bind with the selected virtual device
+    /**
+     * stopWorkflow 
+     * 
+     * Stop all VMS mlo, flo and dlo, besides the image broker
+     * 
+     */
+    stopWorkflow: async (req, res, next) => {
+        // Get ALL the edge nodes online
+        await nodeModel.find({'online':true})
+            .then(async nodes => {
+                for(let i = 0; i < nodes.length; i++) {
+                    node = nodes[i]                    
+                    await docker.api(node.ip)
+                        .then(async (api) => {                            
+                            // Get the VMSType of the MLO VMS Selected
+                            // var opts = {
+                            //     "filters": `{"name": ["image_broker"]}`
+                            // }
+                            //await api.listContainers(opts).then(async (result) => {
+                            await api.listContainers().then(async (result) => {
+                                
+                                // a) stop the image broker
+                                // b) stop all MLO VMS
+                                // c) stop all FLO VMS
+                                // d) stop all DLO VMS
+                                for (let j = 0; j < result.length; j++) {
+
+                                    let vmsContainer = result[j]
+
+                                    let is_broker = vmsContainer.Names[0].indexOf('image_broker')
+                                    let is_mlo    = vmsContainer.Names[0].indexOf('mlo_')
+                                    let is_flo    = vmsContainer.Names[0].indexOf('flo_')
+                                    let is_dlo    = vmsContainer.Names[0].indexOf('dlo_')
+                                    
+                                    if (is_broker == 1 || is_mlo == 1 || is_flo == 1 || is_dlo == 1) {
+                                        // console.log('eeeeeeeeeeeeeeeeeeeeee');
+                                        // console.log(container);
+                                        
+                                        let container = await api.getContainer(vmsContainer['Id'])
+                                        
+                                        // REMOVER O VMS DA COLLECTION if mlo, flo or dlo
+                                        if (is_broker != 1) {                                                                                       
+                                            await vmsModel.findOne({'dockerId':vmsContainer.Id})
+                                                .then(VMS => {
+                                                    vmsModel.deleteOne({_id: VMS._id},function(err){
+                                                        if (err) {
+                                                            console.log(err);
+                                                            return res.status(500).json({
+                                                                message: 'Error when deleting vmsType.',
+                                                                error: err
+                                                            });
+                                                        }
+                                                    })
+                                                })
+                                        }
+
+                                        // stop the container 
+                                        await container.stop(async function (err, data) {
+                                            if (err) {
+                                                console.log(err);                            
+                                                return res.status(500).json({
+                                                    message: 'Error stopping',
+                                                    error: err
+                                                });
+                                            }
+                                            await container.remove()
+                                        });
+                                    }                                    
+                                }
+                            })
+                        }).catch((err) => {
+                            console.log(err);                            
+                            return res.status(500).json({
+                                message: 'Error stopping image broker',
+                                error: err
+                            });
+                        })
+                    return res.status(201).json("{ok:ok}");                    
+                }
+            })
     },
 
     /**

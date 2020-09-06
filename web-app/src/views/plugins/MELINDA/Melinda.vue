@@ -2,20 +2,46 @@
     <div>
         <h2>
             <v-icon style="width: 32px;"  name="codesandbox"></v-icon>
-            MELINDA Workflow and Configurations
+            MELINDA Workflow
         </h2>
+
+        <b-container class="bv-example-row">
+            <b-row class="text-center">
+                <b-col>
+                    <b-button size="lg" variant="success" @click="show_workflow = true">
+                        <v-icon style="width: 32px;" name="arrow-right-circle"></v-icon>
+                        New Workflow
+                    </b-button>
+                </b-col>
+                <b-col>
+                    <b-button size="lg" @click="show_workflow = false">
+                        <v-icon style="width: 32px;" name="settings"></v-icon>
+                        Configurations
+                    </b-button>
+                </b-col>
+                <b-col>
+                    <b-button size="lg" variant="danger" @click="stopWorkflow">
+                        <v-icon style="width: 32px;" name="x-octagon"></v-icon>
+                        Stop Workflow
+                    </b-button>
+                </b-col>
+            </b-row>
+        </b-container>
+
+        <hr/>
 
         <b-alert :show="msg.show" :variant=msg.type>
             {{ msg.text }}
         </b-alert>
 
-        <hr/>
-
-        <b-form @submit="onSubmitStartWorkFlow">
-
+        <b-form @submit="onSubmitStartWorkFlow" v-show="show_workflow">
+ 
             <b-container class="bv-example-row">            
 
-                <h3>Create a New Workflow</h3>
+                <h3> 
+                    <v-icon style="width: 32px;" name="arrow-right-circle"></v-icon>
+                    Create a New Workflow
+                </h3>
 
                 <!-- Meta Data -->
                 <b-row>
@@ -107,113 +133,113 @@
                 </b-row>
 
             </b-container>                
-
         </b-form>
+ 
+        <b-container class="bv-example-row"  v-show="!show_workflow">
+            <h3>
+                <v-icon style="width: 32px;" name="settings"></v-icon>
+                Configurations</h3>
+            <b-card-group deck>
+                <b-card bg-variant="light"  text-variant="black">
+                    <b-card-title>
+                        <strong>VMS MLO </strong>
+                        <b-form-select 
+                            @input="onChangeVMSType(mloSelected, 'mlo')"
+                            v-model="mloSelected" 
+                            :options="MelindaVMSMlo" 
+                            size="sm" 
+                            class="mt-3"></b-form-select>
+                    </b-card-title>
+                    <hr/>
 
-        <hr/>
+                    <b-card-text>
+                        <b-form @submit="onSubmitMlo">
+                            <b-row v-for="node in nodes" :key="node.id">
+                                <b-col>
+                                    <b-form-group :label="node.text">
+                                        <b-form-input 
+                                            type="text" 
+                                            size="sm" 
+                                            :value="edge_mlo[node.id]" 
+                                            @change="changeFPS(node, $event, 'mlo')"
+                                            required/>
+                                    </b-form-group>
+                                </b-col>
+                            </b-row>
+                            <b-row class="text-center">
+                                <b-col>
+                                    <b-button type="submit" variant="primary">Save MLO</b-button>
+                                </b-col>
+                            </b-row>
+                        </b-form>
+                    </b-card-text>
+                </b-card>
 
-        <h3>Configurations</h3>
+                <b-card bg-variant="light"  text-variant="black">
+                    <b-card-title>
+                        <strong>VMS FLO </strong>
+                        <b-form-select 
+                            @input="onChangeVMSType(floSelected, 'flo')"
+                            v-model="floSelected" 
+                            :options="MelindaVMSFlo"
+                            size="sm" 
+                            class="mt-3"></b-form-select>
+                    </b-card-title>
+                    <hr/>
+                        <b-form @submit="onSubmitFlo">
+                            <b-row v-for="node in nodes" :key="node.id">
+                                <b-col>
+                                    <b-form-group :label="node.text">
+                                        <b-form-input 
+                                            type="text" 
+                                            size="sm" 
+                                            :value="edge_flo[node.id]" 
+                                            @change="changeFPS(node, $event, 'flo')"
+                                            required/>
+                                    </b-form-group>
+                                </b-col>
+                            </b-row>
+                            <b-row class="text-center">
+                                <b-col>
+                                    <b-button type="submit" variant="primary">Save FLO</b-button>
+                                </b-col>
+                            </b-row>
+                        </b-form>                
+                </b-card>
 
-        <b-card-group deck>
-            <b-card bg-variant="light"  text-variant="black">
-                <b-card-title>
-                    <strong>VMS MLO </strong>
-                    <b-form-select 
-                        @input="onChangeVMSType(mloSelected, 'mlo')"
-                        v-model="mloSelected" 
-                        :options="MelindaVMSMlo" 
-                        size="sm" 
-                        class="mt-3"></b-form-select>
-                </b-card-title>
-                <hr/>
-
-                <b-card-text>
-                    <b-form @submit="onSubmitMlo">
-                        <b-row v-for="node in nodes" :key="node.id">
-                            <b-col>
-                                <b-form-group :label="node.text">
-                                    <b-form-input 
-                                        type="text" 
-                                        size="sm" 
-                                        :value="edge_mlo[node.id]" 
-                                        @change="changeFPS(node, $event, 'mlo')"
-                                        required/>
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                        <b-row class="text-center">
-                            <b-col>
-                                <b-button type="submit" variant="primary">Save MLO</b-button>
-                            </b-col>
-                        </b-row>
-                    </b-form>
-                </b-card-text>
-            </b-card>
-
-            <b-card bg-variant="light"  text-variant="black">
-                <b-card-title>
-                    <strong>VMS FLO </strong>
-                    <b-form-select 
-                        @input="onChangeVMSType(floSelected, 'flo')"
-                        v-model="floSelected" 
-                        :options="MelindaVMSFlo"
-                        size="sm" 
-                        class="mt-3"></b-form-select>
-                </b-card-title>
-                <hr/>
-                    <b-form @submit="onSubmitFlo">
-                        <b-row v-for="node in nodes" :key="node.id">
-                            <b-col>
-                                <b-form-group :label="node.text">
-                                    <b-form-input 
-                                        type="text" 
-                                        size="sm" 
-                                        :value="edge_flo[node.id]" 
-                                        @change="changeFPS(node, $event, 'flo')"
-                                        required/>
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                        <b-row class="text-center">
-                            <b-col>
-                                <b-button type="submit" variant="primary">Save FLO</b-button>
-                            </b-col>
-                        </b-row>
-                    </b-form>                
-            </b-card>
-
-            <b-card bg-variant="light"  text-variant="black">
-                <b-card-title>
-                    <strong>VMS DLO </strong>
-                    <b-form-select 
-                        @input="onChangeVMSType(dloSelected, 'dlo')"
-                        v-model="dloSelected" 
-                        :options="MelindaVMSDlo"
-                        size="sm" 
-                        class="mt-3"></b-form-select>
-                </b-card-title>
-                <hr/>
-                    <b-form @submit="onSubmitDlo">
-                        <b-row v-for="node in nodes" :key="node.id">
-                            <b-col>
-                                <b-form-group :label="node.text">
-                                    <b-form-input 
-                                        type="text" 
-                                        size="sm" 
-                                        :value="edge_dlo[node.id]" 
-                                        @change="changeFPS(node, $event, 'dlo')"
-                                        required/>
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                        <b-row class="text-center">
-                            <b-col>
-                                <b-button type="submit" variant="primary">Save DLO</b-button>
-                            </b-col>
-                        </b-row>
-                    </b-form>                
-            </b-card>
-        </b-card-group>      
+                <b-card bg-variant="light"  text-variant="black">
+                    <b-card-title>
+                        <strong>VMS DLO </strong>
+                        <b-form-select 
+                            @input="onChangeVMSType(dloSelected, 'dlo')"
+                            v-model="dloSelected" 
+                            :options="MelindaVMSDlo"
+                            size="sm" 
+                            class="mt-3"></b-form-select>
+                    </b-card-title>
+                    <hr/>
+                        <b-form @submit="onSubmitDlo">
+                            <b-row v-for="node in nodes" :key="node.id">
+                                <b-col>
+                                    <b-form-group :label="node.text">
+                                        <b-form-input 
+                                            type="text" 
+                                            size="sm" 
+                                            :value="edge_dlo[node.id]" 
+                                            @change="changeFPS(node, $event, 'dlo')"
+                                            required/>
+                                    </b-form-group>
+                                </b-col>
+                            </b-row>
+                            <b-row class="text-center">
+                                <b-col>
+                                    <b-button type="submit" variant="primary">Save DLO</b-button>
+                                </b-col>
+                            </b-row>
+                        </b-form>                
+                </b-card>
+            </b-card-group>      
+        </b-container>
   </div>
 </template>
 
@@ -226,6 +252,7 @@ export default {
     data() {
         return {
             nodes: [],
+            show_workflow: true,
             MelindaVMSMlo: [],
             MelindaVMSFlo: [],
             MelindaVMSDlo: [],
@@ -376,10 +403,26 @@ export default {
                     this.msg.type = "danger"
                     this.msg.show = true
                 })
+        },
+
+        stopWorkflow() {
+
+            // Save the FPS for the VMS in a particular edge node
+            apiMELINDA.stopWorkflow()
+                .then(() => {
+                    this.msg.text = "The workflow was stoppped!"
+                    this.msg.type = "success"
+                    this.msg.show = true
+                })
+                .catch((e) => {
+                    this.msg.text = `Error when stopping the workflow ${e}`
+                    this.msg.type = "danger"
+                    this.msg.show = true
+                })
         }
     },
-    created() {
 
+    created() {
         // Get all the edge nodes and put in a array 
         apiNode.getNodesForSelect()
             .then((nodes) => {

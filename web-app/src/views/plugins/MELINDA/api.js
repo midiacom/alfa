@@ -52,6 +52,18 @@ export const apiMELINDA = {
         })
       },
 
+    stopWorkflow () {
+        return new Promise((resolve, reject) => {
+            config.api.get(`/plugins/melinda/stopworkflow/`)
+                .then(resp => {
+                    resolve(resp.data)
+                })
+                .catch(e => {
+                    reject(e)
+                })
+            })
+    },
+
     getMelindaVMSFPS (vmsTypeId) {
         return new Promise((resolve, reject) => {
           config.api.get(`/plugins/melinda/vmstypesfps/${vmsTypeId}`)
