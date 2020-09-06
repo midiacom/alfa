@@ -55,6 +55,29 @@ const melindaController = {
             dlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}, {id:'5f2484b37c803900291ea3d6', ip:'localhost'}]
         }
 
+        // Stop all VMS mlo, flo and dlo, besides the image broker
+        // stop image broker
+        await docker.api(edge_nodes_selected.image_broker.ip)
+            .then(async (api) => {
+                var opts = {
+                    "filters": `{"name": ["image_broker"]}`
+                }
+                await api.listContainers(opts).then(async (result) => {
+                    if (result.length) {
+                        let container = await api.getContainer(result[0]['Id'])
+                        await container.stop(async function (err, data) {
+                            await container.remove()
+                        });
+                    }
+                })
+            }).catch((err) => {
+                return res.status(500).json({
+                    message: 'Error stopping image broker',
+                    error: err
+                });
+            })
+        // ----------
+            
         let mlo_names = []
         let flo_names = []
         let dlo_names = []
@@ -71,11 +94,14 @@ const melindaController = {
                 name: aux_name,
                 Image: dlo_type.dockerImage,
                 Cmd: [dlo_parameters],
+                ExposedPorts: {"5575/tcp": {}},
                 HostConfig: {
-                  NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
+                    NetworkMode: process.env.DOCKER_OVERLAY_NETWORK,
+                    PortBindings: {
+                        "5575/tcp": [{"HostPort":"5575"}]
+                    }
                 }
             }
-
             let dlo_created = await docker.api(edge_nodes_selected.dlo[i].ip)
                 .then(async (api) => {
                     // ----------
@@ -109,7 +135,13 @@ const melindaController = {
                             });
                         })
                     })
-                })            
+                }).catch(function(err) {
+                    console.log(err);
+                    return res.status(500).json({
+                        message: 'Error when initiate the VMS',
+                        error: err
+                    })
+                })  
         }
 
         // select the IPs that is running this VMS
@@ -129,8 +161,12 @@ const melindaController = {
                 name: aux_name,
                 Image: flo_type.dockerImage,
                 Cmd: [flo_parameters],
+                ExposedPorts: {"5565/tcp": {}},
                 HostConfig: {
-                  NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
+                    NetworkMode: process.env.DOCKER_OVERLAY_NETWORK,
+                    PortBindings: {
+                        "5565/tcp": [{"HostPort":"5565"}]
+                    }
                 }
             }
 
@@ -182,12 +218,10 @@ const melindaController = {
             flo_parameter = `${flo_parameter};tcp://${flo_names[i]}:5565`
         }
 
-        let dlo_parameter = ""
+        let dlo_parameter = `tcp://${dlo_names[0]}:5575`
         for(let i = 1; i < dlo_names.length; i++){
             dlo_parameter = `${dlo_parameter};tcp://${dlo_names[i]}:5575`            
         }
-
-        // image_broker_parameters = ["tcp://vms_flo:5565", "tcp://vms_dlo:5575"]
 
         image_broker_parameters = [flo_parameter, dlo_parameter]
 
@@ -206,7 +240,7 @@ const melindaController = {
                 await api.createContainer(conf_container_image_broker).then(async (container) => {
                     container.start()
                     .then(async (data) => {
-                        console.log(data);
+                        // console.log(data);
                         
                         /*
                         let vms = new vmsModel({
@@ -246,6 +280,58 @@ const melindaController = {
         // <- FIM IMAGE BROKER
 
         // d) Create the MLO VMSs
+        for (let i = 0; i < mlo_number; i++) {
+            // the name of the container will be used as paramter to start the image broker
+            let aux_name = `mlo_${i}`
+
+            // array with the names of the flo container
+            mlo_names.push(aux_name)
+
+            mlo_parameters = "tcp://image_broker:5555"
+
+            let conf_container_mlo = {
+                name: aux_name,
+                Image: mlo_type.dockerImage,
+                Cmd: [mlo_parameters],
+                HostConfig: {
+                  NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
+                }
+            }
+
+            let mlo_created = await docker.api(edge_nodes_selected.mlo[i].ip)
+                .then(async (api) => {
+                    // ----------
+                    await api.createContainer(conf_container_mlo).then(async (container) => {
+                        container.start()
+                        .then(async (data) => {
+                            let vms = new vmsModel({
+                                name: aux_name,
+                                dockerId: data.id,
+                                startupParameters: mlo_parameters,
+                                vmsType: mlo_type,
+                                node: edge_nodes_selected.mlo[i].id,
+                                outputType: 'Image',
+                                bindedTo: []
+                            })        
+
+                            // save the Flo VMS 
+                            await vms.save((err,vms) => {
+                                if (err) {
+                                    return res.status(500).json({
+                                        message: 'Error when creating VMS FLO',
+                                        error: err
+                                    });
+                                }
+                            })
+                        }).catch(function(err) {
+                            return res.status(500).json({
+                                message: 'Error when initiate the VMS FLO',
+                                error: err
+                            });
+                        })
+                    })
+                })
+        }        
 
         // e) Bind with the selected virtual device
     },
