@@ -49,7 +49,8 @@ const melindaController = {
          * it will be executed by another allocation function
         */
         let edge_nodes_selected = {
-            mlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'},],
+            image_broker: {id:'5f2484b37c803900291ea3d6', ip:'localhost'},
+            mlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}],
             flo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}],
             dlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}, {id:'5f2484b37c803900291ea3d6', ip:'localhost'}]
         }
@@ -92,7 +93,6 @@ const melindaController = {
                                 bindedTo: []
                             })        
                             
-                            console.log(vms);
                             // save the Dlo VMS 
                             await vms.save((err,vms) => {
                                 if (err) {
@@ -149,8 +149,6 @@ const melindaController = {
                                 outputType: 'Image',
                                 bindedTo: []
                             })        
-                            
-                            console.log(vms);
 
                             // save the Flo VMS 
                             await vms.save((err,vms) => {
@@ -170,9 +168,6 @@ const melindaController = {
                     })
                 })            
         }
-
-        console.log(flo_names);
-        
         // <- End (b)
 
         // select the IPs that is running this VMS
@@ -180,6 +175,75 @@ const melindaController = {
         // console.log('aaaaaaaaa');
 
         // c) Create the Image Broker using the ips as parameter
+        // python3 ./Broker.py --flo="tcp://172.17.0.1:5565" --dlo="tcp://172.17.0.1:5575"
+        // docker run --network alfa_swarm_overlay3 --name image_broker -p 5555:5555/tcp alfa/component/image_broker "tcp://vms_flo:5565" "tcp://vms_dlo:5575"
+        let flo_parameter = `tcp://${flo_names[0]}:5565`
+        for(let i = 1; i < flo_names.length; i++){
+            flo_parameter = `${flo_parameter};tcp://${flo_names[i]}:5565`
+        }
+
+        let dlo_parameter = ""
+        for(let i = 1; i < dlo_names.length; i++){
+            dlo_parameter = `${dlo_parameter};tcp://${dlo_names[i]}:5575`            
+        }
+
+        // image_broker_parameters = ["tcp://vms_flo:5565", "tcp://vms_dlo:5575"]
+
+        image_broker_parameters = [flo_parameter, dlo_parameter]
+
+        let conf_container_image_broker = {
+            name: 'image_broker',
+            Image: 'alfa/component/image_broker',
+            Cmd: image_broker_parameters,
+            HostConfig: {
+                NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
+            }
+        }
+
+        let image_broker_created = await docker.api(edge_nodes_selected.image_broker.ip)
+            .then(async (api) => {
+                // ----------
+                await api.createContainer(conf_container_image_broker).then(async (container) => {
+                    container.start()
+                    .then(async (data) => {
+                        console.log(data);
+                        
+                        /*
+                        let vms = new vmsModel({
+                            name: aux_name,
+                            dockerId: data.id,
+                            startupParameters: flo_parameters,
+                            vmsType: flo_type,
+                            node: edge_nodes_selected.flo[i].id,
+                            outputType: 'Image',
+                            bindedTo: []
+                        })        
+
+                        // save the Flo VMS 
+                        await vms.save((err,vms) => {
+                            if (err) {
+                                return res.status(500).json({
+                                    message: 'Error when creating VMS FLO',
+                                    error: err
+                                });
+                            }
+                        })*/
+                    }).catch(function(err) {
+                        console.log(err);
+                        return res.status(500).json({
+                            message: 'Error when start the Image Broker',
+                            error: err
+                        });
+                    })
+                }).catch(function(err) {
+                    console.log(err);
+                    return res.status(500).json({
+                        message: 'Error when initiate the Image Broker',
+                        error: err
+                    });
+                })
+            })       
+        // <- FIM IMAGE BROKER
 
         // d) Create the MLO VMSs
 
