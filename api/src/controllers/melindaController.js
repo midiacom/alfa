@@ -1,5 +1,6 @@
 const melindaFPSModel = require("../models/melindaFPS")
 const vmsTypeModel = require("../models/vmsTypeModel")
+const vmsModel = require("../models/vmsModel")
 
 const docker = require("../util/dockerApi")
 
@@ -11,9 +12,109 @@ const melindaController = {
      * Save the maximum FPS of each VMS for each Edge Node
      */
     startWorkflow: async (req, res, next) => {
-        console.log(req.body);
         
+        let name = req.body.name
+        let maxFPS = req.body.maxFPS
+        let mlo_number = req.body.mlo_number
+        let flo_number = req.body.flo_number
+        let dlo_number = req.body.dlo_number
+        let mlo_parameters = req.body.mlo_parameters
+        let flo_parameters = req.body.flo_parameters
+        let dlo_parameters = req.body.dlo_parameters
+        let mloSelected = req.body.mloSelected
+        let floSelected = req.body.floSelected
+        let dloSelected = req.body.dloSelected
+
+        // Get the VMSType of the MLO VMS Selected
+        let mlo_type =  await vmsTypeModel.findById(mloSelected)
+            .then(vmsType => {
+                return vmsType
+            })
+
+        // Get the VMSType of the FLO VMS Selected
+        let flo_type =  await vmsTypeModel.findById(floSelected)
+            .then(vmsType => {
+                return vmsType
+            })
+
+        // Get the VMSType of the DLO VMS Selected
+        let dlo_type =  await vmsTypeModel.findById(dloSelected)
+            .then(vmsType => {
+                return vmsType
+            })
+       
+
+        /**
+         * This is the array with the edge nodes that will run the elements 
+         * it will be executed by another allocation function
+        */
+        let edge_nodes_selected = {
+            mlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}],
+            flo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}],
+            dlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}]
+        }
+
         // a) Create the DLO VMSs
+        for (let i = 0; i < dlo_number; i++) {
+            let conf_container_dlo = {
+                Image: dlo_type.dockerImage,
+                Cmd: [dlo_parameters],
+                HostConfig: {
+                  NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
+                }
+            }
+
+            let dlo_created = await docker.api(edge_nodes_selected.dlo[i].ip)
+                .then(async (api) => {
+                    console.log(api);
+                    
+                    // ----------
+                    await api.createContainer(conf_container_dlo).then(async (container) => {
+                        console.log(container);
+                        
+                        container.start()
+                        .then(async (data) => { 
+                            console.log(data);
+                            
+                            let vms = new vmsModel({
+                                name: name,
+                                dockerId: data.id,
+                                startupParameters: dlo_parameters,
+                                vmsType: dlo_type,
+                                node: edge_nodes_selected.dlo[i].id,
+                                outputType: 'Image',
+                                bindedTo: []
+                            })
+        
+                            console.log(vms);
+                            
+                            // save the Mlo VMS 
+                            await vms.save((err,vms) => {
+                              /* istanbul ignore next */ 
+                                if (err) {
+                                    console.log(err)
+                                    return res.status(500).json({
+                                    message: 'Error when creating vmsType',
+                                    error: err
+                                    });
+                                }
+                            })
+                        }).catch(function(err) {                        
+                            console.log('---------------')
+                            console.log(err)
+                            console.log('---------------')
+                            return res.status(500).json({
+                                message: 'Erro ao instanciar o VMS',
+                                error: err
+                            });
+                        })
+                    })
+                })
+        }
+
+        console.log(dlo_created);
+        console.log('aaaaaaaaa');
+        
 
         // b) Create the FLO VMSs
 
