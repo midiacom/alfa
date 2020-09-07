@@ -162,6 +162,8 @@ class Video():
 
 if __name__ == '__main__':
     try:
+        jpeg_quality = 90  # 0 to 100, higher is better quality, 95 is cv2 default
+
         # Create the video object
         video = Video()
 
@@ -187,16 +189,16 @@ if __name__ == '__main__':
 
             image_frame = video.frame()
 
-            cv2.imshow('frame', image_frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # cv2.imshow('frame', image_frame)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
 
             codes, image_frame = reader.extract(image_frame, False)
 
-            print(len(codes))
-
             if len(codes):
-                cv2.imwrite("./frame.jpg", codes[0])
+                ret_code, jpg_buffer = cv2.imencode(
+                    ".jpg", image_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
+                sender.send_jpg(node_name, jpg_buffer)
 
     except (KeyboardInterrupt, SystemExit):
         pass  # Ctrl-C was pressed to end program

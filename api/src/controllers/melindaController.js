@@ -201,8 +201,12 @@ const melindaController = {
             name: 'image_broker',
             Image: 'alfa/component/image_broker',
             Cmd: image_broker_parameters,
+            ExposedPorts: {"5555/tcp": {}},
             HostConfig: {
-                NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
+                NetworkMode: process.env.DOCKER_OVERLAY_NETWORK,
+                PortBindings: {
+                    "5555/tcp": [{"HostPort":"5555"}]
+                }
             }
         }
 
