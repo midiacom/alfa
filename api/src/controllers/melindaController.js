@@ -75,18 +75,22 @@ const melindaController = {
                 Cmd: [dlo_parameters],
                 ExposedPorts: {"5575/tcp": {}},
                 HostConfig: {
-                    NetworkMode: process.env.DOCKER_OVERLAY_NETWORK,
-                    PortBindings: {
-                        "5575/tcp": [{"HostPort":"5575"}]
-                    }
+                    NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
                 }
             }
+            /*
+            Only with ExposedPorts worked once the inside and outside port was the same!
+            PortBindings: {
+                "5575/tcp": [{"HostPort":"5575"}]
+            }
+            */            
+
             let dlo_created = await docker.api(edge_nodes_selected.dlo[i].ip)
                 .then(async (api) => {
                     // ----------
-                    await api.createContainer(conf_container_dlo).then(async (container) => {                        
+                    await api.createContainer(conf_container_dlo).then(async (container) => {
                         container.start()
-                        .then(async (data) => { 
+                        .then(async (data) => {
                             
                             let vms = new vmsModel({
                                 name: aux_name,
@@ -139,10 +143,7 @@ const melindaController = {
                 Cmd: [flo_parameters],
                 ExposedPorts: {"5565/tcp": {}},
                 HostConfig: {
-                    NetworkMode: process.env.DOCKER_OVERLAY_NETWORK,
-                    PortBindings: {
-                        "5565/tcp": [{"HostPort":"5565"}]
-                    }
+                    NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
                 }
             }
 
