@@ -8,9 +8,10 @@ image_hub = imagezmq.ImageHub(open_port='tcp://*:5575')
 
 try:
     while True:  # show streamed images until Ctrl-C
-        node_name, jpg_buffer = image_hub.recv_jpg()
+        msg, jpg_buffer = image_hub.recv_jpg()
         
-        print(node_name, flush=True)
+        print("Chegou algo DLO", flush=True)
+        print(msg, flush=True)
 
         #image = cv2.imdecode(np.frombuffer(jpg_buffer, dtype='uint8'), -1)
         #cv2.imshow(node_name, image)  # One window for each stream

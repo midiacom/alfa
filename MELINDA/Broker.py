@@ -63,23 +63,28 @@ def flo_task(mode, node_url):
         try:
             # Get the first item queued.
             # If queue is empty raise the Empty exception
+            print(mode)
             if mode == UNICAST:
                 (node_name, jpg_buffer) = imq.get(block=False)
                 reply = sender.send_jpg(node_name, jpg_buffer)
-                omq.put((node_name, reply))
+                print("Chegou algo BROKER UNICAST", flush=True)
+                print(reply, flush=True)
+                omq.put((reply, jpg_buffer))
                 # remove item from queue
                 imq.task_done()
             elif mode == MULTICAST:
                 (node_name, jpg_buffer) = timq[node_url].get(block=False)
                 reply = sender.send_jpg(node_name, jpg_buffer)
-                omq.put((node_name, reply))
+                print("Chegou algo BROKER MULTICAST", flush=True)
+                print(reply, flush=True)
+
+                omq.put((reply, jpg_buffer))
                 timq[node_url].task_done()
         except queue.Empty:
             pass
 
     print("Closing connection with FLO node:", node_url)
     sender.close()  # close the ZMQ socket and context
-
 
 def dlo_task(node_url):
     t = threading.currentThread()
@@ -88,8 +93,8 @@ def dlo_task(node_url):
         try:
             # Get the first item queued.
             # If queue is empty raise the Empty exception
-            (node_name, jpg_buffer) = omq.get(block=False)
-            sender.send_jpg(node_name, jpg_buffer)
+            (msg, jpg_buffer) = omq.get(block=False)
+            sender.send_jpg(msg, jpg_buffer)
             # remove item from queue
             omq.task_done()
         except queue.Empty:

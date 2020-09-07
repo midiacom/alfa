@@ -197,6 +197,7 @@ const melindaController = {
 
         image_broker_parameters = [flo_parameter, dlo_parameter]
         
+        // The Image Broker is attached with the 5555 port and port bind with the container 
         let conf_container_image_broker = {
             name: 'image_broker',
             Image: 'alfa/component/image_broker',

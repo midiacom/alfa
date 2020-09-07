@@ -186,16 +186,19 @@ if __name__ == '__main__':
                 continue
 
             time.sleep(0.1)
+            frame = video.frame()
+        
+            # cv2.imwrite('frame.jpg', frame)
 
-            image_frame = video.frame()
-
-            # cv2.imshow('frame', image_frame)
+            # remove the comment to show a video frame, not work inside docker container
+            # cv2.imshow('frame', frame)
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
 
-            codes, image_frame = reader.extract(image_frame, False)
+            codes, image_frame = reader.extract(frame, False)
 
             if len(codes):
+                print(1)
                 ret_code, jpg_buffer = cv2.imencode(
                     ".jpg", image_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
                 sender.send_jpg(node_name, jpg_buffer)
