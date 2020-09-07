@@ -1,4 +1,7 @@
 '''
+LIB USED
+    https://github.com/MikhailGordeev/QR-Code-Extractor
+
 Send video
 gst-launch-1.0  videotestsrc pattern=ball \
      ! tee name=t \
@@ -9,6 +12,16 @@ gst-launch-1.0  videotestsrc pattern=ball \
      ! udpsink host=localhost port=5000
 
 python3 mlo.py --IP=tcp://172.17.0.1:5555
+
+gst-launch-1.0 multifilesrc loop=true  location=/home/battisti/versionado/experimentos_dissertacao/dataloss/latencia.mp4 \
+    ! decodebin \
+    ! videoscale \
+    ! video/x-raw,width=800,height=600 \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink port=5000 
+
+    host=172.17.0.2
 '''
 
 import cv2
@@ -20,7 +33,7 @@ import time
 import traceback
 import argparse
 import imagezmq
-
+import qr_extractor as reader
 
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
@@ -148,34 +161,86 @@ class Video():
 
 
 if __name__ == '__main__':
-    # Create the video object
-    # Add port= if is necessary to use a different one
-    video = Video()
+    try:
+        # Create the video object
+        video = Video()
 
-    parser = argparse.ArgumentParser("MLO Example")
-    parser.add_argument("--IP", help="IP and PORT where the image broker is running. Example: tcp://IP:PORT;IP:PORT.", type=str)
-    args = parser.parse_args()
+        parser = argparse.ArgumentParser("MLO Example")
+        parser.add_argument("--IP", help="IP and PORT where the image broker is running. Example: tcp://IP:PORT;IP:PORT.", type=str)
+        args = parser.parse_args()
 
-    sender = imagezmq.ImageSender(connect_to=args.IP)
+        sender = imagezmq.ImageSender(connect_to=args.IP)
 
-    node_name = socket.gethostname()  # send RPi hostname with each image
+        node_name = socket.gethostname()  # send RPi hostname with each image
 
-    jpeg_quality = 90  # 0 to 100, higher is better quality, 95 is cv2 default
+        # read the image
+        # image_frame = cv2.imread('/home/battisti/versionado/alfa/MELINDA/vms_mlo/code.jpg')
+        # codes, image_frame = reader.extract(image_frame, False)        
+        # cv2.imwrite("./frame.jpg", codes[0])
+                
+        while True:
+            # Wait for the next frame
+            if not video.frame_available():
+                continue
 
-    while True:
-        # Wait for the next frame
-        if not video.frame_available():
-            continue
+            time.sleep(0.1)
 
-        time.sleep(0.1)
+            image_frame = video.frame()
 
-        frame = video.frame()
+            cv2.imshow('frame', image_frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+            codes, image_frame = reader.extract(image_frame, False)
+
+            print(len(codes))
+
+            if len(codes):
+                cv2.imwrite("./frame.jpg", codes[0])
+
+    except (KeyboardInterrupt, SystemExit):
+        pass  # Ctrl-C was pressed to end program
+
+    except Exception as ex:
+        print('Python error with no Exception handler:')
+        print('Traceback error:', ex)
+        traceback.print_exc()
+
+    finally:
+        # cv2.destroyAllWindows()
+        print("Done")
+
+
+
+# VERSÃO ANTERIOR RODANDO 
+# if __name__ == '__main__':
+#     # Create the video object
+#     video = Video()
+
+#     parser = argparse.ArgumentParser("MLO Example")
+#     parser.add_argument("--IP", help="IP and PORT where the image broker is running. Example: tcp://IP:PORT;IP:PORT.", type=str)
+#     args = parser.parse_args()
+
+#     sender = imagezmq.ImageSender(connect_to=args.IP)
+
+#     node_name = socket.gethostname()  # send RPi hostname with each image
+
+#     jpeg_quality = 90  # 0 to 100, higher is better quality, 95 is cv2 default
+
+#     while True:
+#         # Wait for the next frame
+#         if not video.frame_available():
+#             continue
+
+#         time.sleep(0.1)
+
+#         frame = video.frame()
         
-        ret_code, jpg_buffer = cv2.imencode(
-            ".jpg", frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])                
+#         ret_code, jpg_buffer = cv2.imencode(
+#             ".jpg", frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])                
 
-        sender.send_jpg(node_name, jpg_buffer)
+#         sender.send_jpg(node_name, jpg_buffer)
 
-        # cv2.imshow('frame', frame)
-        # if cv2.waitKey(1) & 0xFF == ord('q'):
-        #    break
+#         # cv2.imshow('frame', frame)
+#         # if cv2.waitKey(1) & 0xFF == ord('q'):
+#         #    break
