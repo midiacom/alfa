@@ -6,6 +6,12 @@ RUN apt-get -y install procps
 
 RUN pip3 install imagezmq
 
+RUN pip3 install opencv-python
+
+RUN apt-get -y install libgl1-mesa-glx
+RUN apt-get -y install libglib2.0-0
+
+
 COPY ./start.sh .
 COPY ./Broker.py .
 
