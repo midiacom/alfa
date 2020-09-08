@@ -57,7 +57,6 @@ timq = {}            # Dictionary for accessing thread's input message queue
 # Broker's hub to receive messages from MLO nodes
 image_hub = imagezmq.ImageHub(open_port='tcp://*:5555')  # Hub to receive images of interest
 
-
 def flo_task(mode, node_url):
     t = threading.currentThread()
     sender = imagezmq.ImageSender(connect_to=node_url)
@@ -66,27 +65,15 @@ def flo_task(mode, node_url):
             # Get the first item queued.
             # If queue is empty raise the Empty exception
             if mode == UNICAST:
-                (node_name, jpg_buffer) = imq.get(block=False)
-                reply = sender.send_jpg(node_name, jpg_buffer)
-                print("\nFLO\n", flush=True)
-                print(reply, flush=True)
-                print("\nflo\n", flush=True)
-                #  = cv2.imdecode(np.frombuffer(jpg_buffer, dtype='uint8'), -1)
-                # ret_code, img_jpg = cv2.imencode(
-                #     ".jpg", image_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
-                # sender.send_jpg(node_name, img_jpg )
-
-                _, buffer = cv2.imencode(".jpg", jpg_buffer,
-                                     [int(cv2.IMWRITE_JPEG_QUALITY), 90])
-                omq.put((reply, buffer))
-
-                # omq.put((reply, img_jpg))
+                (jsonstr, jpg_buffer) = imq.get(block=False)
+                reply = sender.send_jpg(jsonstr, jpg_buffer)
+                omq.put((reply.decode('utf-8'), jpg_buffer))
                 # remove item from queue
                 imq.task_done()
             elif mode == MULTICAST:
-                (node_name, jpg_buffer) = timq[node_url].get(block=False)
-                reply = sender.send_jpg(node_name, jpg_buffer)
-                omq.put((reply, jpg_buffer))
+                (jsonstr, jpg_buffer) = timq[node_url].get(block=False)
+                reply = sender.send_jpg(jsonstr, jpg_buffer)
+                omq.put((reply.decode('utf-8'), jpg_buffer))
                 timq[node_url].task_done()
         except queue.Empty:
             pass
@@ -101,19 +88,14 @@ def dlo_task(node_url):
         try:
             # Get the first item queued.
             # If queue is empty raise the Empty exception
-            (msg, jpg_buffer) = omq.get(block=False)
-            print("\nDLO\n",flush=True)
-            print(msg, flush=True)
-            print(jpg_buffer, flush=True)
-            print("\ndlo\n",flush=True)
-            sender.send_jpg(msg, jpg_buffer)
+            (jsonstr, jpg_buffer) = omq.get(block=False)
+            sender.send_jpg(jsonstr, jpg_buffer)
             # remove item from queue
             omq.task_done()
         except queue.Empty:
             pass
     print("Closing connection with DLO node:", node_url)
     sender.close()  # close the ZMQ socket and context
-
 
 def main(mode=UNICAST):
 

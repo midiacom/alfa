@@ -22,6 +22,14 @@ gst-launch-1.0 multifilesrc loop=true  location=/home/battisti/versionado/experi
     ! udpsink port=5000 
 
     host=172.17.0.2
+
+gst-launch-1.0 v4l2src device=/dev/video0 \
+    ! tee name=t \
+    ! queue \
+    ! decodebin \
+    ! x264enc \
+    ! rtph264pay \
+    ! udpsink host=localhost port=5000     
 '''
 
 import cv2
@@ -34,6 +42,8 @@ import traceback
 import argparse
 import imagezmq
 import qr_extractor as reader
+import json
+import datetime
 
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
@@ -191,17 +201,30 @@ if __name__ == '__main__':
             # cv2.imwrite('frame.jpg', frame)
 
             # remove the comment to show a video frame, not work inside docker container
-            cv2.imshow('frame', frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # cv2.imshow('frame', frame)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
 
             codes, image_frame = reader.extract(frame, False)
 
             if len(codes):
                 print(1)
+                timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
                 ret_code, jpg_buffer = cv2.imencode(
                     ".jpg", image_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
-                sender.send_jpg(node_name, jpg_buffer)
+                jsondata = {'sensor_id': node_name,
+                            'timestamp': timestamp}
+                jsonstr = json.dumps(jsondata)
+
+                # Debug
+                print("MLO\n", flush=True)
+                print(jsonstr, flush=True)
+
+                sender.send_jpg(jsonstr, jpg_buffer)
+
+                # ret_code, jpg_buffer = cv2.imencode(
+                #     ".jpg", image_frame, [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality])
+                # sender.send_jpg(node_name, jpg_buffer)
 
     except (KeyboardInterrupt, SystemExit):
         pass  # Ctrl-C was pressed to end program

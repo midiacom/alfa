@@ -3,22 +3,21 @@ import traceback
 import numpy as np
 import cv2
 import imagezmq
+import json
 
 image_hub = imagezmq.ImageHub(open_port='tcp://*:5575')
 
 try:
     while True:  # show streamed images until Ctrl-C
-        print("DLO ->>", flush=True)
+        jsonstr, jpg_buffer = image_hub.recv_jpg()
+        jsondata = json.loads(jsonstr)
+        image = cv2.imdecode(np.frombuffer(jpg_buffer, dtype='uint8'), -1)
+        # cv2.imshow(jsondata['sensor_id'], image)  # One window for each stream
 
-        msg, jpg_buffer = image_hub.recv_image()
+        # Debug
+        print("DLO\n", flush=True)
+        print(jsondata, flush=True)
 
-
-        print("\n-------", flush=True)
-        print(msg, flush=True)
-        print("\n-------", flush=True)
-
-        #image = cv2.imdecode(np.frombuffer(jpg_buffer, dtype='uint8'), -1)
-        #cv2.imshow(node_name, image)  # One window for each stream
         image_hub.send_reply(b'OK')  # REP reply
         # detect any kepresses
         # key = cv2.waitKey(1) & 0xFF
