@@ -43,7 +43,6 @@ const melindaController = {
             .then(vmsType => {
                 return vmsType
             })
-       
 
         /**
          * This is the array with the edge nodes that will run the elements 

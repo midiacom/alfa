@@ -63,13 +63,12 @@ def flo_task(mode, node_url):
         try:
             # Get the first item queued.
             # If queue is empty raise the Empty exception
-            print(mode)
             if mode == UNICAST:
                 (node_name, jpg_buffer) = imq.get(block=False)
                 reply = sender.send_jpg(node_name, jpg_buffer)
                 print("Chegou algo BROKER UNICAST", flush=True)
                 print(reply, flush=True)
-                omq.put((reply, jpg_buffer))
+                omq.put(reply, jpg_buffer)
                 # remove item from queue
                 imq.task_done()
             elif mode == MULTICAST:
@@ -94,6 +93,8 @@ def dlo_task(node_url):
             # Get the first item queued.
             # If queue is empty raise the Empty exception
             (msg, jpg_buffer) = omq.get(block=False)
+            print("-----",flush=True)
+            print(msg, flush=True)
             sender.send_jpg(msg, jpg_buffer)
             # remove item from queue
             omq.task_done()
@@ -161,4 +162,4 @@ def main(mode=UNICAST):
 
 
 if __name__ == "__main__":
-    main(mode=MULTICAST)
+    main(mode=UNICAST)

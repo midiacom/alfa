@@ -191,9 +191,9 @@ if __name__ == '__main__':
             # cv2.imwrite('frame.jpg', frame)
 
             # remove the comment to show a video frame, not work inside docker container
-            # cv2.imshow('frame', frame)
-            # if cv2.waitKey(1) & 0xFF == ord('q'):
-            #     break
+            cv2.imshow('frame', frame)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
             codes, image_frame = reader.extract(frame, False)
 
