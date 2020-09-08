@@ -3,11 +3,16 @@
     <b-row>
         <b-col>            
             <h2>
-                <v-icon name="align-justify"></v-icon>
+                <v-icon style="width: 32px;" name="align-justify"></v-icon>
                 VMS Container LOG Details
             </h2>
         </b-col>
+        <b-col>
+            <v-icon style="width: 32px;" name="clock"></v-icon>
+            Realod in <strong>{{ reload_time }}</strong> seconds
+        </b-col>
     </b-row>
+    <hr/>
 
     <b-row>
         <pre>
@@ -30,9 +35,11 @@ export default {
     name: 'vmsLog',
     data() {
         return {
-            log: "null"
+            log: "null",
+            reload_time: 5
         }
     },
+
     methods: {  
         refresh() {
             this.isBusy = true
@@ -43,10 +50,24 @@ export default {
                 .catch(e => {
                     console.log(e)
                 })
-        }
+        },
+        countDownTimer() {
+            if(this.reload_time >= 0) {
+                setTimeout(() => {
+                    this.reload_time -= 1
+                    this.refresh()
+                    this.countDownTimer()
+                }, 1000)
+            } else {
+                this.reload_time = 5
+                this.countDownTimer()
+            }
+        }        
     },
+
     created() {
         this.refresh()
+        this.countDownTimer()
     }
 }
 </script>
