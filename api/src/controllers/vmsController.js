@@ -175,13 +175,33 @@ const vmsController = {
         } else {
           // if it is a manual choice, grab the node with the same IP
           await nodeModel.findOne({
-            'ip': nodeIp
+            'ip': nodeIp,
           })
           .then((node) => {
             nodeResult._id = node._id
           })
         }
       } catch(err) {}
+
+      // verify if the node is really online
+      let edgeNodeIsOnline = await nodeModel.findOne({'ip':nodeIp})
+        .then((result) => { 
+          return result
+        })
+        .catch(function(err) {
+          return res.status(500).json({
+            message: 'Edge Node not founded',
+            error: err
+          });
+        })
+
+      // if the edge node is offline stop the process
+      if (!edgeNodeIsOnline.online) {
+        return res.status(500).json({
+          message: 'Edge is Offline',
+          error: 'Edge is Offline'
+        });
+      }
 
       docker.api(nodeIp)
         .then((api) => {
@@ -228,7 +248,7 @@ const vmsController = {
                   exposePorts[aux_index] = {}  
                 })
               
-                console.log(containerPorts);
+                // console.log(containerPorts);
                 conf_container['ExposedPorts'] = exposePorts
                 conf_container['HostConfig']['PortBindings'] = containerPorts
               }              

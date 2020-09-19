@@ -183,8 +183,12 @@ const nodeController = {
         
         let result = []
         for (let i = 0; i < nodes.length; i++) {
+            let txtOnline = "(Online)"
+            if (!nodes[i].online)
+                txtOnline = "(Offline)"
+
             result.push({
-                'name' : `Manual - ${nodes[i].ip}`,
+                'name' : `Manual / ${nodes[i].ip} ${txtOnline}`,
                 'ip': nodes[i].ip,
                 '_id': nodes[i]._id
             })

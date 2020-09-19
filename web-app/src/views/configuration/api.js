@@ -24,7 +24,5 @@ export const apiConfiguration = {
           reject(new Error(`Error when bootstraping ${e}`))
         })
       })
-  },
-
-  
+  }
 }

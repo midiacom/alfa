@@ -11,8 +11,8 @@ export const apiVms = {
         .then(resp => {
           resolve(resp.data)
         })
-        .catch((e) => {
-          reject(new Error(`Error when creating a new VMS ${e}`))
+        .catch((error) => {
+          reject(new Error(`Error when creating a new VMS (MSG: ${error.response.data.error})`))
         })
       })
   },  
@@ -32,9 +32,7 @@ export const apiVms = {
       })
   },  
 
-  remFoward (data) {
-    console.log(data);
-    
+  remFoward (data) {  
     if (!data) {
       return Promise.reject(new Error('Data not informed'))
     }

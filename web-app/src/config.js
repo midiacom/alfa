@@ -11,7 +11,7 @@ export const config = {
     api: ''
 }
 
-console.log(process.env.VUE_APP_MY_URL_API)
+// console.log(process.env.VUE_APP_MY_URL_API)
 
 config.api = axios.create({
     baseURL: config.URL_API
