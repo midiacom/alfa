@@ -24,6 +24,16 @@ const configurationController = {
 
     bootstrap: async (req, res, next) => {
 
+        // only run this function if there is no VMS Types listed
+        let anyVmsType = await vmsTypeModel.find()
+            .then((selected) => {
+                return selected.length;
+            })
+
+        if (anyVmsType > 0) {
+            return res.status(201).json("{ok:ok}");
+        }
+
         // create the location 
         let loc = await new locationModel({
             name: "Office #1"
