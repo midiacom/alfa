@@ -26,7 +26,7 @@
             </b-form-group>
 
             <b-form-group id="input-group-3" label="Edge Node:" label-for="node">
-                <b-form-select style="margin-top:0px!important" id="nodeIp" v-model="form.nodeIp" :options="nodes" size="sm" class="mt-3"></b-form-select>
+                <b-form-select required style="margin-top:0px!important" id="nodeIp" v-model="form.nodeIp" :options="nodes" size="sm" class="mt-3"></b-form-select>
             </b-form-group>
             
             <b-form-group>
@@ -36,7 +36,7 @@
             <hr>
 
             <b-form-group id="input-group-2" label="Name:" label-for="name">
-                <b-form-input id="name" v-model="form.name" type="text"/>
+                <b-form-input required id="name" v-model="form.name" type="text"/>
             </b-form-group>
 
             <b-form-group id="input-group-3" label="Startup Parameters:" label-for="startupParameters">
