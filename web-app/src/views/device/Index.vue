@@ -56,7 +56,11 @@
             <v-icon name="info"></v-icon>
         </b-button>
 
-      </template>        
+        <b-button v-show=row.item.dockerId variant="info" size="sm" @click="containerLog(row.item)" class="mr-2" title="Container Logs">
+            <v-icon name="align-justify"></v-icon>
+        </b-button>
+
+      </template>
 
         <div slot="table-busy" class="text-center text-danger my-2">
             <b-spinner class="align-middle"></b-spinner>
@@ -117,6 +121,10 @@ export default {
 
         containerDetails (device) {
             this.$router.push(`/device/${device._id}/details`)
+        },
+
+        containerLog (device) {
+            this.$router.push(`/device/${device._id}/log`)
         },
 
         stopSrcDevice (device) {
@@ -203,7 +211,7 @@ export default {
 
 <style>
     .deviceIndexActions {
-        width: 250px;
+        width: 300px;
         text-align: center;
     }
     .edgeNodeCol {

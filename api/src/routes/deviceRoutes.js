@@ -20,4 +20,6 @@ router.put('/:id', deviceController.put);
 
 router.delete('/:id', deviceController.delete);
 
+router.get('/log/:id', deviceController.getLog);
+
 module.exports = router;

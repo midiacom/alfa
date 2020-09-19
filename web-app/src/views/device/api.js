@@ -165,5 +165,17 @@ export const apiDevice = {
           reject(e)
         })
     })
-  }  
+  },
+
+  getLog (deviceId) {
+    return new Promise((resolve, reject) => {
+      config.api.get(`/device/log/${deviceId}`)
+        .then(resp => {
+            resolve(resp.data)
+        })
+        .catch(e => {
+            reject(e)
+        })
+    })
+  }
 }

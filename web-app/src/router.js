@@ -45,6 +45,14 @@ export default new Router({
       name: 'deviceIndex',
       component: () => import(/* webpackChunkName: "deviceIndex" */ './views/device/Index.vue')
     },
+
+    {
+      path: '/device/:id/log',
+      name: 'virtualDeviceLog',
+      component: () => import(/* webpackChunkName: "vmsEdit" */ './views/device/Log.vue')
+    },
+
+
     {
       path: '/device/new',
       name: 'deviceNew',

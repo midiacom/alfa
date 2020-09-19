@@ -237,6 +237,38 @@ const deviceController = {
                 /* istanbul ignore next */ 
                 return res.status(422).send(err.errors);
             });
-    } 
+    },
+
+    getLog: (req, res, next) => {
+        let id = req.params.id;
+        deviceModel.findById(id)
+            .populate('node')
+            .exec()
+            .then(device => {        
+                if (!device) {
+                    return res.status(422).send(`Device with id ${id} not found!`);
+                }            
+                docker.api(device.node.ip)
+                .then((api) => {
+                    let container = api.getContainer(device.dockerId)
+                    // console.log(container)
+                    container.logs({stdout: true, stderr: true}, function (err, data) {
+                        if (err) {
+                            return res.status(422).json({
+                                message: 'Container not running or created anymore.',
+                                error: err
+                            });
+                        }
+                        return res.status(201).json(data)  
+                    })
+                })
+                .catch(err => {          
+                    return res.status(422).send(err.errors);
+                });        
+            })
+            .catch(err => {
+                return res.status(422).send(err.errors);
+            });
+        }    
 }    
 module.exports = deviceController
