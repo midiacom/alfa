@@ -25,6 +25,11 @@
             {{ row.item.dockerImage }}
         </template>
       <template v-slot:cell(actions)="row">
+            
+            <b-button variant="success" size="sm" @click="newDevice(row.item)" class="mr-2" title="New Virtual Device with this type">
+                <v-icon name="plus"></v-icon>
+            </b-button>
+
             <b-button variant="primary" size="sm" @click="editVmsType(row.item)" class="mr-2">
                 <v-icon name="edit-2"></v-icon>
             </b-button>
@@ -78,9 +83,15 @@ export default {
         editVmsType (vmsType) {
             this.$router.push(`/vmsType/${vmsType._id}/edit`)
         },
+
         newVms (vmsType) {
             this.$router.push(`/vms/new/${vmsType._id}/`)
         },
+
+        newDevice (vmsType) {
+            this.$router.push(`/device/new/${vmsType._id}/`)
+        },
+
         removeVmsType(vmsType) {
             this.$swal.fire({
                 title: 'Are you sure?',
@@ -121,7 +132,7 @@ export default {
 
 <style>
     .vmsTypeSrcIndexActions {
-        width: 150px;
+        width: 250px;
         text-align: center;
     }
 </style>

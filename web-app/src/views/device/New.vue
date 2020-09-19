@@ -51,12 +51,14 @@
             </b-row>
         </b-form>
   </div>
+
 </template>
 
 <script>
 import {apiDevice} from './api'
 import {apiLocation} from '../location/api'
 import {apiNode} from '../node/api'
+import {apiVmsType} from '../vmsType/api'
 
 export default {
     name: 'deviceNew',
@@ -108,6 +110,8 @@ export default {
     },
     created() {
 
+        this.form.connectionType = this.$route.params.connectionType
+
         apiNode.getNodesForSelect()
             .then((nodes) => {
                 this.nodes = nodes
@@ -115,7 +119,13 @@ export default {
 
         apiDevice.getConnectionTypes()
             .then((ret) => {
-                this.connectionTypes = ret
+                this.connectionTypes = ret                
+                if (this.$route.params.connectionType) {
+                    apiVmsType.getVmsType(this.$route.params.connectionType)
+                        .then((type) => {
+                            this.form.connectionType = type.dockerImage
+                        })
+                }
             })       
  
         apiLocation.getLocationsForSelect()

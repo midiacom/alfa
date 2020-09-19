@@ -51,6 +51,11 @@ export default new Router({
       component: () => import(/* webpackChunkName: "deviceNew" */ './views/device/New.vue')
     },        
     {
+      path: '/device/new/:connectionType',
+      name: 'deviceNew',
+      component: () => import(/* webpackChunkName: "deviceNew" */ './views/device/New.vue')
+    },        
+    {
       path: '/device/:id/edit',
       name: 'deviceEdit',
       component: () => import(/* webpackChunkName: "deviceEdit" */ './views/device/Edit.vue')
