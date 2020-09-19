@@ -114,9 +114,13 @@ export const apiNode = {
         .then(resp => {
             let ret = []
             resp.data.forEach(element => {
+              let online = "Online"
+              if (!element.online) {
+                online = "Offline"
+              }
               ret.push({
                 value: element.ip,
-                text: `${element.name} ${element.ip}`,
+                text: `${element.name} / ${element.ip} (${online})`,
                 id: element._id
               })
             });
