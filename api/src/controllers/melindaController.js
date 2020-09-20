@@ -40,9 +40,104 @@ const melindaController = {
 
         // Get the VMSType of the DLO VMS Selected
         let dlo_type =  await vmsTypeModel.findById(dloSelected)
-            .then(vmsType => {
+            .then(vmsType => {                
                 return vmsType
             })
+
+        // Generate the list of the nodes and the capabilites of each one in terms of the mlo, flo and dlo VMS
+        // select all the edge nodes that can run the mloSelected
+        possible_nodes = {}
+        
+        await melindaFPSModel.find({'vmsType': mloSelected})
+            .populate('node')
+            .then((nodes) => {
+                for(let i = 0; i < nodes.length; i++) {
+                    node = nodes[i]  
+                    if (node.FPS > 0 && node.node.online == true) {
+                        possible_nodes[node.node.id] = {
+                            'edgeNodeId': node.node.id,
+                            'ip': node.node.ip,
+                            'mlo': node.FPS,
+                            'flo': 0,
+                            'dlo': 0
+                        }
+                    }
+                }                
+            })
+            .catch((err) => {
+                return res.status(500).json({
+                    message: 'Error when selecting nodes to run MLO',
+                    error: err
+                })
+            })
+        
+        // select all the edge nodes that can run the flo_selected
+        await melindaFPSModel.find({'vmsType': floSelected})
+            .populate('node')
+            .then((nodes) => {                
+                for(let i = 0; i < nodes.length; i++) {
+                    node = nodes[i]                
+                    if (node.FPS > 0 && node.node.online == true) {
+                        if (typeof(possible_nodes[node.node.id]) != "undefined") {
+                            possible_nodes[node.node.id].flo = node.FPS
+                    } else {
+                            possible_nodes[node.node.id] = {
+                                'edgeNodeId': node.node.id,
+                                'ip': node.node.ip,
+                                'mlo': 0,
+                                'flo': node.FPS,
+                                'dlo': 0
+                            }
+                        }
+                    }
+                }                
+            })
+            .catch((err) => {
+                return res.status(500).json({
+                    message: 'Error when selecting nodes to run FLO',
+                    error: err
+                })
+            })
+        // select all the edge nodes that can run the mlo_selected
+        await melindaFPSModel.find({'vmsType': dloSelected})
+        .populate('node')
+        .then((nodes) => {                
+            for(let i = 0; i < nodes.length; i++) {
+                node = nodes[i]                
+                if (node.FPS > 0 && node.node.online == true) {
+                    if (typeof(possible_nodes[node.node.id]) != "undefined") {
+                        possible_nodes[node.node.id].dlo = node.FPS
+                } else {
+                        possible_nodes[node.node.id] = {
+                            'edgeNodeId': node.node.id,
+                            'ip': node.node.ip,
+                            'mlo': 0,
+                            'flo': 0,
+                            'dlo': node.FPS
+                        }
+                    }
+                }
+            }
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                message: 'Error when selecting nodes to run FLO',
+                error: err
+            })
+        })
+
+        console.log('final');        
+        console.log(possible_nodes);
+        return;
+
+        nodes = [{'edgeNodeId': '5f2484b37c803900291ea3d0', 'mlo': 5, 'flo': 20, 'dlo': 30},
+        {'edgeNodeId': '5f2484b37c803900291ea3d1', 'mlo': 1, 'flo': 10, 'dlo': 50},
+        {'edgeNodeId': '5f2484b37c803900291ea3d2', 'mlo': 10, 'flo': 25, 'dlo': 90},
+        {'edgeNodeId': '5f2484b37c803900291ea3d3', 'mlo': 40, 'flo': 30, 'dlo': 10},
+        {'edgeNodeId': '5f2484b37c803900291ea3d4', 'mlo': 3, 'flo': 20, 'dlo': 10},
+        {'edgeNodeId': '5f2484b37c803900291ea3d5', 'mlo': 20, 'flo': 10, 'dlo': 10}]
+
+
 
         /**
          * This is the array with the edge nodes that will run the elements 

@@ -263,3 +263,7 @@ https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be
 Example dynamic pad
 
 * https://stackoverflow.com/questions/45700653/can-my-docker-container-app-access-the-hosts-microphone-and-speaker-mac-wind/48795232 Map a mic inside a docker container
+
+# VS Code
+
+code --disable-gpu --no-xshm
