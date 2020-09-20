@@ -4,4 +4,8 @@ RUN pip3 install paho-mqtt
 
 COPY . /root/Orchestrator
 
-CMD [ "python", "./root/Orchestrator/Orchestrator.py" ]
+RUN pip3 install imagezmq
+
+ENTRYPOINT ["./root/Orchestrator/start.sh"]
+
+#CMD [ "python", "./root/Orchestrator/Orchestrator.py" ]

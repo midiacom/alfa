@@ -2,6 +2,7 @@ const melindaFPSModel = require("../models/melindaFPS")
 const vmsTypeModel = require("../models/vmsTypeModel")
 const vmsModel = require("../models/vmsModel")
 const nodeModel = require("../models/nodeModel")
+const mqtt = require('mqtt')
 
 const docker = require("../util/dockerApi")
 
@@ -126,18 +127,92 @@ const melindaController = {
             })
         })
 
-        console.log('final');        
-        console.log(possible_nodes);
+
+        // create the array using the format that the algorithm understand
+        nodes = []
+        // itera graciosamente através de chave-valor (key-value)
+        for (var [key, value] of Object.entries(possible_nodes)) {            
+            nodes.push({
+                'edgeNodeId': value.edgeNodeId,
+                'mlo': parseInt(value.mlo),
+                'flo': parseInt(value.flo),
+                'dlo': parseInt(value.dlo)
+            })
+        }
+
+        let topic_nodes = "node_list"
+        let topic_response = "node_response"
+
+        // post in the MQTT Topic
+        var client  = mqtt.connect(process.env.MQTT_SERVER) 
+        client.on('connect', function () {
+            client.publish(topic_nodes, JSON.stringify(nodes), { qos: 2, retain: true })
+        })
+
+        // create the container to run the algoritm for choose the nodes where the VMS will run
+
+
+        let mqtt_s = process.env.MQTT_SERVER
+        let conf_container_orchestrator = {
+            Image: process.env.MELINDA_CONTAINER_ORCHESTRATOR,
+            Cmd: [{
+                maxFPS,
+                mqtt_s,
+                topic_nodes,
+                topic_response
+            }],
+            HostConfig: {
+                NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
+            }
+        }
+
+        console.log(conf_container_orchestrator);
+        
         return;
+    
+        await docker.api(process.env.MELINDA_HOST_ORCHESTRATOR)
+        .then(async (api) => {
+            // ----------
+            await api.createContainer(conf_container_orchestrator).then(async (container) => {
+                container.start()
+                .then(async (data) => {
+                    
+                    let vms = new vmsModel({
+                        name: aux_name,
+                        dockerId: data.id,
+                        startupParameters: dlo_parameters,
+                        vmsType: dlo_type,
+                        node: edge_nodes_selected.dlo[i].id,
+                        outputType: 'Image',
+                        bindedTo: []
+                    })        
+                    
+                    // save the Dlo VMS 
+                    await vms.save((err,vms) => {
+                        if (err) {
+                            return res.status(500).json({
+                                message: 'Error when creating VMS DLO',
+                                error: err
+                            });
+                        }
+                    })
+                }).catch(function(err) {
+                    return res.status(500).json({
+                        message: 'Error when initiate the VMS',
+                        error: err
+                    });
+                })
+            })
+        }).catch(function(err) {
+            console.log(err);
+            return res.status(500).json({
+                message: 'Error when initiate the VMS',
+                error: err
+            })
+        })  
 
-        nodes = [{'edgeNodeId': '5f2484b37c803900291ea3d0', 'mlo': 5, 'flo': 20, 'dlo': 30},
-        {'edgeNodeId': '5f2484b37c803900291ea3d1', 'mlo': 1, 'flo': 10, 'dlo': 50},
-        {'edgeNodeId': '5f2484b37c803900291ea3d2', 'mlo': 10, 'flo': 25, 'dlo': 90},
-        {'edgeNodeId': '5f2484b37c803900291ea3d3', 'mlo': 40, 'flo': 30, 'dlo': 10},
-        {'edgeNodeId': '5f2484b37c803900291ea3d4', 'mlo': 3, 'flo': 20, 'dlo': 10},
-        {'edgeNodeId': '5f2484b37c803900291ea3d5', 'mlo': 20, 'flo': 10, 'dlo': 10}]
-
-
+        // publish in the mqtt server
+        return;
 
         /**
          * This is the array with the edge nodes that will run the elements 
