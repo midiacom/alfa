@@ -70,7 +70,7 @@
                     </b-col>
                     <b-col>
                         <b-form-group id="input-group-1" label="Parameters:" label-for="mlo_parameters">
-                            <b-form-input style="width:400px" id="mlo_parameters" v-model="form.mlo_parameters" type="text" required/>
+                            <b-form-input style="width:400px" id="mlo_parameters" v-model="form.mlo_parameters" type="text" />
                         </b-form-group>
                     </b-col>
                     <b-col>
@@ -93,7 +93,7 @@
                     </b-col>
                     <b-col>
                         <b-form-group id="input-group-1" label="Parameters:" label-for="flo_parameters">
-                            <b-form-input style="width:400px" id="flo_parameters" v-model="form.flo_parameters" type="text" required/>
+                            <b-form-input style="width:400px" id="flo_parameters" v-model="form.flo_parameters" type="text" />
                         </b-form-group>
                     </b-col>
                     <b-col>
@@ -116,7 +116,7 @@
                     </b-col>
                     <b-col>
                         <b-form-group id="input-group-1" label="Parameters:" label-for="dlo_parameters">
-                            <b-form-input style="width:400px" id="dlo_parameters" v-model="form.dlo_parameters" type="text" required/>
+                            <b-form-input style="width:400px" id="dlo_parameters" v-model="form.dlo_parameters" type="text" />
                         </b-form-group>
                     </b-col>                    
                     <b-col>

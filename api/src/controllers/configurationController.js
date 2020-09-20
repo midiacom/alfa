@@ -44,7 +44,38 @@ const configurationController = {
                 ip: 'localhost',
                 isMaster: true,
                 description: 'Local Master Node'
-        }).save()
+        }).save()    
+
+        // MELINDA VMS Types MLO / FLO / DLO
+        const vmsTypemelindaMlo = await new vmsTypeModel({
+            name: 'VMS = MELINDA MLO QRCode Detection',
+            dockerImage: 'alfa/vms/melinda/mlo/qrcodedetect',
+            startupParameters: "IP_BROKER. Example: tcp://image_broker:5555",
+            description: 'Detect from an Image the QRCode, extract it and send to the Image Broker',
+            src: 0,
+            sdp: '',
+            ports: '5000'
+        }).save();
+
+        const vmsTypemelindaflo = await new vmsTypeModel({
+            name: 'VMS = MELINDA FLO Extraction Data from a QRCode',
+            dockerImage: 'alfa/vms/melinda/flo/qrcodeextract',
+            startupParameters: "",
+            description: 'This is a MELINDA VMS test for FLO',
+            src: 0,
+            sdp: '',
+            ports: '5000'
+        }).save();
+
+        const vmsTypemelindaDlo = await new vmsTypeModel({
+            name: 'VMS = MELINDA DLO Text Publish',
+            dockerImage: 'alfa/vms/melinda/dlo/pubtext',
+            startupParameters: "",
+            description: 'This is a MELINDA VMS test for DLO',
+            src: 0,
+            sdp: '',
+            ports: '5000'
+        }).save();        
 
         // create the Virtual Device Types
         const vmsTypeSrc0 = await new vmsTypeModel({

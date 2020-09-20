@@ -3,8 +3,6 @@ import { config } from '../../../config'
 export const apiMELINDA = {
   
     startWorkflow (data) {
-        
-        console.log(data);
 
         if (!data) {
             return Promise.reject(new Error('Data not informed'))
@@ -16,7 +14,11 @@ export const apiMELINDA = {
                     resolve(resp.data)
                 })
                 .catch((e) => {
-                    reject(new Error(`Error when creating the workflow ${e}`))
+
+                    console.log(e.response);
+                    
+
+                    reject(new Error(`${e.response.data.message} / ${e.response.data.error.json.message}`))
                 })
             })
     },

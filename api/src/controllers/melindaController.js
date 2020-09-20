@@ -49,10 +49,10 @@ const melindaController = {
          * it will be executed by another allocation function
         */
         let edge_nodes_selected = {
-            image_broker: {id:'5f2484b37c803900291ea3d6', ip:'localhost'},
-            mlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}],
-            flo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}, {id:'5f2484b37c803900291ea3d6', ip:'localhost'}],
-            dlo: [{id:'5f2484b37c803900291ea3d6', ip:'localhost'}, {id:'5f2484b37c803900291ea3d6', ip:'localhost'}]
+            image_broker: {id:'5f67700559daf4035152083f', ip:'localhost'},
+            mlo: [{id:'5f67700559daf4035152083f', ip:'localhost'}],
+            flo: [{id:'5f67700559daf4035152083f', ip:'localhost'}, {id:'5f67700559daf4035152083f', ip:'localhost'}],
+            dlo: [{id:'5f67700559daf4035152083f', ip:'localhost'}, {id:'5f67700559daf4035152083f', ip:'localhost'}]
         }
    
         let mlo_names = []
