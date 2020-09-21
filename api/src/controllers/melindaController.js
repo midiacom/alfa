@@ -54,7 +54,8 @@ const melindaController = {
             .then((nodes) => {
                 for(let i = 0; i < nodes.length; i++) {
                     node = nodes[i]  
-                    if (node.FPS > 0 && node.node.online == true) {
+                    if (node.FPS > 0) {
+                    // if (node.FPS > 0 && node.node.online == true) {
                         possible_nodes[node.node.id] = {
                             'edgeNodeId': node.node.id,
                             'ip': node.node.ip,
@@ -78,7 +79,8 @@ const melindaController = {
             .then((nodes) => {                
                 for(let i = 0; i < nodes.length; i++) {
                     node = nodes[i]                
-                    if (node.FPS > 0 && node.node.online == true) {
+                    if (node.FPS > 0) {
+                    // if (node.FPS > 0 && node.node.online == true) {
                         if (typeof(possible_nodes[node.node.id]) != "undefined") {
                             possible_nodes[node.node.id].flo = node.FPS
                     } else {
@@ -105,7 +107,8 @@ const melindaController = {
         .then((nodes) => {                
             for(let i = 0; i < nodes.length; i++) {
                 node = nodes[i]                
-                if (node.FPS > 0 && node.node.online == true) {
+                // if (node.FPS > 0 && node.node.online == true) {
+                if (node.FPS > 0) {
                     if (typeof(possible_nodes[node.node.id]) != "undefined") {
                         possible_nodes[node.node.id].dlo = node.FPS
                 } else {
@@ -147,10 +150,10 @@ const melindaController = {
         var client  = mqtt.connect(process.env.MQTT_SERVER) 
         client.on('connect', function () {
             client.publish(topic_nodes, JSON.stringify(nodes), { qos: 2, retain: true })
+            client.subscribe(topic_response)
         })
-
+   
         // create the container to run the algoritm for choose the nodes where the VMS will run
-
         let orchestrator_parameter = [`${maxFPS}`, process.env.MQTT_SERVER_HOST, `${process.env.MQTT_SERVER_PORT}`, topic_nodes, topic_response] 
 
         let conf_container_orchestrator = {
@@ -181,10 +184,26 @@ const melindaController = {
                     message: 'Error when initiate the VMS',
                     error: err
                 })
-            })  
+            })
 
         // wait for the response and conintue creating the VMS in the edge nodes
-        console.log('a');
+
+        let aux_nodes_selected = null
+
+        client.on('message', (topic, message, packet) => {
+            console.log(message.toString());
+            
+            // let aux_nodes_selected = JSON.parse(message.toString()) // payload is a buffer       
+        })
+        
+        await new Promise(resolve => setTimeout(resolve, 5000));
+                
+        console.log(aux_nodes_selected);
+        
+        // while (aux_nodes_selected == null){}
+        
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        console.log('3');
         
         // publish in the mqtt server
         return;
