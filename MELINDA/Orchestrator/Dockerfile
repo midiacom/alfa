@@ -1,11 +1,12 @@
-FROM python:3.9.0rc2-alpine3.12
+FROM python:3.6.12-stretch
 
 RUN pip3 install paho-mqtt
 
 COPY . /root/Orchestrator
 
-RUN pip3 install imagezmq
+RUN pip3 install paho-mqtt
 
 ENTRYPOINT ["./root/Orchestrator/start.sh"]
 
-#CMD [ "python", "./root/Orchestrator/Orchestrator.py" ]
+# CMD  ["./root/Orchestrator/start.sh"]
+# CMD [ "python", "./root/Orchestrator/Orchestrator.py" ]

@@ -140,8 +140,8 @@ const melindaController = {
             })
         }
 
-        let topic_nodes = "node_list"
-        let topic_response = "node_response"
+        let topic_nodes = "nodes_list"
+        let topic_response = "nodes_response"
 
         // post in the MQTT Topic
         var client  = mqtt.connect(process.env.MQTT_SERVER) 
@@ -151,66 +151,41 @@ const melindaController = {
 
         // create the container to run the algoritm for choose the nodes where the VMS will run
 
+        let orchestrator_parameter = [`${maxFPS}`, process.env.MQTT_SERVER_HOST, `${process.env.MQTT_SERVER_PORT}`, topic_nodes, topic_response] 
 
-        let mqtt_s = process.env.MQTT_SERVER
         let conf_container_orchestrator = {
             Image: process.env.MELINDA_CONTAINER_ORCHESTRATOR,
-            Cmd: [{
-                maxFPS,
-                mqtt_s,
-                topic_nodes,
-                topic_response
-            }],
+            Cmd: orchestrator_parameter,
             HostConfig: {
                 NetworkMode: process.env.DOCKER_OVERLAY_NETWORK
             }
         }
-
-        console.log(conf_container_orchestrator);
-        
-        return;
     
         await docker.api(process.env.MELINDA_HOST_ORCHESTRATOR)
-        .then(async (api) => {
-            // ----------
-            await api.createContainer(conf_container_orchestrator).then(async (container) => {
-                container.start()
-                .then(async (data) => {
-                    
-                    let vms = new vmsModel({
-                        name: aux_name,
-                        dockerId: data.id,
-                        startupParameters: dlo_parameters,
-                        vmsType: dlo_type,
-                        node: edge_nodes_selected.dlo[i].id,
-                        outputType: 'Image',
-                        bindedTo: []
-                    })        
-                    
-                    // save the Dlo VMS 
-                    await vms.save((err,vms) => {
-                        if (err) {
-                            return res.status(500).json({
-                                message: 'Error when creating VMS DLO',
-                                error: err
-                            });
-                        }
+            .then(async (api) => {
+                // ----------
+                await api.createContainer(conf_container_orchestrator).then(async (container) => {
+                    container.start()
+                    .then(async (data) => {
+                        
+                    }).catch(function(err) {
+                        return res.status(500).json({
+                            message: 'Error when initiate the VMS',
+                            error: err
+                        });
                     })
-                }).catch(function(err) {
-                    return res.status(500).json({
-                        message: 'Error when initiate the VMS',
-                        error: err
-                    });
                 })
-            })
-        }).catch(function(err) {
-            console.log(err);
-            return res.status(500).json({
-                message: 'Error when initiate the VMS',
-                error: err
-            })
-        })  
+            }).catch(function(err) {
+                console.log(err);
+                return res.status(500).json({
+                    message: 'Error when initiate the VMS',
+                    error: err
+                })
+            })  
 
+        // wait for the response and conintue creating the VMS in the edge nodes
+        console.log('a');
+        
         // publish in the mqtt server
         return;
 

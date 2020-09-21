@@ -6,4 +6,9 @@
 # $5 = The topic where the python will post the result of the process
 
 # inside container
+echo $1
+echo $2
+echo $3
+echo $4
+
 python /root/Orchestrator/Orchestrator.py --FPS=$1 --MQTT_HOST=$2 --MQTT_PORT=$3 --MQTT_TOPIC_NODES=$4 --MQTT_TOPIC_RESPONSE=$5
