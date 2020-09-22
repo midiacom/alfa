@@ -191,33 +191,39 @@ const melindaController = {
         let aux_nodes_selected = null
 
         client.on('message', (topic, message, packet) => {
-            console.log(message.toString());
-            
-            // let aux_nodes_selected = JSON.parse(message.toString()) // payload is a buffer       
+            aux_nodes_selected = JSON.parse(message.toString()) // payload is a buffer       
         })
         
         await new Promise(resolve => setTimeout(resolve, 5000));
-                
+
+        // BINDING ------------------------------------------------------
+        // bind the id with the node ip 
+        for (let i = 0; i < aux_nodes_selected['mlo_nodes'].length; i++) {
+            let id = aux_nodes_selected['mlo_nodes'][i].id
+            aux_nodes_selected['mlo_nodes'][i].ip = possible_nodes[id].ip
+        }
+        for (let i = 0; i < aux_nodes_selected['flo_nodes'].length; i++) {
+            let id = aux_nodes_selected['flo_nodes'][i].id
+            aux_nodes_selected['flo_nodes'][i].ip = possible_nodes[id].ip
+        }
+        for (let i = 0; i < aux_nodes_selected['dlo_nodes'].length; i++) {
+            let id = aux_nodes_selected['dlo_nodes'][i].id
+            aux_nodes_selected['dlo_nodes'][i].ip = possible_nodes[id].ip
+        }
         console.log(aux_nodes_selected);
-        
-        // while (aux_nodes_selected == null){}
-        
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        console.log('3');
-        
-        // publish in the mqtt server
+        // BINDING ------------------------------------------------------        
         return;
 
         /**
          * This is the array with the edge nodes that will run the elements 
          * it will be executed by another allocation function
+         let edge_nodes_selected = {
+             image_broker: {id:'5f67700559daf4035152083f', ip:'localhost'},
+             mlo: [{id:'5f67700559daf4035152083f', ip:'localhost'}],
+             flo: [{id:'5f67700559daf4035152083f', ip:'localhost'}, {id:'5f67700559daf4035152083f', ip:'localhost'}],
+             dlo: [{id:'5f67700559daf4035152083f', ip:'localhost'}, {id:'5f67700559daf4035152083f', ip:'localhost'}]
+            }
         */
-        let edge_nodes_selected = {
-            image_broker: {id:'5f67700559daf4035152083f', ip:'localhost'},
-            mlo: [{id:'5f67700559daf4035152083f', ip:'localhost'}],
-            flo: [{id:'5f67700559daf4035152083f', ip:'localhost'}, {id:'5f67700559daf4035152083f', ip:'localhost'}],
-            dlo: [{id:'5f67700559daf4035152083f', ip:'localhost'}, {id:'5f67700559daf4035152083f', ip:'localhost'}]
-        }
    
         let mlo_names = []
         let flo_names = []

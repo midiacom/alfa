@@ -38,7 +38,13 @@ message = subscribe.simple(args.MQTT_TOPIC_NODES, hostname=args.MQTT_HOST, port=
 
 nodes = json.loads(message.payload)
 
-print(nodes)
+# #print(nodes)
+# nodes = [{'edgeNodeId': '5f2484b37c803900291ea3d0', 'mlo': 5, 'flo': 20, 'dlo': 30},
+#          {'edgeNodeId': '5f2484b37c803900291ea3d1', 'mlo': 1, 'flo': 10, 'dlo': 50},
+#          {'edgeNodeId': '5f2484b37c803900291ea3d2', 'mlo': 10, 'flo': 25, 'dlo': 90},
+#          {'edgeNodeId': '5f2484b37c803900291ea3d3', 'mlo': 40, 'flo': 30, 'dlo': 10},
+#          {'edgeNodeId': '5f2484b37c803900291ea3d4', 'mlo': 3, 'flo': 20, 'dlo': 10},
+#          {'edgeNodeId': '5f2484b37c803900291ea3d5', 'mlo': 20, 'flo': 10, 'dlo': 10}]
 
 def SelectNodes(fps_demand, nodes):
     nodes = sorted(nodes.items(), key=lambda x: x[1], reverse=True)
@@ -111,14 +117,24 @@ def main():
 
     ##############################################
     # Generate the dict to post in the mqtt toppic
-    ##############################################
+    ##############################################    
     result = {
-        "mlo_nodes": mlo_nodes_selected,
-        "flo_nodes": flo_nodes_selected,
-        "dlo_nodes": dlo_nodes_selected
+        "mlo_nodes": [],
+        "flo_nodes": [],
+        "dlo_nodes": []
     }
 
-    publish.single(args.MQTT_TOPIC_RESPONSE, str(result), hostname=args.MQTT_HOST, port=int(args.MQTT_PORT))
+    for node in mlo_nodes_selected:
+        result['mlo_nodes'].append({"id":node[0], "ip": ""})
+
+    for node in flo_nodes_selected:
+        result['flo_nodes'].append({"id":node[0], "ip": ""})
+
+    for node in dlo_nodes_selected:
+        result['dlo_nodes'].append({"id":node[0], "ip": ""})
+
+
+    publish.single(args.MQTT_TOPIC_RESPONSE, json.dumps(result), hostname=args.MQTT_HOST, port=int(args.MQTT_PORT))
     ###############################################
 
 if __name__ == "__main__":
