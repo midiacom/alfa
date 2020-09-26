@@ -14,6 +14,8 @@ const melindaController = {
      * Save the maximum FPS of each VMS for each Edge Node
      */
     startWorkflow: async (req, res, next) => {
+        console.log('Start .... ');
+        
         
         let name = req.body.name
         let maxFPS = req.body.maxFPS
@@ -210,9 +212,27 @@ const melindaController = {
             let id = aux_nodes_selected['dlo_nodes'][i].id
             aux_nodes_selected['dlo_nodes'][i].ip = possible_nodes[id].ip
         }
+        
+        // the image broker will run in the same node as the DLO 
         console.log(aux_nodes_selected);
+        
+        console.log(aux_nodes_selected);
+        
+        console.log('Start the paranauê');
+
+        // copy to the correct variable
+        let edge_nodes_selected = {
+            mlo: aux_nodes_selected.mlo_nodes,
+            dlo: aux_nodes_selected.dlo_nodes,
+            flo: aux_nodes_selected.flo_nodes,
+            image_broker: {
+                id: aux_nodes_selected.dlo_nodes[0].id,
+                ip: aux_nodes_selected.dlo_nodes[0].ip
+            }
+        }
+
         // BINDING ------------------------------------------------------        
-        return;
+        // return;
 
         /**
          * This is the array with the edge nodes that will run the elements 

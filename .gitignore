@@ -1,5 +1,6 @@
 .vscode/*
-
+Mongo
+Mongo/*
 api/node_modules
 api/MongoDB
 api/coverage

@@ -1,14 +1,14 @@
 version: "3"
 
 services:
-  mongo:
+  mongo-vprism:
     image: mongo
-    hostname: mongo
-    container_name: mongo
+    hostname: mongo-vprism
+    container_name: mongo-vprism
     ports:
       - "27017:27017"
     volumes:
-      - ./api/MongoDB:/data/db
+      - ./Mongo:/data/db
     networks:
       - swarm_overlay3
     logging:
@@ -30,7 +30,7 @@ services:
   rest-api:
     hostname: rest-api
     container_name: rest-api
-    depends_on: ["mongo"]
+    depends_on: ["mongo-vprism"]
     build: ./api
     command: npm run dev
     ports:
