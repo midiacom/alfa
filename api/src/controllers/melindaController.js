@@ -231,6 +231,7 @@ const melindaController = {
             }
         }
 
+
         // BINDING ------------------------------------------------------        
         // return;
 
@@ -491,7 +492,7 @@ const melindaController = {
             .then(async nodes => {
                 for(let i = 0; i < nodes.length; i++) {
                     node = nodes[i]                    
-                    await docker.api(node.ip)
+                    await docker.api(node.ip)                    
                         .then(async (api) => {                            
                             // Get the VMSType of the MLO VMS Selected
                             // var opts = {
@@ -514,12 +515,14 @@ const melindaController = {
                                     let is_dlo    = vmsContainer.Names[0].indexOf('dlo_')
                                     
                                     if (is_broker == 1 || is_mlo == 1 || is_flo == 1 || is_dlo == 1) {
-                                        // console.log('eeeeeeeeeeeeeeeeeeeeee');
-                                        // console.log(container);
+                                        
+                                        console.log('eeeeeeeeeeeeeeeeeeeeee');
+                                        
+                                        console.log(container);
                                         
                                         let container = await api.getContainer(vmsContainer['Id'])
                                         
-                                        // REMOVER O VMS DA COLLECTION if mlo, flo or dlo
+                                        // REMOVE the VMS DA COLLECTION if mlo, flo or dlo
                                         if (is_broker != 1) {                                                                                       
                                             await vmsModel.findOne({'dockerId':vmsContainer.Id})
                                                 .then(VMS => {
@@ -548,6 +551,12 @@ const melindaController = {
                                         });
                                     }                                    
                                 }
+                            }).catch((err) => {
+                                console.log(err);                            
+                                return res.status(500).json({
+                                    message: 'Error getting the API',
+                                    error: err
+                                });
                             })
                         }).catch((err) => {
                             console.log(err);                            
