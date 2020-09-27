@@ -5,6 +5,10 @@
             MELINDA Workflow
         </h2>
 
+        <b-alert :show="msg.show" :variant=msg.type>
+            {{ msg.text }}
+        </b-alert>
+
         <b-container class="bv-example-row">
             <b-row class="text-center">
                 <b-col>
@@ -29,10 +33,6 @@
         </b-container>
 
         <hr/>
-
-        <b-alert :show="msg.show" :variant=msg.type>
-            {{ msg.text }}
-        </b-alert>
 
         <b-form @submit="onSubmitStartWorkFlow" v-show="show_workflow">
  
@@ -299,6 +299,7 @@ export default {
                     this.msg.show = true
                 })
                 .catch((e) => {
+                    console.log(e);                    
                     this.msg.text = `Error when creating the workflow ${e}`
                     this.msg.type = "danger"
                     this.msg.show = true

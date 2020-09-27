@@ -14,11 +14,7 @@ export const apiMELINDA = {
                     resolve(resp.data)
                 })
                 .catch((e) => {
-
-                    console.log(e.response);
-                    
-
-                    reject(new Error(`${e.response.data.message} / ${e.response.data.error.json.message}`))
+                    reject(new Error(`${e.response.data.message}`))
                 })
             })
     },

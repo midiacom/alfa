@@ -198,6 +198,36 @@ const melindaController = {
         
         await new Promise(resolve => setTimeout(resolve, 5000));
 
+        // verify if there are node available to run all the functions       
+        console.log(aux_nodes_selected);
+        console.log('---');
+        console.log(aux_nodes_selected['mlo_nodes'].length);
+        console.log(aux_nodes_selected['flo_nodes'].length);
+        console.log(aux_nodes_selected['dlo_nodes'].length);
+        console.log('---');         
+         
+        if (aux_nodes_selected['mlo_nodes'].length == 0) {
+            return res.status(500).json({
+                message: 'There are no edge nodes to run the The MLOs components',
+                error: 'There are no edge nodes to run the The MLOs components'
+            });
+        }
+
+        if (aux_nodes_selected['flo_nodes'].length == 0) {
+            return res.status(500).json({
+                message: 'There are no edge nodes to run the The FLOs components',
+                error: 'There are no edge nodes to run the The FLOs components'
+            });
+        }
+
+        if (aux_nodes_selected['dlo_nodes'].length == 0) {
+            return res.status(500).json({
+                message: 'There are no edge nodes to run the The DLOs components',
+                error: 'There are no edge nodes to run the The DLOs components'
+            });
+        }
+
+
         // BINDING ------------------------------------------------------
         // bind the id with the node ip 
         for (let i = 0; i < aux_nodes_selected['mlo_nodes'].length; i++) {
@@ -231,30 +261,6 @@ const melindaController = {
             }
         }
 
-        edge_nodes_selected.mlo = []
-
-        // verify if there are node available to run all the functions
-        
-        if (edge_nodes_selected.mlo.length == 0) {
-            return res.status(500).json({
-                message: 'There are no edge nodes to run the The MLOs components',
-                error: 'There are no edge nodes to run the The MLOs components'
-            });
-        }
-
-        if (edge_nodes_selected.flo.length == 0) {
-            return res.status(500).json({
-                message: 'There are no edge nodes to run the The FLOs components',
-                error: 'There are no edge nodes to run the The FLOs components'
-            });
-        }
-
-        if (edge_nodes_selected.dlo.length == 0) {
-            return res.status(500).json({
-                message: 'There are no edge nodes to run the The DLOs components',
-                error: 'There are no edge nodes to run the The DLOs components'
-            });
-        }
 
 
         // BINDING ------------------------------------------------------        
