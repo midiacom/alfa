@@ -56,8 +56,8 @@ const melindaController = {
             .then((nodes) => {
                 for(let i = 0; i < nodes.length; i++) {
                     node = nodes[i]  
-                    if (node.FPS > 0) {
-                    // if (node.FPS > 0 && node.node.online == true) {
+                    // if (node.FPS > 0) {
+                    if (node.FPS > 0 && node.node.online == true) {
                         possible_nodes[node.node.id] = {
                             'edgeNodeId': node.node.id,
                             'ip': node.node.ip,
@@ -81,8 +81,8 @@ const melindaController = {
             .then((nodes) => {                
                 for(let i = 0; i < nodes.length; i++) {
                     node = nodes[i]                
-                    if (node.FPS > 0) {
-                    // if (node.FPS > 0 && node.node.online == true) {
+                    // if (node.FPS > 0) {
+                    if (node.FPS > 0 && node.node.online == true) {
                         if (typeof(possible_nodes[node.node.id]) != "undefined") {
                             possible_nodes[node.node.id].flo = node.FPS
                     } else {
@@ -109,8 +109,8 @@ const melindaController = {
         .then((nodes) => {                
             for(let i = 0; i < nodes.length; i++) {
                 node = nodes[i]                
-                // if (node.FPS > 0 && node.node.online == true) {
-                if (node.FPS > 0) {
+                // if (node.FPS > 0) {
+                if (node.FPS > 0 && node.node.online == true) {
                     if (typeof(possible_nodes[node.node.id]) != "undefined") {
                         possible_nodes[node.node.id].dlo = node.FPS
                 } else {
@@ -229,6 +229,31 @@ const melindaController = {
                 id: aux_nodes_selected.dlo_nodes[0].id,
                 ip: aux_nodes_selected.dlo_nodes[0].ip
             }
+        }
+
+        edge_nodes_selected.mlo = []
+
+        // verify if there are node available to run all the functions
+        
+        if (edge_nodes_selected.mlo.length == 0) {
+            return res.status(500).json({
+                message: 'There are no edge nodes to run the The MLOs components',
+                error: 'There are no edge nodes to run the The MLOs components'
+            });
+        }
+
+        if (edge_nodes_selected.flo.length == 0) {
+            return res.status(500).json({
+                message: 'There are no edge nodes to run the The FLOs components',
+                error: 'There are no edge nodes to run the The FLOs components'
+            });
+        }
+
+        if (edge_nodes_selected.dlo.length == 0) {
+            return res.status(500).json({
+                message: 'There are no edge nodes to run the The DLOs components',
+                error: 'There are no edge nodes to run the The DLOs components'
+            });
         }
 
 
