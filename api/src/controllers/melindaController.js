@@ -492,14 +492,15 @@ const melindaController = {
             .then(async nodes => {
                 for(let i = 0; i < nodes.length; i++) {
                     node = nodes[i]                    
-                    await docker.api(node.ip)                    
+                    console.log(node);
+                    await docker.api(node.ip)                           
                         .then(async (api) => {                            
                             // Get the VMSType of the MLO VMS Selected
                             // var opts = {
                             //     "filters": `{"name": ["image_broker"]}`
                             // }
                             //await api.listContainers(opts).then(async (result) => {
-                            await api.listContainers().then(async (result) => {
+                            await api.listContainers().then(async (result) => {0
                                 
                                 // a) stop the image broker
                                 // b) stop all MLO VMS
@@ -518,7 +519,8 @@ const melindaController = {
                                         
                                         console.log('eeeeeeeeeeeeeeeeeeeeee');
                                         
-                                        console.log(container);
+                                        co
+                                        nsole.log(container);
                                         
                                         let container = await api.getContainer(vmsContainer['Id'])
                                         
