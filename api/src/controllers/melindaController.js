@@ -519,8 +519,7 @@ const melindaController = {
                                         
                                         console.log('eeeeeeeeeeeeeeeeeeeeee');
                                         
-                                        co
-                                        nsole.log(container);
+                                        console.log(container);
                                         
                                         let container = await api.getContainer(vmsContainer['Id'])
                                         
