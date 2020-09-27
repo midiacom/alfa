@@ -20,8 +20,6 @@ export const apiMELINDA = {
     },
 
     saveEdgeNodeFPS (nodes) {
-        
-        console.log(nodes);
 
         if (!nodes) {
             return Promise.reject(new Error('Data not informed'))

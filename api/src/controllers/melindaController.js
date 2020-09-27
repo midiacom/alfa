@@ -246,8 +246,6 @@ const melindaController = {
         // the image broker will run in the same node as the DLO 
         console.log(aux_nodes_selected);
         
-        console.log(aux_nodes_selected);
-        
         console.log('Start the paranauê');
 
         // copy to the correct variable
@@ -260,8 +258,6 @@ const melindaController = {
                 ip: aux_nodes_selected.dlo_nodes[0].ip
             }
         }
-
-
 
         // BINDING ------------------------------------------------------        
         // return;
@@ -518,21 +514,103 @@ const melindaController = {
      * 
      */
     stopWorkflow: async (req, res, next) => {
+        
         // Get ALL the edge nodes online
+        let nodes = await nodeModel.find({'online':true})
+            .then(async nodes => {
+                return nodes
+            }).catch((err) => {
+                return res.status(500).json({
+                    message: 'Error getting nodes online',
+                    error: err
+                });
+            })
+
+        for(let i = 0; i < nodes.length; i++) {
+            node = nodes[i]
+            console.log(node.ip);                                        
+            let api = await docker.api(node.ip)
+                .then((api) => {
+                    return api
+                }).catch((err) => {
+                    return res.status(500).json({
+                        message: 'Error getting the API',
+                        error: err
+                    });
+                })
+
+            let containers = await api.listContainers().then(async (result) => {
+                return result
+            }).catch((err) => {
+                return res.status(500).json({
+                    message: 'Error getting containers',
+                    error: err
+                });
+            })
+
+            // a) stop the image broker
+            // b) stop all MLO VMS
+            // c) stop all FLO VMS
+            // d) stop all DLO VMS
+            for (let j = 0; j < containers.length; j++) {
+
+                let vmsContainer = containers[j]
+
+                let is_broker = vmsContainer.Names[0].indexOf('image_broker')
+                let is_mlo    = vmsContainer.Names[0].indexOf('mlo_')
+                let is_flo    = vmsContainer.Names[0].indexOf('flo_')
+                let is_dlo    = vmsContainer.Names[0].indexOf('dlo_')
+                
+                if (is_broker == 1 || is_mlo == 1 || is_flo == 1 || is_dlo == 1) {
+                    
+                    let container = await api.getContainer(vmsContainer['Id'])
+                    
+                    // REMOVE the VMS DA COLLECTION if mlo, flo or dlo
+                    if (is_broker != 1) {                                                                                       
+                        await vmsModel.findOne({'dockerId':vmsContainer.Id})
+                            .then(VMS => {
+                                vmsModel.deleteOne({_id: VMS._id},function(err){
+                                    if (err) {
+                                        console.log(err);
+                                        return res.status(500).json({
+                                            message: 'Error when deleting vmsType.',
+                                            error: err
+                                        });
+                                    }
+                                })
+                            })
+                    }
+
+                    // stop the container 
+                    await container.stop(async function (err, data) {
+                        if (err) {
+                            console.log(err);                            
+                            return res.status(500).json({
+                                message: 'Error stopping',
+                                error: err
+                            });
+                        }
+                        await container.remove()
+                    });
+                }                                    
+            }
+        }
+        return
+        // lixo total aninhamento de 
         await nodeModel.find({'online':true})
             .then(async nodes => {
                 for(let i = 0; i < nodes.length; i++) {
                     node = nodes[i]                    
-                    console.log(node);
-                    await docker.api(node.ip)                           
-                        .then(async (api) => {                            
+                    console.log(node.ip);                                        
+                    await docker.api(node.ip)
+                        .then(async (api) => {
                             // Get the VMSType of the MLO VMS Selected
                             // var opts = {
                             //     "filters": `{"name": ["image_broker"]}`
                             // }
                             //await api.listContainers(opts).then(async (result) => {
-                            await api.listContainers().then(async (result) => {0
-                                
+                            await api.listContainers().then(async (result) => {
+
                                 // a) stop the image broker
                                 // b) stop all MLO VMS
                                 // c) stop all FLO VMS
@@ -583,15 +661,20 @@ const melindaController = {
                                         });
                                     }                                    
                                 }
+                                console.log('xxxxxxxxxxxxxxx')
                             }).catch((err) => {
-                                console.log(err);                            
+                                console.log(err);          
+                                console.log('why');
+                                
                                 return res.status(500).json({
                                     message: 'Error getting the API',
                                     error: err
                                 });
-                            })
+                            })              
+                            return 1              
                         }).catch((err) => {
                             console.log(err);                            
+                            console.log('why 2 ');
                             return res.status(500).json({
                                 message: 'Error stopping image broker',
                                 error: err

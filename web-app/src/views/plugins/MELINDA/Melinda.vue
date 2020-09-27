@@ -155,8 +155,12 @@
                     <b-card-text>
                         <b-form @submit="onSubmitMlo">
                             <b-row v-for="node in nodes" :key="node.id">
+                        
                                 <b-col>
                                     <b-form-group :label="node.text">
+                                        <h6 v-if="node.text.indexOf('Online') == -1">
+                                        <b-badge variant="danger">Offline</b-badge></h6>
+                                        <h6 v-else> <b-badge variant="success">Online</b-badge></h6>
                                         <b-form-input 
                                             type="text" 
                                             size="sm" 
@@ -190,6 +194,9 @@
                             <b-row v-for="node in nodes" :key="node.id">
                                 <b-col>
                                     <b-form-group :label="node.text">
+                                        <h6 v-if="node.text.indexOf('Online') == -1">
+                                        <b-badge variant="danger">Offline</b-badge></h6>
+                                        <h6 v-else> <b-badge variant="success">Online</b-badge></h6>
                                         <b-form-input 
                                             type="text" 
                                             size="sm" 
@@ -221,7 +228,10 @@
                         <b-form @submit="onSubmitDlo">
                             <b-row v-for="node in nodes" :key="node.id">
                                 <b-col>
-                                    <b-form-group :label="node.text">
+                                    <b-form-group :label="node.text">                                        
+                                        <h6 v-if="node.text.indexOf('Online') == -1">
+                                        <b-badge variant="danger">Offline</b-badge></h6>
+                                        <h6 v-else> <b-badge variant="success">Online</b-badge></h6>
                                         <b-form-input 
                                             type="text" 
                                             size="sm" 
@@ -469,3 +479,12 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.greentextclass {
+    color: green
+}
+.redtextclass {
+    color: red
+}
+</style>
