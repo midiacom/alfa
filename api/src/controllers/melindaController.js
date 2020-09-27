@@ -167,13 +167,14 @@ const melindaController = {
             }
         }
     
+        let container_orc = null
         await docker.api(process.env.MELINDA_HOST_ORCHESTRATOR)
             .then(async (api) => {
                 // ----------
                 await api.createContainer(conf_container_orchestrator).then(async (container) => {
                     container.start()
                     .then(async (data) => {
-                        
+                        container_orc = data
                     }).catch(function(err) {
                         return res.status(500).json({
                             message: 'Error when initiate the VMS',
@@ -192,11 +193,14 @@ const melindaController = {
         // wait for the response and conintue creating the VMS in the edge nodes
         let aux_nodes_selected = null
 
-        client.on('message', (topic, message, packet) => {
+        client.on('message', (topic, message, packet) => {                        
             aux_nodes_selected = JSON.parse(message.toString()) // payload is a buffer       
         })
         
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise(resolve => setTimeout(resolve, 6000));
+
+        // remove the container that runned the orchestrator
+        container_orc.remove()
 
         // BINDING ------------------------------------------------------
         // bind the id with the node ip 
@@ -212,7 +216,6 @@ const melindaController = {
             let id = aux_nodes_selected['dlo_nodes'][i].id
             aux_nodes_selected['dlo_nodes'][i].ip = possible_nodes[id].ip
         }
-
 
         // verify if there are node available to run all the functions       
         // console.log(aux_nodes_selected);
