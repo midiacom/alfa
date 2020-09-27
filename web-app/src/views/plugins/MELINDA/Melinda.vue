@@ -136,6 +136,7 @@
         </b-form>
  
         <b-container class="bv-example-row"  v-show="!show_workflow">
+            <hr>
             <h3>
                 <v-icon style="width: 32px;" name="settings"></v-icon>
                 Configurations</h3>
@@ -157,10 +158,10 @@
                             <b-row v-for="node in nodes" :key="node.id">
                         
                                 <b-col>
-                                    <b-form-group :label="node.text">
-                                        <h6 v-if="node.text.indexOf('Online') == -1">
-                                        <b-badge variant="danger">Offline</b-badge></h6>
-                                        <h6 v-else> <b-badge variant="success">Online</b-badge></h6>
+                                    <b-form-group>
+                                        <h5 v-if="node.text.indexOf('Online') == -1">
+                                        <b-badge variant="danger">{{ node.text.substring(0,node.text.indexOf('('))}}</b-badge></h5>
+                                        <h5 v-else> <b-badge variant="success">{{ node.text.substring(0,node.text.indexOf('('))}}</b-badge></h5>
                                         <b-form-input 
                                             type="text" 
                                             size="sm" 
@@ -193,10 +194,10 @@
                         <b-form @submit="onSubmitFlo">
                             <b-row v-for="node in nodes" :key="node.id">
                                 <b-col>
-                                    <b-form-group :label="node.text">
-                                        <h6 v-if="node.text.indexOf('Online') == -1">
-                                        <b-badge variant="danger">Offline</b-badge></h6>
-                                        <h6 v-else> <b-badge variant="success">Online</b-badge></h6>
+                                    <b-form-group>
+                                        <h5 v-if="node.text.indexOf('Online') == -1">
+                                        <b-badge variant="danger">{{ node.text.substring(0,node.text.indexOf('('))}}</b-badge></h5>
+                                        <h5 v-else> <b-badge variant="success">{{ node.text.substring(0,node.text.indexOf('('))}}</b-badge></h5>
                                         <b-form-input 
                                             type="text" 
                                             size="sm" 
@@ -228,10 +229,10 @@
                         <b-form @submit="onSubmitDlo">
                             <b-row v-for="node in nodes" :key="node.id">
                                 <b-col>
-                                    <b-form-group :label="node.text">                                        
-                                        <h6 v-if="node.text.indexOf('Online') == -1">
-                                        <b-badge variant="danger">Offline</b-badge></h6>
-                                        <h6 v-else> <b-badge variant="success">Online</b-badge></h6>
+                                    <b-form-group>
+                                        <h5 v-if="node.text.indexOf('Online') == -1">
+                                        <b-badge variant="danger">{{ node.text.substring(0,node.text.indexOf('('))}}</b-badge></h5>
+                                        <h5 v-else> <b-badge variant="success">{{ node.text.substring(0,node.text.indexOf('('))}}</b-badge></h5>
                                         <b-form-input 
                                             type="text" 
                                             size="sm" 

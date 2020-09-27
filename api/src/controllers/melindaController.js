@@ -14,8 +14,7 @@ const melindaController = {
      * Save the maximum FPS of each VMS for each Edge Node
      */
     startWorkflow: async (req, res, next) => {
-        console.log('Start .... ');
-        
+        console.log('Starting MELINDA Pipeline .... ');        
         
         let name = req.body.name
         let maxFPS = req.body.maxFPS
@@ -145,6 +144,8 @@ const melindaController = {
             })
         }
 
+        console.log('Starting the allocation algorithm');
+
         let topic_nodes = "nodes_list"
         let topic_response = "nodes_response"
 
@@ -189,7 +190,6 @@ const melindaController = {
             })
 
         // wait for the response and conintue creating the VMS in the edge nodes
-
         let aux_nodes_selected = null
 
         client.on('message', (topic, message, packet) => {
@@ -197,36 +197,6 @@ const melindaController = {
         })
         
         await new Promise(resolve => setTimeout(resolve, 5000));
-
-        // verify if there are node available to run all the functions       
-        console.log(aux_nodes_selected);
-        console.log('---');
-        console.log(aux_nodes_selected['mlo_nodes'].length);
-        console.log(aux_nodes_selected['flo_nodes'].length);
-        console.log(aux_nodes_selected['dlo_nodes'].length);
-        console.log('---');         
-         
-        if (aux_nodes_selected['mlo_nodes'].length == 0) {
-            return res.status(500).json({
-                message: 'There are no edge nodes to run the The MLOs components',
-                error: 'There are no edge nodes to run the The MLOs components'
-            });
-        }
-
-        if (aux_nodes_selected['flo_nodes'].length == 0) {
-            return res.status(500).json({
-                message: 'There are no edge nodes to run the The FLOs components',
-                error: 'There are no edge nodes to run the The FLOs components'
-            });
-        }
-
-        if (aux_nodes_selected['dlo_nodes'].length == 0) {
-            return res.status(500).json({
-                message: 'There are no edge nodes to run the The DLOs components',
-                error: 'There are no edge nodes to run the The DLOs components'
-            });
-        }
-
 
         // BINDING ------------------------------------------------------
         // bind the id with the node ip 
@@ -242,11 +212,42 @@ const melindaController = {
             let id = aux_nodes_selected['dlo_nodes'][i].id
             aux_nodes_selected['dlo_nodes'][i].ip = possible_nodes[id].ip
         }
+
+
+        // verify if there are node available to run all the functions       
+        // console.log(aux_nodes_selected);
+        // console.log('---');
+        // console.log(aux_nodes_selected['mlo_nodes'].length);
+        // console.log(aux_nodes_selected['flo_nodes'].length);
+        // console.log(aux_nodes_selected['dlo_nodes'].length);
+        // console.log('---');         
+         
+        if (aux_nodes_selected['mlo_nodes'].length == 0) {
+            console.log(aux_nodes_selected);
+            return res.status(500).json({
+                message: 'There are no edge nodes to run the The MLOs components',
+                error: 'There are no edge nodes to run the The MLOs components'
+            });
+        }
+
+        if (aux_nodes_selected['flo_nodes'].length == 0) {
+            console.log(aux_nodes_selected);
+            return res.status(500).json({
+                message: 'There are no edge nodes to run the The FLOs components',
+                error: 'There are no edge nodes to run the The FLOs components'
+            });
+        }
+
+        if (aux_nodes_selected['dlo_nodes'].length == 0) {
+            console.log(aux_nodes_selected);
+            return res.status(500).json({
+                message: 'There are no edge nodes to run the The DLOs components',
+                error: 'There are no edge nodes to run the The DLOs components'
+            });
+        }        
         
-        // the image broker will run in the same node as the DLO 
-        console.log(aux_nodes_selected);
-        
-        console.log('Start the paranauê');
+        // the image broker will run in the same node as the DLO         
+        console.log('Starting the VMSs based on the algorithm');
 
         // copy to the correct variable
         let edge_nodes_selected = {
@@ -258,6 +259,8 @@ const melindaController = {
                 ip: aux_nodes_selected.dlo_nodes[0].ip
             }
         }
+
+        console.log(edge_nodes_selected);
 
         // BINDING ------------------------------------------------------        
         // return;
@@ -306,9 +309,9 @@ const melindaController = {
                 .then(async (api) => {
                     // ----------
                     await api.createContainer(conf_container_dlo).then(async (container) => {
-                        container.start()
+                        await container.start()
                         .then(async (data) => {
-                            
+
                             let vms = new vmsModel({
                                 name: aux_name,
                                 dockerId: data.id,
@@ -317,11 +320,12 @@ const melindaController = {
                                 node: edge_nodes_selected.dlo[i].id,
                                 outputType: 'Image',
                                 bindedTo: []
-                            })        
-                            
+                            })
+
                             // save the Dlo VMS 
-                            await vms.save((err,vms) => {
+                            await vms.save((err,vms) => {                                
                                 if (err) {
+                                    console.log(err);                                    
                                     return res.status(500).json({
                                         message: 'Error when creating VMS DLO',
                                         error: err
@@ -368,7 +372,7 @@ const melindaController = {
                 .then(async (api) => {
                     // ----------
                     await api.createContainer(conf_container_flo).then(async (container) => {
-                        container.start()
+                        await container.start()
                         .then(async (data) => {
                             let vms = new vmsModel({
                                 name: aux_name,
@@ -383,6 +387,7 @@ const melindaController = {
                             // save the Flo VMS 
                             await vms.save((err,vms) => {
                                 if (err) {
+                                    console.log(err);                                                                        
                                     return res.status(500).json({
                                         message: 'Error when creating VMS FLO',
                                         error: err
@@ -432,7 +437,7 @@ const melindaController = {
             .then(async (api) => {
                 // ----------
                 await api.createContainer(conf_container_image_broker).then(async (container) => {
-                    container.start()
+                    await container.start()
                     .then(async (data) => {
                     }).catch(function(err) {
                         console.log(err);
@@ -489,13 +494,14 @@ const melindaController = {
                             // save the Flo VMS 
                             await vms.save((err,vms) => {
                                 if (err) {
+                                    console.log(err);                                                                        
                                     return res.status(500).json({
                                         message: 'Error when creating VMS FLO',
                                         error: err
                                     });
                                 }
                             })
-                        }).catch(function(err) {
+                        }).catch(function(err) {                            
                             return res.status(500).json({
                                 message: 'Error when initiate the VMS FLO',
                                 error: err
@@ -527,8 +533,7 @@ const melindaController = {
             })
 
         for(let i = 0; i < nodes.length; i++) {
-            node = nodes[i]
-            console.log(node.ip);                                        
+            node = nodes[i]                     
             let api = await docker.api(node.ip)
                 .then((api) => {
                     return api
@@ -569,15 +574,17 @@ const melindaController = {
                     if (is_broker != 1) {                                                                                       
                         await vmsModel.findOne({'dockerId':vmsContainer.Id})
                             .then(VMS => {
-                                vmsModel.deleteOne({_id: VMS._id},function(err){
-                                    if (err) {
-                                        console.log(err);
-                                        return res.status(500).json({
-                                            message: 'Error when deleting vmsType.',
-                                            error: err
-                                        });
-                                    }
-                                })
+                                if (VMS) {
+                                    vmsModel.deleteOne({_id: VMS._id},function(err){
+                                        if (err) {
+                                            console.log(err);
+                                            return res.status(500).json({
+                                                message: 'Error when deleting vmsType.',
+                                                error: err
+                                            });
+                                        }
+                                    })
+                                }
                             })
                     }
 
@@ -595,6 +602,7 @@ const melindaController = {
                 }                                    
             }
         }
+        return res.status(201).json("{ok:ok}");                    
         return
         // lixo total aninhamento de 
         await nodeModel.find({'online':true})
