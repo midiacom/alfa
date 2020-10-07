@@ -18,9 +18,6 @@ const melindaController = {
         
         let name = req.body.name
         let maxFPS = req.body.maxFPS
-        let mlo_number = req.body.mlo_number
-        let flo_number = req.body.flo_number
-        let dlo_number = req.body.dlo_number
         let mlo_parameters = req.body.mlo_parameters
         let flo_parameters = req.body.flo_parameters
         let dlo_parameters = req.body.dlo_parameters
@@ -216,6 +213,10 @@ const melindaController = {
             let id = aux_nodes_selected['dlo_nodes'][i].id
             aux_nodes_selected['dlo_nodes'][i].ip = possible_nodes[id].ip
         }
+
+        let mlo_number = aux_nodes_selected['mlo_nodes'].length
+        let flo_number = aux_nodes_selected['flo_nodes'].length
+        let dlo_number = aux_nodes_selected['dlo_nodes'].length
 
         // verify if there are node available to run all the functions       
         // console.log(aux_nodes_selected);

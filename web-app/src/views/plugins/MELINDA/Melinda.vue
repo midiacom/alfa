@@ -73,11 +73,11 @@
                             <b-form-input style="width:400px" id="mlo_parameters" v-model="form.mlo_parameters" type="text" />
                         </b-form-group>
                     </b-col>
-                    <b-col>
+                    <!-- <b-col>
                         <b-form-group id="input-group-1" label="MLO Number:" label-for="mlo_number">
                             <b-form-input style="width:100px" id="mlo_number" v-model="form.mlo_number" type="number" required/>
                         </b-form-group>
-                    </b-col>
+                    </b-col> -->
                 </b-row>
 
                 <!-- VMS FLO Type-->
@@ -96,11 +96,11 @@
                             <b-form-input style="width:400px" id="flo_parameters" v-model="form.flo_parameters" type="text" />
                         </b-form-group>
                     </b-col>
-                    <b-col>
+                    <!-- <b-col>
                         <b-form-group id="input-group-1" label="FLO Number:" label-for="flo_number">
                             <b-form-input style="width:100px" id="flo_number" v-model="form.flo_number" type="number" required/>
                         </b-form-group>
-                    </b-col>
+                    </b-col> -->
                 </b-row>
 
                 <!-- VMS DLO Type-->
@@ -119,11 +119,11 @@
                             <b-form-input style="width:400px" id="dlo_parameters" v-model="form.dlo_parameters" type="text" />
                         </b-form-group>
                     </b-col>                    
-                    <b-col>
+                    <!-- <b-col>
                         <b-form-group id="input-group-1" label="DLO Number:" label-for="dlo">
                             <b-form-input style="width:100px" id="dlo_number" v-model="form.dlo_number" type="number" required/>
                         </b-form-group>
-                    </b-col>
+                    </b-col> -->
                 </b-row>
 
                 <b-row class="text-center">
