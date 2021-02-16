@@ -11,7 +11,13 @@
   <img src="docs/logo_vprism.png" width="30%" alt="Logo V-PRISM">
 </p>
 
-## How to Cite This Work 
+## Introduction
+
+Multimedia sensors have recently become a major data source, giving rise to the Internet of Multimedia Things. Since multimedia applications are usually latency-sensitive, data processing in the cloud is not always effective. A strategy to minimize delay is to process the streams closer to the data sources, exploiting the resources at the edge of the network. We propose V-PRISM, an architecture to virtualize multimedia sensors with components deployed and executed at the edge tier. V-PRISM can reduce the resource consumption of IoT devices, the network traffic, and the end-to-end delay while increasing the ROI (Return On Investment) for infrastructure providers.
+
+You can read the full paper at https://ieeexplore.ieee.org/abstract/document/9221199
+
+### How to Cite This Work 
 
 <pre>
 @INPROCEEDINGS{vprism2020,
@@ -250,6 +256,7 @@ https://www.youtube.com/watch?v=KLhZmEGeqHk
 https://www.youtube.com/watch?v=GlnXkJnsMGk&feature=youtu.be
 
 # Special Thanks To 
+
 * VUEJS https://vuejs.org/
 * Bootstrap VUE https://bootstrap-vue.js.org/
 * Lib icons: https://feathericons.com/
@@ -267,3 +274,12 @@ Example dynamic pad
 # VS Code
 
 code --disable-gpu --no-xshm
+
+# ACKNOWLEDGMENT
+
+This  work  is  partially  supported  by  São  Paulo  Research Foundation – FAPESP
+
+
+<p align="center">
+  <img src="https://www2.ifsc.usp.br/portal-ifsc/wp-content/uploads/2020/03/fapesp500.jpg" width="30%" alt="Logo V-PRISM">
+</p>
