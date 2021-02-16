@@ -64,7 +64,7 @@
                 </li>                             
               </ul>
             </li>
-            
+            <!--
             <li>
               <v-icon name="cpu"></v-icon>
               Plugins
@@ -76,7 +76,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li>
+            </li> -->
             <li>
               <router-link to="/configuration">
                 <v-icon name="settings"></v-icon>
@@ -137,7 +137,7 @@ html,body {
   background-color: #e5e5e5;
   min-height: 1024px;
   height: 100%; 
-  min-width: 280px;  
+  min-width: 300px;  
   max-width: 280px;  
 }
 

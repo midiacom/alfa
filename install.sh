@@ -28,9 +28,11 @@ cd web-app
 npm install
 npm run build
 
+echo "Installing npm packages"
 cd ../api
 npm install
 
+echo "Running Server"
 cd ..
 sudo docker-compose build
 sudo docker-compose up

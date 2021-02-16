@@ -10,9 +10,7 @@ services:
     volumes:
       - ./Mongo:/data/db
     networks:
-      - swarm_overlay3
-    logging:
-      driver: none
+      - swarm_overlay3    
   mosquitto:
     logging:
       driver: none    

@@ -5,7 +5,7 @@
         <b-col>            
             <h2>
                 <v-icon style="width: 32px;" name="git-commit"></v-icon>
-                Images Available in Edge Nodes
+                Available VMS in the Edge Node
             </h2>
         </b-col>
         <!-- <b-col class="text-right">
@@ -70,10 +70,8 @@ export default {
             isBusy: true,
             isLoading: false,
             fields: [{
-                key: 'image'
-            },{
-                key:'actions',
-                class: 'nodeImagesActions'
+                key: 'image',
+                label: 'VMS Name'
             }],
             items: [],
             msg: {
