@@ -14,7 +14,7 @@ services:
   mosquitto:
     logging:
       driver: none    
-    image: eclipse-mosquitto
+    image: eclipse-mosquitto:1.6
     hostname: mosquitto
     container_name: mosquitto
     expose:
@@ -56,6 +56,7 @@ services:
 networks: 
   swarm_overlay3:
       driver: overlay
+      attachable: true
 
 # sudo docker network create --driver=overlay --attachable alfa_swarm_overlay3
 # docker run --network=alfa_swarm_overlay3 -ti alpine:latest sh

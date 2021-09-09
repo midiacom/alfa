@@ -1,3 +1,4 @@
+const { timeout } = require("cron")
 const nodeModel = require("../../models/nodeModel")
 const docker = require("../../util/dockerApi")
 
@@ -13,9 +14,9 @@ const cron = {
                     return false;
                 }
 
-                slaveNodes.forEach(function(node){
+                slaveNodes.forEach(async function(node){
                     docker.api(masterNode[0].ip)
-                    .then((api) => {
+                    .then(async (api) => {
 
                         // update the status
                         if (!node) {
@@ -24,7 +25,7 @@ const cron = {
                         let nodeDocker = api.getNode(node.dockerId);
                         var opts = {"filters": `{}`}
                         nodeDocker.inspect()
-                            .then((status) => {
+                            .then(async (status) => {
                                 if (status.Status.State == 'down') {
                                     node.online = false
                                     node.virtualEntityNum = 0;
@@ -32,29 +33,42 @@ const cron = {
                                     node.online = true 
                                 }
                                 // save the status of the edge node
-                                node.save()
+                                nodeModel.findById(node._id)
+                                        .then((rNode) => {
+                                            rNode.online = true
+                                            rNode.save()
+                                         })
                             })
-                            .catch(err => {
+                            .catch(async err => {
                                 // if the node was not founded then mark it as offline
-                                node.online = false
-                                node.save()
+                                
+                                nodeModel.findById(node._id)
+                                    .then((rNode) => {
+                                        rNode.online = false
+                                        rNode.save()
+                                        })
+                                
                                 // console.log(err)
                             });
 
                         // update the container number                    
                         docker.api(node.ip)
-                            .then((api) => {
+                            .then(async (api) => {
                                 api.listContainers()
-                                .then((cont) => {
+                                .then(async (cont) => {
                                     let total = 0;
                                     for (let i = 0; i < cont.length; i++) {
                                         // only count the Alfa's virtual nodes 
                                         if (cont[i].Image.indexOf('alfa\/vms') >= 0){
                                             total++
                                         }
-                                    }
-                                    node.virtualEntityNum = total;
-                                    node.save()
+                                    } 
+                                    
+                                    nodeModel.findById(node._id)
+                                        .then((rNode) => {
+                                            rNode.virtualEntityNum = total
+                                            rNode.save()
+                                         })
                                 })
                                 .catch(err => {
                                     // console.log('A');                                    
