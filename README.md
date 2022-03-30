@@ -19,6 +19,14 @@ You can read the full paper at https://ieeexplore.ieee.org/abstract/document/922
 
 ### How to Cite This Work 
 
+#### V-PRISM: An Edge-Based IoT Architecture to Virtualize Multimedia Sensors
+
+This article can be access in https://ieeexplore.ieee.org/document/9221199
+
+<strong>Abstract</strong>
+
+Multimedia sensors have recently become a major data source, giving rise to the Internet of Multimedia Things. Since multimedia applications are usually latency-sensitive, data processing in the cloud is not always effective. A strategy to minimize delay is to process the streams closer to the data sources, exploiting the resources at the edge of the network. We propose V-PRISM, an architecture to virtualize multimedia sensors with components deployed and executed at the edge tier. V-PRISM can reduce the resource consumption of IoT devices, the network traffic, and the end-to-end delay while increasing the ROI (Return On Investment) for infrastructure providers.
+
 <pre>
 @INPROCEEDINGS{vprism2020,
   author={Anselmo Battisti and Débora Christina Muchaluat Saade and Flavia Coimbra Delicato},
@@ -29,6 +37,26 @@ You can read the full paper at https://ieeexplore.ieee.org/abstract/document/922
   number={},
   pages={}
 }
+</pre>
+
+#### Enabling Internet of Media Things With Edge-Based Virtual Multimedia Sensors
+
+This article is open access and can be accessed in https://ieeexplore.ieee.org/document/9404150
+
+<strong>Abstract</strong>
+
+Multimedia sensors have recently become a significant data source in the Internet of Things (IoT), giving rise to the Internet of Media Things (IoMT). Since multimedia applications are usually latency-sensitive, data processing in the cloud is not always suitable. A strategy to minimize delay is processing multimedia streams closer to data sources, exploiting resources at the network edge. Moreover, virtualization is widely used to reduce complexity arising from heterogeneity in IoT environments. In this paper, we propose an edge-based architecture and platform to manage virtual multimedia sensors (VMS), enabling IoMT applications to be easily deployed. Our proposal encompasses V-PRISM, a software architecture tailored for IoMT, and ALFA, a distributed implementation of the architecture. V-PRISM components were designed to be deployed and executed in multiple edge nodes. VMSs are in charge of processing multimedia streams and provide an abstraction layer between IoMT applications and physical devices that produce those streams. This paper describes the proposal and the results of experiments showing that the proposed approach can successfully perform multimedia stream processing for applications that requires low-latency.
+
+<pre>
+@ARTICLE{9404150,
+  author={Battisti, Anselmo Luiz Éden and Muchaluat-Saade, Débora Christina and Delicato, Flávia C.},
+  journal={IEEE Access}, 
+  title={Enabling Internet of Media Things With Edge-Based Virtual Multimedia Sensors}, 
+  year={2021},
+  volume={9},
+  number={},
+  pages={59255-59269},
+  doi={10.1109/ACCESS.2021.3073240}}
 </pre>
 
 ## What is V-PRISM?
@@ -249,7 +277,7 @@ https://www.youtube.com/watch?v=GeKvoEdtYDM
 ## More detailed demo 
 https://www.youtube.com/watch?v=dxg4b4nKwgo
 
-## Introdução ao gsteramer
+## Introdução ao GStreamer
 https://www.youtube.com/watch?v=KLhZmEGeqHk
 
 ## Criando um programa em C usando gstreamer e rodando em um docker container
@@ -271,14 +299,9 @@ Example dynamic pad
 
 * https://stackoverflow.com/questions/45700653/can-my-docker-container-app-access-the-hosts-microphone-and-speaker-mac-wind/48795232 Map a mic inside a docker container
 
-# VS Code
-
-code --disable-gpu --no-xshm
-
 # ACKNOWLEDGMENT
 
-This  work  is  partially  supported  by  São  Paulo  Research Foundation – FAPESP
-
+This work was supported in part by the São Paulo Research Foundation (FAPESP) under <strong>Grant 2015/24144-7</strong>, in part by the Coordination for the Improvement of Higher Education Personnel (CAPES), in part by the CAPES-Print, in part by the National Council for Scientific and Technological Development (CNPq), and in part by the Rio de Janeiro State Research Foundation (FAPERJ).
 
 <p align="center">
   <img src="https://www2.ifsc.usp.br/portal-ifsc/wp-content/uploads/2020/03/fapesp500.jpg" width="30%" alt="Logo V-PRISM">
