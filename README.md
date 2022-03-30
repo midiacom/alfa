@@ -37,7 +37,7 @@ V-PRISM is an architecture to create VMS (Virtual Multimedia Sensors). They are 
 
 ## What is ALFA?
 
-ALFA is a management tool for creating an infrastructure to virtualize multimedia sensors (cameras and microphones). ALFA implements the V-PRISM architecture. The ideas behind this tool are: a single camera can be the source of a variety of VMS that process, manipulate, and extract data from the multimedia stream and delivery it for an application that started these plugins remotely via FIWARE.
+ALFA is a management tool for creating an infrastructure to virtualize multimedia sensors (cameras and microphones). ALFA implements the V-PRISM architecture. The ideas behind this tool are: a single camera can be the source of a variety of VMS that process, manipulate, and extract data from the multimedia stream and delivery it for an application.
 
 <img src="docs/img/example_grey.png" width="50%">
 
